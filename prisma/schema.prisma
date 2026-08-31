@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  username         String            @unique @db.VarChar(100)
+  password         String            @db.VarChar(255)
+  name             String            @db.VarChar(150)
+  role             String            @db.VarChar(50)
+  is_active        Boolean           @default(true)
+  created_at       DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime          @updatedAt @db.Timestamptz(6)
+  production_codes Production_code[]
+
+  @@map("User")
+}
+
+model Customer {
+  id               Int               @id @default(autoincrement())
+  name             String
+  production_codes Production_code[]
+
+  @@map("customers")
+}
+
+model Product {
+  id               Int               @id @default(autoincrement())
+  product_name     String
+  product_type     String            @db.VarChar(100)
+  product_codes    Product_code[]
+  production_codes Production_code[]
+
+  @@map("products")
+}
+
+model Product_code {
+  id               Int               @id @default(autoincrement())
+  product_code     String
+  product_id       Int
+  product          Product           @relation(fields: [product_id], references: [id])
+  production_codes Production_code[]
+
+  @@map("product_codes")
+}
+
+model Production_code {
+  id                  Int          @id @default(autoincrement())
+  product_id          Int
+  product_code_id     Int
+  batch               String?      @db.VarChar(100)
+  production_number   String       @db.VarChar(100)
+  production_code     String       @db.VarChar(255)
+  spk                 String?      @db.VarChar(100)
+  remarks             String?
+  out_code_date       DateTime?    @db.Date
+  Item_code_recipient String?      @db.VarChar(255)
+  status              String?      @db.VarChar(100)
+  created_at          DateTime     @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime     @updatedAt @db.Timestamptz(6)
+  customer_id         Int
+  user_id             Int
+  customer            Customer     @relation(fields: [customer_id], references: [id])
+  product_code        Product_code @relation(fields: [product_code_id], references: [id])
+  product             Product      @relation(fields: [product_id], references: [id])
+  user                User         @relation(fields: [user_id], references: [id])
+
+  @@map("production_codes")
+}
