@@ -124,7 +124,7 @@ export const Production_codeScalarFieldEnum = {
   spk: 'spk',
   remarks: 'remarks',
   out_code_date: 'out_code_date',
-  Item_code_recipient: 'Item_code_recipient',
+  item_code_recipient: 'item_code_recipient',
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at',

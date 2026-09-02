@@ -50,25 +50,25 @@ model Product_code {
 }
 
 model Production_code {
-  id                  Int          @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
   product_id          Int
-  product_code_id     Int
-  batch               String?      @db.VarChar(100)
-  production_number   String       @db.VarChar(100)
-  production_code     String       @db.VarChar(255)
-  spk                 String?      @db.VarChar(100)
+  product_code_id     Int?
+  batch               String?       @db.VarChar(100)
+  production_number   String?       @db.VarChar(100)
+  production_code     String?       @db.VarChar(255)
+  spk                 String?       @db.VarChar(100)
   remarks             String?
-  out_code_date       DateTime?    @db.Date
-  Item_code_recipient String?      @db.VarChar(255)
-  status              String?      @db.VarChar(100)
-  created_at          DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime     @updatedAt @db.Timestamptz(6)
-  customer_id         Int
+  out_code_date       DateTime?     @db.Date
+  item_code_recipient String?       @db.VarChar(255)
+  status              String?       @db.VarChar(100)
+  created_at          DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?     @updatedAt @db.Timestamptz(6)
+  customer_id         Int?
   user_id             Int
-  customer            Customer     @relation(fields: [customer_id], references: [id])
-  product_code        Product_code @relation(fields: [product_code_id], references: [id])
-  product             Product      @relation(fields: [product_id], references: [id])
-  user                User         @relation(fields: [user_id], references: [id])
+  customer            Customer?     @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  product_code        Product_code? @relation(fields: [product_code_id], references: [id])
+  product             Product       @relation(fields: [product_id], references: [id])
+  user                User          @relation(fields: [user_id], references: [id])
 
   @@map("production_codes")
 }

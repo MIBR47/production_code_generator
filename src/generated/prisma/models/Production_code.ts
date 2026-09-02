@@ -52,7 +52,7 @@ export type Production_codeMinAggregateOutputType = {
   spk: string | null
   remarks: string | null
   out_code_date: Date | null
-  Item_code_recipient: string | null
+  item_code_recipient: string | null
   status: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -70,7 +70,7 @@ export type Production_codeMaxAggregateOutputType = {
   spk: string | null
   remarks: string | null
   out_code_date: Date | null
-  Item_code_recipient: string | null
+  item_code_recipient: string | null
   status: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -88,7 +88,7 @@ export type Production_codeCountAggregateOutputType = {
   spk: number
   remarks: number
   out_code_date: number
-  Item_code_recipient: number
+  item_code_recipient: number
   status: number
   created_at: number
   updated_at: number
@@ -124,7 +124,7 @@ export type Production_codeMinAggregateInputType = {
   spk?: true
   remarks?: true
   out_code_date?: true
-  Item_code_recipient?: true
+  item_code_recipient?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -142,7 +142,7 @@ export type Production_codeMaxAggregateInputType = {
   spk?: true
   remarks?: true
   out_code_date?: true
-  Item_code_recipient?: true
+  item_code_recipient?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -160,7 +160,7 @@ export type Production_codeCountAggregateInputType = {
   spk?: true
   remarks?: true
   out_code_date?: true
-  Item_code_recipient?: true
+  item_code_recipient?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -231,11 +231,11 @@ export type Production_codeAggregateArgs<ExtArgs extends runtime.Types.Extension
 }
 
 export type GetProduction_codeAggregateType<T extends Production_codeAggregateArgs> = {
-      [P in keyof T & keyof AggregateProduction_code]: P extends '_count' | 'count'
-    ? T[P] extends true
-      ? number
-      : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
-    : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
+  [P in keyof T & keyof AggregateProduction_code]: P extends '_count' | 'count'
+  ? T[P] extends true
+  ? number
+  : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
+  : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
 }
 
 
@@ -258,18 +258,18 @@ export type Production_codeGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type Production_codeGroupByOutputType = {
   id: number
   product_id: number
-  product_code_id: number
+  product_code_id: number | null
   batch: string | null
-  production_number: string
-  production_code: string
+  production_number: string | null
+  production_code: string | null
   spk: string | null
   remarks: string | null
   out_code_date: Date | null
-  Item_code_recipient: string | null
+  item_code_recipient: string | null
   status: string | null
   created_at: Date
-  updated_at: Date
-  customer_id: number
+  updated_at: Date | null
+  customer_id: number | null
   user_id: number
   _count: Production_codeCountAggregateOutputType | null
   _avg: Production_codeAvgAggregateOutputType | null
@@ -281,15 +281,15 @@ export type Production_codeGroupByOutputType = {
 export type GetProduction_codeGroupByPayload<T extends Production_codeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Production_codeGroupByOutputType, T['by']> &
-      {
-        [P in ((keyof T) & (keyof Production_codeGroupByOutputType))]: P extends '_count'
-          ? T[P] extends boolean
-            ? number
-            : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
-      }
-    >
+    {
+      [P in ((keyof T) & (keyof Production_codeGroupByOutputType))]: P extends '_count'
+      ? T[P] extends boolean
+      ? number
+      : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
+      : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
+    }
   >
+>
 
 
 
@@ -299,21 +299,21 @@ export type Production_codeWhereInput = {
   NOT?: Prisma.Production_codeWhereInput | Prisma.Production_codeWhereInput[]
   id?: Prisma.IntFilter<"Production_code"> | number
   product_id?: Prisma.IntFilter<"Production_code"> | number
-  product_code_id?: Prisma.IntFilter<"Production_code"> | number
+  product_code_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   batch?: Prisma.StringNullableFilter<"Production_code"> | string | null
-  production_number?: Prisma.StringFilter<"Production_code"> | string
-  production_code?: Prisma.StringFilter<"Production_code"> | string
+  production_number?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  production_code?: Prisma.StringNullableFilter<"Production_code"> | string | null
   spk?: Prisma.StringNullableFilter<"Production_code"> | string | null
   remarks?: Prisma.StringNullableFilter<"Production_code"> | string | null
   out_code_date?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
-  Item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
   status?: Prisma.StringNullableFilter<"Production_code"> | string | null
   created_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  customer_id?: Prisma.IntFilter<"Production_code"> | number
+  updated_at?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
+  customer_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   user_id?: Prisma.IntFilter<"Production_code"> | number
-  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  product_code?: Prisma.XOR<Prisma.Product_codeScalarRelationFilter, Prisma.Product_codeWhereInput>
+  customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  product_code?: Prisma.XOR<Prisma.Product_codeNullableScalarRelationFilter, Prisma.Product_codeWhereInput> | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -321,18 +321,18 @@ export type Production_codeWhereInput = {
 export type Production_codeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   product_id?: Prisma.SortOrder
-  product_code_id?: Prisma.SortOrder
+  product_code_id?: Prisma.SortOrderInput | Prisma.SortOrder
   batch?: Prisma.SortOrderInput | Prisma.SortOrder
-  production_number?: Prisma.SortOrder
-  production_code?: Prisma.SortOrder
+  production_number?: Prisma.SortOrderInput | Prisma.SortOrder
+  production_code?: Prisma.SortOrderInput | Prisma.SortOrder
   spk?: Prisma.SortOrderInput | Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
   out_code_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  Item_code_recipient?: Prisma.SortOrderInput | Prisma.SortOrder
+  item_code_recipient?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
-  customer_id?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  customer_id?: Prisma.SortOrderInput | Prisma.SortOrder
   user_id?: Prisma.SortOrder
   customer?: Prisma.CustomerOrderByWithRelationInput
   product_code?: Prisma.Product_codeOrderByWithRelationInput
@@ -346,21 +346,21 @@ export type Production_codeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.Production_codeWhereInput[]
   NOT?: Prisma.Production_codeWhereInput | Prisma.Production_codeWhereInput[]
   product_id?: Prisma.IntFilter<"Production_code"> | number
-  product_code_id?: Prisma.IntFilter<"Production_code"> | number
+  product_code_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   batch?: Prisma.StringNullableFilter<"Production_code"> | string | null
-  production_number?: Prisma.StringFilter<"Production_code"> | string
-  production_code?: Prisma.StringFilter<"Production_code"> | string
+  production_number?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  production_code?: Prisma.StringNullableFilter<"Production_code"> | string | null
   spk?: Prisma.StringNullableFilter<"Production_code"> | string | null
   remarks?: Prisma.StringNullableFilter<"Production_code"> | string | null
   out_code_date?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
-  Item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
   status?: Prisma.StringNullableFilter<"Production_code"> | string | null
   created_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  customer_id?: Prisma.IntFilter<"Production_code"> | number
+  updated_at?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
+  customer_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   user_id?: Prisma.IntFilter<"Production_code"> | number
-  customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  product_code?: Prisma.XOR<Prisma.Product_codeScalarRelationFilter, Prisma.Product_codeWhereInput>
+  customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
+  product_code?: Prisma.XOR<Prisma.Product_codeNullableScalarRelationFilter, Prisma.Product_codeWhereInput> | null
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
@@ -368,18 +368,18 @@ export type Production_codeWhereUniqueInput = Prisma.AtLeast<{
 export type Production_codeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   product_id?: Prisma.SortOrder
-  product_code_id?: Prisma.SortOrder
+  product_code_id?: Prisma.SortOrderInput | Prisma.SortOrder
   batch?: Prisma.SortOrderInput | Prisma.SortOrder
-  production_number?: Prisma.SortOrder
-  production_code?: Prisma.SortOrder
+  production_number?: Prisma.SortOrderInput | Prisma.SortOrder
+  production_code?: Prisma.SortOrderInput | Prisma.SortOrder
   spk?: Prisma.SortOrderInput | Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
   out_code_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  Item_code_recipient?: Prisma.SortOrderInput | Prisma.SortOrder
+  item_code_recipient?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
-  customer_id?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  customer_id?: Prisma.SortOrderInput | Prisma.SortOrder
   user_id?: Prisma.SortOrder
   _count?: Prisma.Production_codeCountOrderByAggregateInput
   _avg?: Prisma.Production_codeAvgOrderByAggregateInput
@@ -394,34 +394,34 @@ export type Production_codeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.Production_codeScalarWhereWithAggregatesInput | Prisma.Production_codeScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Production_code"> | number
   product_id?: Prisma.IntWithAggregatesFilter<"Production_code"> | number
-  product_code_id?: Prisma.IntWithAggregatesFilter<"Production_code"> | number
+  product_code_id?: Prisma.IntNullableWithAggregatesFilter<"Production_code"> | number | null
   batch?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
-  production_number?: Prisma.StringWithAggregatesFilter<"Production_code"> | string
-  production_code?: Prisma.StringWithAggregatesFilter<"Production_code"> | string
+  production_number?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
+  production_code?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
   spk?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
   remarks?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
   out_code_date?: Prisma.DateTimeNullableWithAggregatesFilter<"Production_code"> | Date | string | null
-  Item_code_recipient?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
+  item_code_recipient?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
   status?: Prisma.StringNullableWithAggregatesFilter<"Production_code"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Production_code"> | Date | string
-  updated_at?: Prisma.DateTimeWithAggregatesFilter<"Production_code"> | Date | string
-  customer_id?: Prisma.IntWithAggregatesFilter<"Production_code"> | number
+  updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"Production_code"> | Date | string | null
+  customer_id?: Prisma.IntNullableWithAggregatesFilter<"Production_code"> | number | null
   user_id?: Prisma.IntWithAggregatesFilter<"Production_code"> | number
 }
 
 export type Production_codeCreateInput = {
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
-  product_code: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
+  updated_at?: Date | string | null
+  customer?: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
+  product_code?: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
   product: Prisma.ProductCreateNestedOneWithoutProduction_codesInput
   user: Prisma.UserCreateNestedOneWithoutProduction_codesInput
 }
@@ -429,34 +429,34 @@ export type Production_codeCreateInput = {
 export type Production_codeUncheckedCreateInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
 export type Production_codeUpdateInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutProduction_codesNestedInput
-  product_code?: Prisma.Product_codeUpdateOneRequiredWithoutProduction_codesNestedInput
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer?: Prisma.CustomerUpdateOneWithoutProduction_codesNestedInput
+  product_code?: Prisma.Product_codeUpdateOneWithoutProduction_codesNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutProduction_codesNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProduction_codesNestedInput
 }
@@ -464,67 +464,67 @@ export type Production_codeUpdateInput = {
 export type Production_codeUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type Production_codeCreateManyInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
 export type Production_codeUpdateManyMutationInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type Production_codeUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -548,7 +548,7 @@ export type Production_codeCountOrderByAggregateInput = {
   spk?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
   out_code_date?: Prisma.SortOrder
-  Item_code_recipient?: Prisma.SortOrder
+  item_code_recipient?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -574,7 +574,7 @@ export type Production_codeMaxOrderByAggregateInput = {
   spk?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
   out_code_date?: Prisma.SortOrder
-  Item_code_recipient?: Prisma.SortOrder
+  item_code_recipient?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -592,7 +592,7 @@ export type Production_codeMinOrderByAggregateInput = {
   spk?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
   out_code_date?: Prisma.SortOrder
-  Item_code_recipient?: Prisma.SortOrder
+  item_code_recipient?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -784,37 +784,45 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type Production_codeCreateWithoutUserInput = {
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
-  product_code: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
+  updated_at?: Date | string | null
+  customer?: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
+  product_code?: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
   product: Prisma.ProductCreateNestedOneWithoutProduction_codesInput
 }
 
 export type Production_codeUncheckedCreateWithoutUserInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
 }
 
 export type Production_codeCreateOrConnectWithoutUserInput = {
@@ -849,33 +857,33 @@ export type Production_codeScalarWhereInput = {
   NOT?: Prisma.Production_codeScalarWhereInput | Prisma.Production_codeScalarWhereInput[]
   id?: Prisma.IntFilter<"Production_code"> | number
   product_id?: Prisma.IntFilter<"Production_code"> | number
-  product_code_id?: Prisma.IntFilter<"Production_code"> | number
+  product_code_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   batch?: Prisma.StringNullableFilter<"Production_code"> | string | null
-  production_number?: Prisma.StringFilter<"Production_code"> | string
-  production_code?: Prisma.StringFilter<"Production_code"> | string
+  production_number?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  production_code?: Prisma.StringNullableFilter<"Production_code"> | string | null
   spk?: Prisma.StringNullableFilter<"Production_code"> | string | null
   remarks?: Prisma.StringNullableFilter<"Production_code"> | string | null
   out_code_date?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
-  Item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
+  item_code_recipient?: Prisma.StringNullableFilter<"Production_code"> | string | null
   status?: Prisma.StringNullableFilter<"Production_code"> | string | null
   created_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"Production_code"> | Date | string
-  customer_id?: Prisma.IntFilter<"Production_code"> | number
+  updated_at?: Prisma.DateTimeNullableFilter<"Production_code"> | Date | string | null
+  customer_id?: Prisma.IntNullableFilter<"Production_code"> | number | null
   user_id?: Prisma.IntFilter<"Production_code"> | number
 }
 
 export type Production_codeCreateWithoutCustomerInput = {
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  product_code: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
+  updated_at?: Date | string | null
+  product_code?: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
   product: Prisma.ProductCreateNestedOneWithoutProduction_codesInput
   user: Prisma.UserCreateNestedOneWithoutProduction_codesInput
 }
@@ -883,17 +891,17 @@ export type Production_codeCreateWithoutCustomerInput = {
 export type Production_codeUncheckedCreateWithoutCustomerInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   user_id: number
 }
 
@@ -925,34 +933,34 @@ export type Production_codeUpdateManyWithWhereWithoutCustomerInput = {
 
 export type Production_codeCreateWithoutProductInput = {
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
-  product_code: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
+  updated_at?: Date | string | null
+  customer?: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
+  product_code?: Prisma.Product_codeCreateNestedOneWithoutProduction_codesInput
   user: Prisma.UserCreateNestedOneWithoutProduction_codesInput
 }
 
 export type Production_codeUncheckedCreateWithoutProductInput = {
   id?: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
@@ -984,16 +992,16 @@ export type Production_codeUpdateManyWithWhereWithoutProductInput = {
 
 export type Production_codeCreateWithoutProduct_codeInput = {
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
+  updated_at?: Date | string | null
+  customer?: Prisma.CustomerCreateNestedOneWithoutProduction_codesInput
   product: Prisma.ProductCreateNestedOneWithoutProduction_codesInput
   user: Prisma.UserCreateNestedOneWithoutProduction_codesInput
 }
@@ -1002,16 +1010,16 @@ export type Production_codeUncheckedCreateWithoutProduct_codeInput = {
   id?: number
   product_id: number
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
@@ -1044,99 +1052,99 @@ export type Production_codeUpdateManyWithWhereWithoutProduct_codeInput = {
 export type Production_codeCreateManyUserInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
 }
 
 export type Production_codeUpdateWithoutUserInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutProduction_codesNestedInput
-  product_code?: Prisma.Product_codeUpdateOneRequiredWithoutProduction_codesNestedInput
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer?: Prisma.CustomerUpdateOneWithoutProduction_codesNestedInput
+  product_code?: Prisma.Product_codeUpdateOneWithoutProduction_codesNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutProduction_codesNestedInput
 }
 
 export type Production_codeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type Production_codeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type Production_codeCreateManyCustomerInput = {
   id?: number
   product_id: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   user_id: number
 }
 
 export type Production_codeUpdateWithoutCustomerInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  product_code?: Prisma.Product_codeUpdateOneRequiredWithoutProduction_codesNestedInput
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  product_code?: Prisma.Product_codeUpdateOneWithoutProduction_codesNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutProduction_codesNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProduction_codesNestedInput
 }
@@ -1144,101 +1152,101 @@ export type Production_codeUpdateWithoutCustomerInput = {
 export type Production_codeUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type Production_codeUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type Production_codeCreateManyProductInput = {
   id?: number
-  product_code_id: number
+  product_code_id?: number | null
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
 export type Production_codeUpdateWithoutProductInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutProduction_codesNestedInput
-  product_code?: Prisma.Product_codeUpdateOneRequiredWithoutProduction_codesNestedInput
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer?: Prisma.CustomerUpdateOneWithoutProduction_codesNestedInput
+  product_code?: Prisma.Product_codeUpdateOneWithoutProduction_codesNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProduction_codesNestedInput
 }
 
 export type Production_codeUncheckedUpdateWithoutProductInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type Production_codeUncheckedUpdateManyWithoutProductInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  product_code_id?: Prisma.IntFieldUpdateOperationsInput | number
+  product_code_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -1246,31 +1254,31 @@ export type Production_codeCreateManyProduct_codeInput = {
   id?: number
   product_id: number
   batch?: string | null
-  production_number: string
-  production_code: string
+  production_number?: string | null
+  production_code?: string | null
   spk?: string | null
   remarks?: string | null
   out_code_date?: Date | string | null
-  Item_code_recipient?: string | null
+  item_code_recipient?: string | null
   status?: string | null
   created_at?: Date | string
-  updated_at?: Date | string
-  customer_id: number
+  updated_at?: Date | string | null
+  customer_id?: number | null
   user_id: number
 }
 
 export type Production_codeUpdateWithoutProduct_codeInput = {
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutProduction_codesNestedInput
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer?: Prisma.CustomerUpdateOneWithoutProduction_codesNestedInput
   product?: Prisma.ProductUpdateOneRequiredWithoutProduction_codesNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProduction_codesNestedInput
 }
@@ -1279,16 +1287,16 @@ export type Production_codeUncheckedUpdateWithoutProduct_codeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -1296,16 +1304,16 @@ export type Production_codeUncheckedUpdateManyWithoutProduct_codeInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   product_id?: Prisma.IntFieldUpdateOperationsInput | number
   batch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  production_number?: Prisma.StringFieldUpdateOperationsInput | string
-  production_code?: Prisma.StringFieldUpdateOperationsInput | string
+  production_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  production_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   out_code_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  Item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  item_code_recipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer_id?: Prisma.IntFieldUpdateOperationsInput | number
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  customer_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   user_id?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -1321,14 +1329,14 @@ export type Production_codeSelect<ExtArgs extends runtime.Types.Extensions.Inter
   spk?: boolean
   remarks?: boolean
   out_code_date?: boolean
-  Item_code_recipient?: boolean
+  item_code_recipient?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
   customer_id?: boolean
   user_id?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["production_code"]>
@@ -1343,14 +1351,14 @@ export type Production_codeSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   spk?: boolean
   remarks?: boolean
   out_code_date?: boolean
-  Item_code_recipient?: boolean
+  item_code_recipient?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
   customer_id?: boolean
   user_id?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["production_code"]>
@@ -1365,14 +1373,14 @@ export type Production_codeSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   spk?: boolean
   remarks?: boolean
   out_code_date?: boolean
-  Item_code_recipient?: boolean
+  item_code_recipient?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
   customer_id?: boolean
   user_id?: boolean
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["production_code"]>
@@ -1387,7 +1395,7 @@ export type Production_codeSelectScalar = {
   spk?: boolean
   remarks?: boolean
   out_code_date?: boolean
-  Item_code_recipient?: boolean
+  item_code_recipient?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -1395,22 +1403,22 @@ export type Production_codeSelectScalar = {
   user_id?: boolean
 }
 
-export type Production_codeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "product_id" | "product_code_id" | "batch" | "production_number" | "production_code" | "spk" | "remarks" | "out_code_date" | "Item_code_recipient" | "status" | "created_at" | "updated_at" | "customer_id" | "user_id", ExtArgs["result"]["production_code"]>
+export type Production_codeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "product_id" | "product_code_id" | "batch" | "production_number" | "production_code" | "spk" | "remarks" | "out_code_date" | "item_code_recipient" | "status" | "created_at" | "updated_at" | "customer_id" | "user_id", ExtArgs["result"]["production_code"]>
 export type Production_codeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type Production_codeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type Production_codeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  product_code?: boolean | Prisma.Product_codeDefaultArgs<ExtArgs>
+  customer?: boolean | Prisma.Production_code$customerArgs<ExtArgs>
+  product_code?: boolean | Prisma.Production_code$product_codeArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1418,26 +1426,26 @@ export type Production_codeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type $Production_codePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Production_code"
   objects: {
-    customer: Prisma.$CustomerPayload<ExtArgs>
-    product_code: Prisma.$Product_codePayload<ExtArgs>
+    customer: Prisma.$CustomerPayload<ExtArgs> | null
+    product_code: Prisma.$Product_codePayload<ExtArgs> | null
     product: Prisma.$ProductPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     product_id: number
-    product_code_id: number
+    product_code_id: number | null
     batch: string | null
-    production_number: string
-    production_code: string
+    production_number: string | null
+    production_code: string | null
     spk: string | null
     remarks: string | null
     out_code_date: Date | null
-    Item_code_recipient: string | null
+    item_code_recipient: string | null
     status: string | null
     created_at: Date
-    updated_at: Date
-    customer_id: number
+    updated_at: Date | null
+    customer_id: number | null
     user_id: number
   }, ExtArgs["result"]["production_code"]>
   composites: {}
@@ -1711,10 +1719,10 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
     args?: Prisma.Subset<T, Production_codeCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
-      ? T['select'] extends true
-        ? number
-        : Prisma.GetScalarType<T['select'], Production_codeCountAggregateOutputType>
-      : number
+    ? T['select'] extends true
+    ? number
+    : Prisma.GetScalarType<T['select'], Production_codeCountAggregateOutputType>
+    : number
   >
 
   /**
@@ -1768,8 +1776,8 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: Production_codeGroupByArgs['orderBy'] }
-      : { orderBy?: Production_codeGroupByArgs['orderBy'] },
+    ? { orderBy: Production_codeGroupByArgs['orderBy'] }
+    : { orderBy?: Production_codeGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1780,49 +1788,49 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
     ? `Error: "by" must not be empty.`
     : HavingValid extends Prisma.False
     ? {
-        [P in HavingFields]: P extends ByFields
-          ? never
-          : P extends string
-          ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-          : [
-              Error,
-              'Field ',
-              P,
-              ` in "having" needs to be provided in "by"`,
-            ]
-      }[HavingFields]
+      [P in HavingFields]: P extends ByFields
+      ? never
+      : P extends string
+      ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+      : [
+        Error,
+        'Field ',
+        P,
+        ` in "having" needs to be provided in "by"`,
+      ]
+    }[HavingFields]
     : 'take' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-      ? ByValid extends Prisma.True
-        ? {}
-        : {
-            [P in OrderFields]: P extends ByFields
-              ? never
-              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-          }[OrderFields]
-      : 'Error: If you provide "take", you also need to provide "orderBy"'
+    ? ByValid extends Prisma.True
+    ? {}
+    : {
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
+    : 'Error: If you provide "take", you also need to provide "orderBy"'
     : 'skip' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-      ? ByValid extends Prisma.True
-        ? {}
-        : {
-            [P in OrderFields]: P extends ByFields
-              ? never
-              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-          }[OrderFields]
-      : 'Error: If you provide "skip", you also need to provide "orderBy"'
+    ? ByValid extends Prisma.True
+    ? {}
+    : {
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
+    : 'Error: If you provide "skip", you also need to provide "orderBy"'
     : ByValid extends Prisma.True
     ? {}
     : {
-        [P in OrderFields]: P extends ByFields
-          ? never
-          : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-      }[OrderFields]
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
   >(args: Prisma.SubsetIntersection<T, Production_codeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProduction_codeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-/**
- * Fields of the Production_code model
- */
-readonly fields: Production_codeFieldRefs;
+  /**
+   * Fields of the Production_code model
+   */
+  readonly fields: Production_codeFieldRefs;
 }
 
 /**
@@ -1833,8 +1841,8 @@ readonly fields: Production_codeFieldRefs;
  */
 export interface Prisma__Production_codeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  product_code<T extends Prisma.Product_codeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product_codeDefaultArgs<ExtArgs>>): Prisma.Prisma__Product_codeClient<runtime.Types.Result.GetResult<Prisma.$Product_codePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  customer<T extends Prisma.Production_code$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Production_code$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  product_code<T extends Prisma.Production_code$product_codeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Production_code$product_codeArgs<ExtArgs>>): Prisma.Prisma__Product_codeClient<runtime.Types.Result.GetResult<Prisma.$Product_codePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   product<T extends Prisma.ProductDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductClient<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1875,14 +1883,14 @@ export interface Production_codeFieldRefs {
   readonly spk: Prisma.FieldRef<"Production_code", 'String'>
   readonly remarks: Prisma.FieldRef<"Production_code", 'String'>
   readonly out_code_date: Prisma.FieldRef<"Production_code", 'DateTime'>
-  readonly Item_code_recipient: Prisma.FieldRef<"Production_code", 'String'>
+  readonly item_code_recipient: Prisma.FieldRef<"Production_code", 'String'>
   readonly status: Prisma.FieldRef<"Production_code", 'String'>
   readonly created_at: Prisma.FieldRef<"Production_code", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Production_code", 'DateTime'>
   readonly customer_id: Prisma.FieldRef<"Production_code", 'Int'>
   readonly user_id: Prisma.FieldRef<"Production_code", 'Int'>
 }
-    
+
 
 // Custom InputTypes
 /**
@@ -2279,6 +2287,44 @@ export type Production_codeDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many Production_codes to delete.
    */
   limit?: number
+}
+
+/**
+ * Production_code.customer
+ */
+export type Production_code$customerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Customer
+   */
+  select?: Prisma.CustomerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Customer
+   */
+  omit?: Prisma.CustomerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerInclude<ExtArgs> | null
+  where?: Prisma.CustomerWhereInput
+}
+
+/**
+ * Production_code.product_code
+ */
+export type Production_code$product_codeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Product_code
+   */
+  select?: Prisma.Product_codeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Product_code
+   */
+  omit?: Prisma.Product_codeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.Product_codeInclude<ExtArgs> | null
+  where?: Prisma.Product_codeWhereInput
 }
 
 /**

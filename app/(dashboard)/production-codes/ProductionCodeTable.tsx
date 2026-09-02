@@ -4,12 +4,6 @@ import { useActionState, useEffect, useState, useTransition } from "react";
 import * as XLSX from "xlsx";
 import { createUnitProduct, deleteUnitProduct } from "./actions";
 
-// import { TableFilterBar } from "../components/TableFilterBar";
-// import { TablePagination } from "./components/TablePagination";
-// import { DraftItem, ProductionTableProps } from "./types";
-// import { useProductionFilter } from "./useProductionFilter";
-// import { formatDateIndonesia, getNextProductionNumber } from "./utils";
-
 import { DraftTableRow } from "./components/DraftTableRow";
 import { DbTableRow } from "./components/DbTableRow";
 import { UnitProductModal } from "./components/UnitProductModal";
@@ -99,6 +93,23 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
         );
     };
 
+    const handleDuplicateDraft = (draftToDuplicate: DraftItem) => {
+        const nextProdNum = getNextProductionNumber(
+            draftToDuplicate.productId,
+            draftToDuplicate.productCodeId,
+            data,
+            draftItems
+        );
+
+        const newDraft: DraftItem = {
+            ...draftToDuplicate,
+            tempId: Date.now().toString() + Math.random().toString(36).substring(2, 5),
+            productionNumber: nextProdNum,
+        };
+
+        setDraftItems((prev) => [...prev, newDraft]);
+    };
+
     const handleRemoveDraft = (tempId: string) => {
         setDraftItems((prev) => prev.filter((item) => item.tempId !== tempId));
     };
@@ -124,40 +135,50 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
 
     // Export Excel
     const handleExportToExcel = () => {
-        if (selectedIds.length === 0) {
-            alert("Silakan pilih minimal satu data untuk diexport.");
+        const filteredDbItems = filter.combinedAndSortedData.filter((item) => !item.isDraft);
+
+        if (filteredDbItems.length === 0) {
+            alert("Tidak ada data yang tersedia untuk diexport berdasarkan filter saat ini.");
             return;
         }
 
-        const selectedData = filter.combinedAndSortedData
-            .filter((item) => !item.isDraft && selectedIds.includes(item.id))
-            .map((item, index) => ({
-                No: index + 1,
-                "Nama Barang": item.product?.product_name || "-",
-                "Tipe Barang": item.product?.product_type || "-",
-                "Kode Barang": item.product_code?.product_code || "-",
-                Batch: item.batch || "-",
-                "Nomor Produksi": String(item.production_number || 0).padStart(4, "0"),
-                "Kode Produksi": item.production_code || "-",
-                Customer: item.customer?.name || "-",
-                SPK: item.spk || "-",
-                Keterangan: item.remarks || "-",
-                "Out Date": item.out_code_date
-                    ? new Date(item.out_code_date).toLocaleDateString("id-ID")
-                    : "-",
-                Recipient: item.Item_code_recipient || item.recipient || "-",
-                Status: item.status ?? "Tersimpan",
-                "Created At": item.created_at
-                    ? new Date(item.created_at).toLocaleDateString("id-ID")
-                    : "-",
-            }));
+        const targetData = selectedIds.length > 0
+            ? filteredDbItems.filter((item) => selectedIds.includes(item.id))
+            : filteredDbItems;
 
-        const worksheet = XLSX.utils.json_to_sheet(selectedData);
+        const formattedData = targetData.map((item, index) => ({
+            No: index + 1,
+            "Nama Barang": item.product?.product_name || "-",
+            "Tipe Barang": item.product?.product_type || "-",
+            "Kode Barang": item.product_code?.product_code || "-",
+            Batch: item.batch || "-",
+            "Nomor Produksi": String(item.production_number || 0).padStart(4, "0"),
+            "Kode Produksi": item.production_code || "-",
+            Customer: item.customer?.name || "-",
+            SPK: item.spk || "-",
+            Keterangan: item.remarks || "-",
+            "Tanggal Kode Keluar": item.out_code_date
+                ? new Date(item.out_code_date).toLocaleDateString("id-ID")
+                : "-",
+            Penerima: item.item_code_recipient || item.recipient || "-",
+            Status: item.status ?? "Tersimpan",
+            "Created At": item.created_at
+                ? new Date(item.created_at).toLocaleDateString("id-ID")
+                : "-",
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Production Code");
+
+        let dateSuffix = new Date().toISOString().split("T")[0];
+        if (filter.startDate && filter.endDate) {
+            dateSuffix = `${filter.startDate}_smd_${filter.endDate}`;
+        }
+
         XLSX.writeFile(
             workbook,
-            `Data_Produksi_${new Date().toISOString().split("T")[0]}.xlsx`
+            `Data_Produksi_${dateSuffix}.xlsx`
         );
     };
 
@@ -171,7 +192,10 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
             {/* Panel Filter */}
             <TableFilterBar
                 filterCategory={filter.filterCategory}
-                setFilterCategory={filter.setFilterCategory}
+                setFilterCategory={(val) => {
+                    filter.setFilterCategory(val);
+                    filter.setSearch(""); // Reset kata kunci/tanggal pencarian saat kategori diganti
+                }}
                 search={filter.search}
                 setSearch={filter.setSearch}
                 startDate={filter.startDate}
@@ -216,7 +240,7 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
                 />
             )}
 
-            {/* Tabel Data shadcn */}
+            {/* Tabel Data */}
             <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
                 <Table>
                     <TableHeader className="bg-[#0E5EA2] hover:bg-[#0E5EA2]">
@@ -238,9 +262,9 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
                             <TableHead className="text-white">Kode Produksi</TableHead>
                             <TableHead className="text-white">Customer</TableHead>
                             <TableHead className="text-white">SPK</TableHead>
-                            <TableHead className="text-white">Keterangan</TableHead>
-                            <TableHead className="text-white">Out Date</TableHead>
-                            <TableHead className="text-white">Recipient</TableHead>
+                            <TableHead className="text-[#0E5EA2] hover:bg-[#0E5EA2] text-white">Keterangan</TableHead>
+                            <TableHead className="text-white">Tanggal Kode Keluar</TableHead>
+                            <TableHead className="text-white">Penerima</TableHead>
                             <TableHead className="text-center text-white">Status</TableHead>
                             <TableHead className="text-center text-white">Aksi</TableHead>
                         </TableRow>
@@ -259,6 +283,7 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
                                         onDraftChange={handleDraftChange}
                                         onRemoveDraft={handleRemoveDraft}
                                         onSubmitStart={setLastSubmittedId}
+                                        onDuplicateDraft={handleDuplicateDraft}
                                     />
                                 ) : (
                                     <DbTableRow

@@ -327,9 +327,9 @@ export type Product_codeSumOrderByAggregateInput = {
   product_id?: Prisma.SortOrder
 }
 
-export type Product_codeScalarRelationFilter = {
-  is?: Prisma.Product_codeWhereInput
-  isNot?: Prisma.Product_codeWhereInput
+export type Product_codeNullableScalarRelationFilter = {
+  is?: Prisma.Product_codeWhereInput | null
+  isNot?: Prisma.Product_codeWhereInput | null
 }
 
 export type Product_codeCreateNestedManyWithoutProductInput = {
@@ -380,10 +380,12 @@ export type Product_codeCreateNestedOneWithoutProduction_codesInput = {
   connect?: Prisma.Product_codeWhereUniqueInput
 }
 
-export type Product_codeUpdateOneRequiredWithoutProduction_codesNestedInput = {
+export type Product_codeUpdateOneWithoutProduction_codesNestedInput = {
   create?: Prisma.XOR<Prisma.Product_codeCreateWithoutProduction_codesInput, Prisma.Product_codeUncheckedCreateWithoutProduction_codesInput>
   connectOrCreate?: Prisma.Product_codeCreateOrConnectWithoutProduction_codesInput
   upsert?: Prisma.Product_codeUpsertWithoutProduction_codesInput
+  disconnect?: Prisma.Product_codeWhereInput | boolean
+  delete?: Prisma.Product_codeWhereInput | boolean
   connect?: Prisma.Product_codeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.Product_codeUpdateToOneWithWhereWithoutProduction_codesInput, Prisma.Product_codeUpdateWithoutProduction_codesInput>, Prisma.Product_codeUncheckedUpdateWithoutProduction_codesInput>
 }

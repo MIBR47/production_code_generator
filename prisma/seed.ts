@@ -1729,7 +1729,7 @@ async function main() {
     //             spk: "E-059",
     //             remarks: null,
     //             out_code: new Date("2026-06-18"),
-    //             Item_code_recipient: "Assembly",
+    //             item_code_recipient: "Assembly",
     //             status: "Assembly",
     //         },
     //     });

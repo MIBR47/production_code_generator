@@ -35,7 +35,7 @@ export async function createUnitProduct(prevState: any, formData: FormData) {
                 spk: spk || null,
                 remarks: remarks || null,
                 out_code_date: outDateStr ? new Date(outDateStr) : null,
-                Item_code_recipient: recipient || null, // Dipetakan ke nama kolom Prisma
+                item_code_recipient: recipient || null, // Dipetakan ke nama kolom Prisma
                 status: "Tersimpan",
             },
         });
@@ -71,7 +71,7 @@ export async function updateUnitProduct(prevState: any, formData: FormData) {
                 spk: spk || null,
                 remarks: remarks || null,
                 out_code_date: outDate ? new Date(outDate) : null,
-                Item_code_recipient: recipient || null,
+                item_code_recipient: recipient || null,
             },
         });
 

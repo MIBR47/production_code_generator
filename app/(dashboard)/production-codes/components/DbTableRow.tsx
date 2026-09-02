@@ -25,7 +25,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
         spk: item.spk ?? "",
         remarks: item.remarks ?? "",
         out_date: item.out_code_date ? new Date(item.out_code_date).toISOString().split("T")[0] : "",
-        recipient: item.Item_code_recipient || item.recipient || "",
+        recipient: item.item_code_recipient,
     });
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
             spk: item.spk ?? "",
             remarks: item.remarks ?? "",
             out_date: item.out_code_date ? new Date(item.out_code_date).toISOString().split("T")[0] : "",
-            recipient: item.Item_code_recipient || item.recipient || "",
+            recipient: item.item_code_recipient,
         });
     }, [item]);
 
@@ -215,7 +215,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
             <td className="px-4 py-3">
                 {item.out_code_date ? new Date(item.out_code_date).toLocaleDateString("id-ID") : "-"}
             </td>
-            <td className="px-4 py-3">{item.Item_code_recipient || item.recipient || "-"}</td>
+            <td className="px-4 py-3">{item.item_code_recipient}</td>
 
             <td className="px-4 py-3 text-center">
                 <span className="inline-block px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">

@@ -16,11 +16,21 @@ export function useProductionFilter(data: any[], draftItems: DraftItem[]) {
     const combinedAndSortedData = useMemo(() => {
         const query = search.toLowerCase().trim();
 
+        // Helper untuk memformat tanggal ke ISO (YYYY-MM-DD)
+        const formatDateToISO = (dateStr: string | Date | null | undefined) => {
+            if (!dateStr) return "";
+            try {
+                return new Date(dateStr).toISOString().split("T")[0];
+            } catch {
+                return String(dateStr);
+            }
+        };
+
         const isWithinCreatedRange = (createdAtStr: string | Date | null | undefined) => {
             if (!startDate && !endDate) return true;
             if (!createdAtStr) return false;
 
-            const dateVal = new Date(createdAtStr).toISOString().split("T")[0];
+            const dateVal = formatDateToISO(createdAtStr);
             if (startDate && dateVal < startDate) return false;
             if (endDate && dateVal > endDate) return false;
             return true;
@@ -30,6 +40,8 @@ export function useProductionFilter(data: any[], draftItems: DraftItem[]) {
             if (!isWithinCreatedRange(item.created_at)) return false;
             if (!query) return true;
 
+            const outCodeDateStr = formatDateToISO(item.out_code_date);
+
             const fields: Record<string, string | undefined> = {
                 productName: item.product?.product_name,
                 productType: item.product?.product_type,
@@ -37,18 +49,25 @@ export function useProductionFilter(data: any[], draftItems: DraftItem[]) {
                 customerName: item.customer?.name,
                 batch: item.batch,
                 spk: item.spk,
-                recipient: item.recipient,
+                recipient: item.item_code_recipient || item.recipient,
                 remarks: item.remarks,
+                status: item.status ?? "Tersimpan",
+                out_code_date: outCodeDateStr,
             };
 
             if (filterCategory === "all") {
-                return Object.values(fields).some((val) => val?.toLowerCase().includes(query));
+                return Object.values(fields).some((val) =>
+                    val?.toLowerCase().includes(query)
+                );
             }
+
             return fields[filterCategory]?.toLowerCase().includes(query) ?? false;
         };
 
         const matchDraftItem = (item: DraftItem) => {
             if (!query) return true;
+
+            const outCodeDateStr = formatDateToISO(item.outDate);
 
             const fields: Record<string, string | undefined> = {
                 productName: item.productName,
@@ -59,32 +78,46 @@ export function useProductionFilter(data: any[], draftItems: DraftItem[]) {
                 spk: item.spk,
                 recipient: item.recipient,
                 remarks: item.remarks,
+                status: "Draft",
+                out_code_date: outCodeDateStr,
             };
 
             if (filterCategory === "all") {
-                return Object.values(fields).some((val) => val?.toLowerCase().includes(query));
+                return Object.values(fields).some((val) =>
+                    val?.toLowerCase().includes(query)
+                );
             }
+
             return fields[filterCategory]?.toLowerCase().includes(query) ?? false;
         };
 
         const filteredDb = data.filter(matchDbItem);
         const filteredDrafts = draftItems.filter(matchDraftItem);
 
-        return [...filteredDb.map((item) => ({ ...item, isDraft: false })), ...filteredDrafts].sort(
-            (a, b) => {
-                const prodA = a.isDraft ? a.productId : a.product?.id;
-                const prodB = b.isDraft ? b.productId : b.product?.id;
-                if (prodA !== prodB) return prodA - prodB;
+        return [
+            ...filteredDb.map((item) => ({ ...item, isDraft: false })),
+            ...filteredDrafts,
+        ].sort((a, b) => {
+            const prodA = a.isDraft ? a.productId : a.product?.id;
+            const prodB = b.isDraft ? b.productId : b.product?.id;
+            if (prodA !== prodB) return prodA - prodB;
 
-                const codeA = a.isDraft ? a.productCodeId : (a.product_code?.id || a.product_code_id);
-                const codeB = b.isDraft ? b.productCodeId : (b.product_code?.id || b.product_code_id);
-                if (codeA !== codeB) return codeA - codeB;
+            const codeA = a.isDraft
+                ? a.productCodeId
+                : a.product_code?.id || a.product_code_id;
+            const codeB = b.isDraft
+                ? b.productCodeId
+                : b.product_code?.id || b.product_code_id;
+            if (codeA !== codeB) return codeA - codeB;
 
-                const numA = a.isDraft ? a.productionNumber : Number(a.production_number) || 0;
-                const numB = b.isDraft ? b.productionNumber : Number(b.production_number) || 0;
-                return numA - numB;
-            }
-        );
+            const numA = a.isDraft
+                ? a.productionNumber
+                : Number(a.production_number) || 0;
+            const numB = b.isDraft
+                ? b.productionNumber
+                : Number(b.production_number) || 0;
+            return numA - numB;
+        });
     }, [data, draftItems, search, filterCategory, startDate, endDate]);
 
     const totalItems = combinedAndSortedData.length;
@@ -117,8 +150,12 @@ export function useProductionFilter(data: any[], draftItems: DraftItem[]) {
 
     const setThisMonthFilter = () => {
         const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+            .toISOString()
+            .split("T")[0];
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+            .toISOString()
+            .split("T")[0];
         setStartDate(firstDay);
         setEndDate(lastDay);
     };

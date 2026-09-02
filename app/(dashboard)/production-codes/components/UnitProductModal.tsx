@@ -28,21 +28,43 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
     const [selectedCodeId, setSelectedCodeId] = useState<number | null>(null);
     const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
 
-    // Memo untuk mengambil data objek berdasarkan ID terpilih
+    // State untuk teks pencarian
+    const [productQuery, setProductQuery] = useState("");
+    const [codeQuery, setCodeQuery] = useState("");
+    const [customerQuery, setCustomerQuery] = useState("");
+
+    // Object terpilih berdasarkan ID
     const selectedProduct = useMemo(
         () => products.find((p) => Number(p.id) === selectedProductId) ?? null,
         [products, selectedProductId]
     );
 
-    const selectedCode = useMemo(
-        () => selectedProduct?.product_codes?.find((c) => Number(c.id) === selectedCodeId) ?? null,
-        [selectedProduct, selectedCodeId]
+    const availableCodes = useMemo(
+        () => selectedProduct?.product_codes ?? [],
+        [selectedProduct]
     );
 
-    const selectedCustomer = useMemo(
-        () => customers.find((c) => Number(c.id) === selectedCustomerId) ?? null,
-        [customers, selectedCustomerId]
-    );
+    // Dynamic Filter
+    const filteredProducts = useMemo(() => {
+        if (!productQuery) return products;
+        return products.filter((p) =>
+            `${p.product_name} ${p.product_type}`.toLowerCase().includes(productQuery.toLowerCase())
+        );
+    }, [products, productQuery]);
+
+    const filteredCodes = useMemo(() => {
+        if (!codeQuery) return availableCodes;
+        return availableCodes.filter((c) =>
+            c.product_code.toLowerCase().includes(codeQuery.toLowerCase())
+        );
+    }, [availableCodes, codeQuery]);
+
+    const filteredCustomers = useMemo(() => {
+        if (!customerQuery) return customers;
+        return customers.filter((c) =>
+            c.name.toLowerCase().includes(customerQuery.toLowerCase())
+        );
+    }, [customers, customerQuery]);
 
     const handleSubmit = () => {
         if (!selectedProductId || !selectedCodeId || !selectedCustomerId) {
@@ -66,28 +88,40 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                 <div className="space-y-1.5">
                     <Label className="text-xs font-semibold">Nama Barang</Label>
                     <Combobox
-                        items={products}
-                        value={selectedProductId ? String(selectedProductId) : ""}
-                        onValueChange={(id) => {
-                            if (id) {
-                                setSelectedProductId(Number(id));
+                        value={selectedProduct ? `${selectedProduct.product_name} (${selectedProduct.product_type})` : ""}
+                        onValueChange={(val) => {
+                            const found = products.find(
+                                (p) => `${p.product_name} (${p.product_type})` === val
+                            );
+                            if (found) {
+                                setSelectedProductId(Number(found.id));
                                 setSelectedCodeId(null);
+                                setCodeQuery("");
                             }
+                        }}
+                        onOpenChange={(isOpen) => {
+                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
+                            if (!isOpen) setProductQuery("");
                         }}
                     >
                         <ComboboxInput
                             placeholder="Cari barang..."
-                            value={selectedProduct ? `${selectedProduct.product_name} (${selectedProduct.product_type})` : ""}
+                            onChange={(e) => setProductQuery(e.target.value)}
                             className="w-full bg-white"
                         />
                         <ComboboxContent>
-                            <ComboboxEmpty>Barang tidak ditemukan.</ComboboxEmpty>
+                            {filteredProducts.length === 0 && (
+                                <ComboboxEmpty>Barang tidak ditemukan.</ComboboxEmpty>
+                            )}
                             <ComboboxList>
-                                {(product: ProductWithCodes) => (
-                                    <ComboboxItem key={product.id} value={String(product.id)}>
-                                        {product.product_name} ({product.product_type})
-                                    </ComboboxItem>
-                                )}
+                                {filteredProducts.map((product) => {
+                                    const label = `${product.product_name} (${product.product_type})`;
+                                    return (
+                                        <ComboboxItem key={product.id} value={label}>
+                                            {label}
+                                        </ComboboxItem>
+                                    );
+                                })}
                             </ComboboxList>
                         </ComboboxContent>
                     </Combobox>
@@ -97,28 +131,34 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                 <div className="space-y-1.5">
                     <Label className="text-xs font-semibold">Kode Barang</Label>
                     <Combobox
-                        items={selectedProduct?.product_codes ?? []}
-                        value={selectedCodeId ? String(selectedCodeId) : ""}
-                        onValueChange={(id) => {
-                            if (id) setSelectedCodeId(Number(id));
+                        value={availableCodes.find((c) => Number(c.id) === selectedCodeId)?.product_code ?? ""}
+                        onValueChange={(val) => {
+                            const found = availableCodes.find((c) => c.product_code === val);
+                            if (found) setSelectedCodeId(Number(found.id));
+                        }}
+                        onOpenChange={(isOpen) => {
+                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
+                            if (!isOpen) setCodeQuery("");
                         }}
                     >
                         <ComboboxInput
                             placeholder={
                                 selectedProduct ? "Cari kode barang..." : "Pilih Barang Terlebih Dahulu"
                             }
-                            value={selectedCode ? selectedCode.product_code : ""}
+                            onChange={(e) => setCodeQuery(e.target.value)}
                             disabled={!selectedProduct}
                             className="w-full bg-white"
                         />
                         <ComboboxContent>
-                            <ComboboxEmpty>Kode barang tidak ditemukan.</ComboboxEmpty>
+                            {filteredCodes.length === 0 && (
+                                <ComboboxEmpty>Kode barang tidak ditemukan.</ComboboxEmpty>
+                            )}
                             <ComboboxList>
-                                {(code) => (
-                                    <ComboboxItem key={code.id} value={String(code.id)}>
+                                {filteredCodes.map((code) => (
+                                    <ComboboxItem key={code.id} value={code.product_code}>
                                         {code.product_code}
                                     </ComboboxItem>
-                                )}
+                                ))}
                             </ComboboxList>
                         </ComboboxContent>
                     </Combobox>
@@ -128,25 +168,31 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                 <div className="space-y-1.5">
                     <Label className="text-xs font-semibold">Customer</Label>
                     <Combobox
-                        items={customers}
-                        value={selectedCustomerId ? String(selectedCustomerId) : ""}
-                        onValueChange={(id) => {
-                            if (id) setSelectedCustomerId(Number(id));
+                        value={customers.find((c) => Number(c.id) === selectedCustomerId)?.name ?? ""}
+                        onValueChange={(val) => {
+                            const found = customers.find((c) => c.name === val);
+                            if (found) setSelectedCustomerId(Number(found.id));
+                        }}
+                        onOpenChange={(isOpen) => {
+                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
+                            if (!isOpen) setCustomerQuery("");
                         }}
                     >
                         <ComboboxInput
                             placeholder="Cari customer..."
-                            value={selectedCustomer ? selectedCustomer.name : ""}
+                            onChange={(e) => setCustomerQuery(e.target.value)}
                             className="w-full bg-white"
                         />
                         <ComboboxContent>
-                            <ComboboxEmpty>Customer tidak ditemukan.</ComboboxEmpty>
+                            {filteredCustomers.length === 0 && (
+                                <ComboboxEmpty>Customer tidak ditemukan.</ComboboxEmpty>
+                            )}
                             <ComboboxList>
-                                {(customer: Customer) => (
-                                    <ComboboxItem key={customer.id} value={String(customer.id)}>
+                                {filteredCustomers.map((customer) => (
+                                    <ComboboxItem key={customer.id} value={customer.name}>
                                         {customer.name}
                                     </ComboboxItem>
-                                )}
+                                ))}
                             </ComboboxList>
                         </ComboboxContent>
                     </Combobox>

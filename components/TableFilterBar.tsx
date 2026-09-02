@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,9 +50,12 @@ export function TableFilterBar({
                 <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[280px]">
                     <Select
                         value={filterCategory}
-                        onValueChange={(val) => setFilterCategory(val ?? "all")}
+                        onValueChange={(val) => {
+                            setFilterCategory(val ?? "all");
+                            setSearch(""); // Reset keyword/tanggal pencarian saat kategori diubah
+                        }}
                     >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[200px]">
                             <SelectValue placeholder="Semua Kategori" />
                         </SelectTrigger>
                         <SelectContent>
@@ -63,15 +68,22 @@ export function TableFilterBar({
                             <SelectItem value="spk">SPK</SelectItem>
                             <SelectItem value="recipient">Recipient</SelectItem>
                             <SelectItem value="remarks">Keterangan</SelectItem>
+                            <SelectItem value="status">Status</SelectItem>
+                            <SelectItem value="out_code_date">Tanggal Kode Keluar</SelectItem>
                         </SelectContent>
                     </Select>
 
+                    {/* Input dinamis: Date picker saat out_code_date dipilih, Teks biasa untuk opsi lainnya */}
                     <Input
-                        type="text"
-                        placeholder="Ketik kata kunci pencarian..."
+                        type={filterCategory === "out_code_date" ? "date" : "text"}
+                        placeholder={
+                            filterCategory === "out_code_date"
+                                ? ""
+                                : "Ketik kata kunci pencarian..."
+                        }
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-64"
+                        className="w-64 cursor-pointer"
                     />
                 </div>
 
