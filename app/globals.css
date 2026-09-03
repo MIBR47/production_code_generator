@@ -140,5 +140,7 @@ body {
   }
   html {
     @apply font-sans;
+    /* zoom: 75%; */ 
   }
+  
 }

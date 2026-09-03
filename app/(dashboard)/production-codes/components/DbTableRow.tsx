@@ -218,7 +218,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
             <td className="px-4 py-3">{item.item_code_recipient}</td>
 
             <td className="px-4 py-3 text-center">
-                <span className="inline-block px-2.5 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">
+                <span className={`inline-block px-2.5 py-1 text-xs font-semibold ${item.status === "Done" ? "bg-emerald-100 text-emerald-800" : "bg-yellow-100 text-yellow-800"} rounded-full`}>
                     {item.status ?? "Tersimpan"}
                 </span>
             </td>

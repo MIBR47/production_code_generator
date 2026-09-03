@@ -36,8 +36,25 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
         success: false,
         message: "",
     });
+    const [pendingJumpId, setPendingJumpId] = useState<string | null>(null);
 
+    // const filter = useProductionFilter(data, draftItems);
     const filter = useProductionFilter(data, draftItems);
+    useEffect(() => {
+        if (!pendingJumpId) return;
+
+        // Cari posisi index draft yang baru ditambahkan dalam data yang sudah di-sort & filter
+        const targetIndex = filter.combinedAndSortedData.findIndex(
+            (item: any) => item.tempId === pendingJumpId
+        );
+
+        if (targetIndex !== -1) {
+            // Hitung halaman tempat item tersebut berada
+            const targetPage = Math.floor(targetIndex / filter.itemsPerPage) + 1;
+            filter.setCurrentPage(targetPage);
+            setPendingJumpId(null); // Reset setelah berhasil jump
+        }
+    }, [draftItems, filter.combinedAndSortedData, filter.itemsPerPage, pendingJumpId]);
 
     useEffect(() => {
         if (stateunitproduct.success && lastSubmittedId) {
@@ -65,8 +82,10 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
         const customerObj = customers.find((c: any) => c.id === customerId);
         const nextProdNum = getNextProductionNumber(productId, productCodeId, data, draftItems);
 
+        const newTempId = Date.now().toString();
+
         const newDraft: DraftItem = {
-            tempId: Date.now().toString(),
+            tempId: newTempId,
             productId,
             productName: productObj?.product_name ?? "",
             productType: productObj?.product_type ?? "",
@@ -83,14 +102,12 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
             isDraft: true,
         };
 
-        setDraftItems((prev) => [...prev, newDraft]);
-        setShowCreateUnitProduct(false);
-    };
+        // Reset pencarian agar item baru tidak tersembunyi oleh filter pencarian aktif
+        filter.setSearch("");
 
-    const handleDraftChange = (tempId: string, field: keyof DraftItem, value: any) => {
-        setDraftItems((prev) =>
-            prev.map((item) => (item.tempId === tempId ? { ...item, [field]: value } : item))
-        );
+        setDraftItems((prev) => [...prev, newDraft]);
+        setPendingJumpId(newTempId); // Triggers Auto-Jump via useEffect
+        setShowCreateUnitProduct(false);
     };
 
     const handleDuplicateDraft = (draftToDuplicate: DraftItem) => {
@@ -101,14 +118,42 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
             draftItems
         );
 
+        const newTempId = Date.now().toString() + Math.random().toString(36).substring(2, 5);
+
         const newDraft: DraftItem = {
             ...draftToDuplicate,
-            tempId: Date.now().toString() + Math.random().toString(36).substring(2, 5),
+            tempId: newTempId,
             productionNumber: nextProdNum,
         };
 
+        filter.setSearch("");
+
         setDraftItems((prev) => [...prev, newDraft]);
+        setPendingJumpId(newTempId); // Triggers Auto-Jump via useEffect
     };
+
+    const handleDraftChange = (tempId: string, field: keyof DraftItem, value: any) => {
+        setDraftItems((prev) =>
+            prev.map((item) => (item.tempId === tempId ? { ...item, [field]: value } : item))
+        );
+    };
+
+    // const handleDuplicateDraft = (draftToDuplicate: DraftItem) => {
+    //     const nextProdNum = getNextProductionNumber(
+    //         draftToDuplicate.productId,
+    //         draftToDuplicate.productCodeId,
+    //         data,
+    //         draftItems
+    //     );
+
+    //     const newDraft: DraftItem = {
+    //         ...draftToDuplicate,
+    //         tempId: Date.now().toString() + Math.random().toString(36).substring(2, 5),
+    //         productionNumber: nextProdNum,
+    //     };
+
+    //     setDraftItems((prev) => [...prev, newDraft]);
+    // };
 
     const handleRemoveDraft = (tempId: string) => {
         setDraftItems((prev) => prev.filter((item) => item.tempId !== tempId));
@@ -188,7 +233,7 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
         availableDbItems.every((item) => selectedIds.includes(item.id));
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 [zoom:0.75] origin-top-left">
             {/* Panel Filter */}
             <TableFilterBar
                 filterCategory={filter.filterCategory}
