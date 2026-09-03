@@ -46,7 +46,7 @@ export interface DraftItem {
     spk: string;
     remarks: string;
     outDate: string;
-    recipient: string;
+    item_code_recipient: string;
     isDraft: boolean;
 }
 

@@ -88,8 +88,8 @@ export function DraftTableRow({
                 <Input
                     type="text"
                     placeholder="Penerima..."
-                    value={draft.recipient}
-                    onChange={(e) => onDraftChange(draft.tempId, "recipient", e.target.value)}
+                    value={draft.item_code_recipient}
+                    onChange={(e) => onDraftChange(draft.tempId, "item_code_recipient", e.target.value)}
                     className="h-8 text-xs bg-white min-w-[100px]"
                 />
             </td>
@@ -115,7 +115,7 @@ export function DraftTableRow({
                     <input type="hidden" name="spk" value={draft.spk} />
                     <input type="hidden" name="remarks" value={draft.remarks} />
                     <input type="hidden" name="out_date" value={draft.outDate} />
-                    <input type="hidden" name="recipient" value={draft.recipient} />
+                    <input type="hidden" name="item_code_recipient" value={draft.item_code_recipient} />
 
                     <Button
                         type="submit"

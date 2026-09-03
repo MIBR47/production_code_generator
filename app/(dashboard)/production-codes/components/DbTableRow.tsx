@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { updateUnitProduct } from "../actions";
+import { updateProductionCode } from "../actions";
 import { Input } from "@/components/ui/input";
 
 interface Props {
@@ -25,7 +25,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
         spk: item.spk ?? "",
         remarks: item.remarks ?? "",
         out_date: item.out_code_date ? new Date(item.out_code_date).toISOString().split("T")[0] : "",
-        recipient: item.item_code_recipient,
+        item_code_recipient: item.item_code_recipient ?? "",
     });
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
             spk: item.spk ?? "",
             remarks: item.remarks ?? "",
             out_date: item.out_code_date ? new Date(item.out_code_date).toISOString().split("T")[0] : "",
-            recipient: item.item_code_recipient,
+            item_code_recipient: item.item_code_recipient ?? "",
         });
     }, [item]);
 
@@ -68,7 +68,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
         const formData = new FormData(e.currentTarget);
 
         startTransition(async () => {
-            const res = await updateUnitProduct(null, formData);
+            const res = await updateProductionCode(null, formData);
             if (res?.success) {
                 setIsEditing(false);
             } else if (res?.message) {
@@ -97,7 +97,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                     <Input
                         form={`edit-form-${item.id}`}
                         name="batch"
-                        value={formValues.batch}
+                        value={formValues.batch ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white min-w-[90px]"
                     />
@@ -109,7 +109,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                     <Input
                         form={`edit-form-${item.id}`}
                         name="production_code"
-                        value={formValues.production_code}
+                        value={formValues.production_code ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white min-w-[140px]"
                         readOnly
@@ -122,7 +122,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                     <Input
                         form={`edit-form-${item.id}`}
                         name="spk"
-                        value={formValues.spk}
+                        value={formValues.spk ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white min-w-[90px]"
                     />
@@ -132,7 +132,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                     <Input
                         form={`edit-form-${item.id}`}
                         name="remarks"
-                        value={formValues.remarks}
+                        value={formValues.remarks ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white min-w-[120px]"
                     />
@@ -143,7 +143,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                         form={`edit-form-${item.id}`}
                         type="date"
                         name="out_date"
-                        value={formValues.out_date}
+                        value={formValues.out_date ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white w-[130px]"
                     />
@@ -152,8 +152,8 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
                 <td className="px-3 py-2">
                     <Input
                         form={`edit-form-${item.id}`}
-                        name="recipient"
-                        value={formValues.recipient}
+                        name="item_code_recipient"
+                        value={formValues.item_code_recipient ?? ""}
                         onChange={handleInputChange}
                         className="h-8 text-xs bg-white min-w-[100px]"
                     />
@@ -215,7 +215,7 @@ export function DbTableRow({ item, index, onDelete, isDeleting = false, isSelect
             <td className="px-4 py-3">
                 {item.out_code_date ? new Date(item.out_code_date).toLocaleDateString("id-ID") : "-"}
             </td>
-            <td className="px-4 py-3">{item.item_code_recipient}</td>
+            <td className="px-4 py-3">{item.item_code_recipient ?? "-"}</td>
 
             <td className="px-4 py-3 text-center">
                 <span className={`inline-block px-2.5 py-1 text-xs font-semibold ${item.status === "Done" ? "bg-emerald-100 text-emerald-800" : "bg-yellow-100 text-yellow-800"} rounded-full`}>

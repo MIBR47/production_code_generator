@@ -23,7 +23,7 @@ interface Props {
     onClose: () => void;
 }
 
-export function UnitProductModal({ products, customers, onAddDraft, onClose }: Props) {
+export function ProductionCodeModal({ products, customers, onAddDraft, onClose }: Props) {
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
     const [selectedCodeId, setSelectedCodeId] = useState<number | null>(null);
     const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
@@ -100,7 +100,6 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                             }
                         }}
                         onOpenChange={(isOpen) => {
-                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
                             if (!isOpen) setProductQuery("");
                         }}
                     >
@@ -137,7 +136,6 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                             if (found) setSelectedCodeId(Number(found.id));
                         }}
                         onOpenChange={(isOpen) => {
-                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
                             if (!isOpen) setCodeQuery("");
                         }}
                     >
@@ -174,7 +172,6 @@ export function UnitProductModal({ products, customers, onAddDraft, onClose }: P
                             if (found) setSelectedCustomerId(Number(found.id));
                         }}
                         onOpenChange={(isOpen) => {
-                            // Kosongkan kata kunci cari jika dropdown ditutup (klik di luar)
                             if (!isOpen) setCustomerQuery("");
                         }}
                     >

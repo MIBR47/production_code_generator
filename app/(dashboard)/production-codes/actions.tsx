@@ -1,10 +1,9 @@
 "use server";
 
-import { prisma } from "@/lib/prisma"; // sesuaikan path Prisma client kamu
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-
-export async function createUnitProduct(prevState: any, formData: FormData) {
+export async function createProductionCode(prevState: any, formData: FormData) {
     try {
         const productId = Number(formData.get("product_id"));
         const productCodeId = Number(formData.get("product_code_id"));
@@ -17,10 +16,16 @@ export async function createUnitProduct(prevState: any, formData: FormData) {
         const spk = formData.get("spk") as string;
         const remarks = formData.get("remarks") as string;
         const outDateStr = formData.get("out_date") as string;
-        const recipient = formData.get("recipient") as string;
+
+        // Mengambil nilai item_code_recipient (fallback ke recipient jika form masih menggunakan key lama)
+        const itemCodeRecipient = (formData.get("item_code_recipient") || formData.get("recipient")) as string;
         const productionCode = formData.get("production_code") as string;
 
-        // Gantilah user_id berikut dengan session user aktual kamu
+        const statusString = (!outDateStr || outDateStr.trim() === "") && (!itemCodeRecipient || itemCodeRecipient.trim() === "")
+            ? "In Progress"
+            : "Done";
+
+        // Gantilah user_id berikut dengan session user aktual
         const userId = 1;
 
         await prisma.production_code.create({
@@ -35,20 +40,20 @@ export async function createUnitProduct(prevState: any, formData: FormData) {
                 spk: spk || null,
                 remarks: remarks || null,
                 out_code_date: outDateStr ? new Date(outDateStr) : null,
-                item_code_recipient: recipient || null, // Dipetakan ke nama kolom Prisma
-                status: "Tersimpan",
+                item_code_recipient: itemCodeRecipient || null,
+                status: statusString,
             },
         });
 
-        revalidatePath("/production-units"); // Revalidate halaman agar data ter-update
+        revalidatePath("/production-units");
         return { success: true, message: "Berhasil menyimpan data!" };
     } catch (error) {
-        console.error(error);
+        console.error("Error creating production code:", error);
         return { success: false, message: "Gagal menyimpan data." };
     }
 }
 
-export async function updateUnitProduct(prevState: any, formData: FormData) {
+export async function updateProductionCode(prevState: any, formData: FormData) {
     try {
         const id = formData.get("id");
         const batch = formData.get("batch") as string;
@@ -56,13 +61,18 @@ export async function updateUnitProduct(prevState: any, formData: FormData) {
         const spk = formData.get("spk") as string;
         const remarks = formData.get("remarks") as string;
         const outDate = formData.get("out_date") as string;
-        const recipient = formData.get("recipient") as string;
+
+        // Mengambil nilai item_code_recipient
+        const itemCodeRecipient = (formData.get("item_code_recipient") || formData.get("recipient")) as string;
+
+        const statusString = (!outDate || outDate.trim() === "") && (!itemCodeRecipient || itemCodeRecipient.trim() === "")
+            ? "In Progress"
+            : "Done";
 
         if (!id) {
             return { success: false, message: "ID data tidak ditemukan." };
         }
 
-        // Jalankan query update Prisma
         await prisma.production_code.update({
             where: { id: Number(id) },
             data: {
@@ -71,26 +81,26 @@ export async function updateUnitProduct(prevState: any, formData: FormData) {
                 spk: spk || null,
                 remarks: remarks || null,
                 out_code_date: outDate ? new Date(outDate) : null,
-                item_code_recipient: recipient || null,
+                item_code_recipient: itemCodeRecipient || null,
+                status: statusString,
             },
         });
 
         revalidatePath("/production-units");
         return { success: true, message: "Data berhasil diperbarui!" };
     } catch (error) {
-        console.error("Error updating unit product:", error);
+        console.error("Error updating production code:", error);
         return { success: false, message: "Gagal memperbarui data." };
     }
 }
 
 // ---------------- DELETE / HAPUS ----------------
-export async function deleteUnitProduct(id: number | string) {
+export async function deleteProductionCode(id: number | string) {
     try {
         if (!id) {
             return { success: false, message: "ID data tidak valid." };
         }
 
-        // Jalankan query delete Prisma
         await prisma.production_code.delete({
             where: { id: Number(id) },
         });
@@ -98,7 +108,7 @@ export async function deleteUnitProduct(id: number | string) {
         revalidatePath("/production-units");
         return { success: true, message: "Data berhasil dihapus!" };
     } catch (error) {
-        console.error("Error deleting unit product:", error);
+        console.error("Error deleting production code:", error);
         return { success: false, message: "Gagal menghapus data di database." };
     }
 }
