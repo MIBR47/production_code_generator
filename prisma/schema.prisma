@@ -40,19 +40,20 @@ model Product {
   product_type     String            @db.VarChar(100)
   product_codes    Product_code[]
   production_codes Production_code[]
-  saleItems        SaleItem[]
+  sale_items       Sale_item[]
+  product_prices   Product_price[]
 
   @@map("products")
 }
 
-model ProductPrice {
+model Product_price {
   id         Int       @id @default(autoincrement())
   price      Int
   product_id Int
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @updatedAt @db.Timestamptz(6)
 
-  // product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
   @@map("product_prices")
 }
@@ -94,6 +95,7 @@ model Production_code {
 model Sale {
   id           Int      @id @default(autoincrement())
   no_spk       String?  @db.VarChar(100) //E-SPK/2026/09/10134 atau R-SPK
+  no_po        String?  @db.VarChar(100)
   spk_date     DateTime @default(now()) @db.Timestamptz(6)
   spk_type     String   @db.VarChar(100)
   customer_id  Int
@@ -105,17 +107,17 @@ model Sale {
   remarks      String? @db.Text
 
   user_id    Int?
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  updated_at DateTime @updatedAt @db.Timestamptz(6)
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @updatedAt @db.Timestamptz(6)
 
-  customer   Customer   @relation(fields: [customer_id], references: [id], onDelete: Restrict)
-  user       User?      @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  sale_items SaleItem[]
+  customer   Customer    @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  user       User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  sale_items Sale_item[]
 
   @@map("sales")
 }
 
-model SaleItem {
+model Sale_item {
   id         Int @id @default(autoincrement())
   sale_id    Int
   product_id Int
@@ -140,7 +142,7 @@ model Tax {
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @updatedAt @db.Timestamptz(6)
 
-  sale_items SaleItem[]
+  sale_items Sale_item[]
 
   @@map("taxes")
 }

@@ -57,6 +57,11 @@ export type Customer = Prisma.CustomerModel
  */
 export type Product = Prisma.ProductModel
 /**
+ * Model Product_price
+ * 
+ */
+export type Product_price = Prisma.Product_priceModel
+/**
  * Model Product_code
  * 
  */
@@ -66,3 +71,18 @@ export type Product_code = Prisma.Product_codeModel
  * 
  */
 export type Production_code = Prisma.Production_codeModel
+/**
+ * Model Sale
+ * 
+ */
+export type Sale = Prisma.SaleModel
+/**
+ * Model Sale_item
+ * 
+ */
+export type Sale_item = Prisma.Sale_itemModel
+/**
+ * Model Tax
+ * 
+ */
+export type Tax = Prisma.TaxModel

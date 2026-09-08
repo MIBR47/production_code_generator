@@ -21,6 +21,16 @@ const menus = [
         icon: LayoutDashboard,
     },
     {
+        title: "SPK",
+        href: "/spk",
+        icon: BriefcaseMedical,
+    },
+    {
+        title: "Production Codes",
+        href: "/production-codes",
+        icon: BriefcaseMedical,
+    },
+    {
         title: "Products",
         href: "/products",
         icon: Package,
@@ -30,11 +40,7 @@ const menus = [
         href: "/customers",
         icon: Factory,
     },
-    {
-        title: "Production Codes",
-        href: "/production-codes",
-        icon: BriefcaseMedical,
-    },
+
     // {
     //     title: "Product Codes",
     //     href: "/product-codes",

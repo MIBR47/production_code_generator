@@ -231,11 +231,11 @@ export type Production_codeAggregateArgs<ExtArgs extends runtime.Types.Extension
 }
 
 export type GetProduction_codeAggregateType<T extends Production_codeAggregateArgs> = {
-  [P in keyof T & keyof AggregateProduction_code]: P extends '_count' | 'count'
-  ? T[P] extends true
-  ? number
-  : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
-  : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
+      [P in keyof T & keyof AggregateProduction_code]: P extends '_count' | 'count'
+    ? T[P] extends true
+      ? number
+      : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
+    : Prisma.GetScalarType<T[P], AggregateProduction_code[P]>
 }
 
 
@@ -281,15 +281,15 @@ export type Production_codeGroupByOutputType = {
 export type GetProduction_codeGroupByPayload<T extends Production_codeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<Production_codeGroupByOutputType, T['by']> &
-    {
-      [P in ((keyof T) & (keyof Production_codeGroupByOutputType))]: P extends '_count'
-      ? T[P] extends boolean
-      ? number
-      : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
-      : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
-    }
+      {
+        [P in ((keyof T) & (keyof Production_codeGroupByOutputType))]: P extends '_count'
+          ? T[P] extends boolean
+            ? number
+            : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
+          : Prisma.GetScalarType<T[P], Production_codeGroupByOutputType[P]>
+      }
+    >
   >
->
 
 
 
@@ -774,14 +774,6 @@ export type Production_codeUncheckedUpdateManyWithoutProduct_codeNestedInput = {
   update?: Prisma.Production_codeUpdateWithWhereUniqueWithoutProduct_codeInput | Prisma.Production_codeUpdateWithWhereUniqueWithoutProduct_codeInput[]
   updateMany?: Prisma.Production_codeUpdateManyWithWhereWithoutProduct_codeInput | Prisma.Production_codeUpdateManyWithWhereWithoutProduct_codeInput[]
   deleteMany?: Prisma.Production_codeScalarWhereInput | Prisma.Production_codeScalarWhereInput[]
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1719,10 +1711,10 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
     args?: Prisma.Subset<T, Production_codeCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
-    ? T['select'] extends true
-    ? number
-    : Prisma.GetScalarType<T['select'], Production_codeCountAggregateOutputType>
-    : number
+      ? T['select'] extends true
+        ? number
+        : Prisma.GetScalarType<T['select'], Production_codeCountAggregateOutputType>
+      : number
   >
 
   /**
@@ -1776,8 +1768,8 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-    ? { orderBy: Production_codeGroupByArgs['orderBy'] }
-    : { orderBy?: Production_codeGroupByArgs['orderBy'] },
+      ? { orderBy: Production_codeGroupByArgs['orderBy'] }
+      : { orderBy?: Production_codeGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1788,49 +1780,49 @@ export interface Production_codeDelegate<ExtArgs extends runtime.Types.Extension
     ? `Error: "by" must not be empty.`
     : HavingValid extends Prisma.False
     ? {
-      [P in HavingFields]: P extends ByFields
-      ? never
-      : P extends string
-      ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-      : [
-        Error,
-        'Field ',
-        P,
-        ` in "having" needs to be provided in "by"`,
-      ]
-    }[HavingFields]
+        [P in HavingFields]: P extends ByFields
+          ? never
+          : P extends string
+          ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+          : [
+              Error,
+              'Field ',
+              P,
+              ` in "having" needs to be provided in "by"`,
+            ]
+      }[HavingFields]
     : 'take' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-    ? ByValid extends Prisma.True
-    ? {}
-    : {
-      [P in OrderFields]: P extends ByFields
-      ? never
-      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-    }[OrderFields]
-    : 'Error: If you provide "take", you also need to provide "orderBy"'
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
+              ? never
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "take", you also need to provide "orderBy"'
     : 'skip' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-    ? ByValid extends Prisma.True
-    ? {}
-    : {
-      [P in OrderFields]: P extends ByFields
-      ? never
-      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-    }[OrderFields]
-    : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      ? ByValid extends Prisma.True
+        ? {}
+        : {
+            [P in OrderFields]: P extends ByFields
+              ? never
+              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+          }[OrderFields]
+      : 'Error: If you provide "skip", you also need to provide "orderBy"'
     : ByValid extends Prisma.True
     ? {}
     : {
-      [P in OrderFields]: P extends ByFields
-      ? never
-      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-    }[OrderFields]
+        [P in OrderFields]: P extends ByFields
+          ? never
+          : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+      }[OrderFields]
   >(args: Prisma.SubsetIntersection<T, Production_codeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProduction_codeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Production_code model
-   */
-  readonly fields: Production_codeFieldRefs;
+/**
+ * Fields of the Production_code model
+ */
+readonly fields: Production_codeFieldRefs;
 }
 
 /**
@@ -1890,7 +1882,7 @@ export interface Production_codeFieldRefs {
   readonly customer_id: Prisma.FieldRef<"Production_code", 'Int'>
   readonly user_id: Prisma.FieldRef<"Production_code", 'Int'>
 }
-
+    
 
 // Custom InputTypes
 /**

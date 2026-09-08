@@ -54,8 +54,12 @@ export const ModelName = {
   User: 'User',
   Customer: 'Customer',
   Product: 'Product',
+  Product_price: 'Product_price',
   Product_code: 'Product_code',
-  Production_code: 'Production_code'
+  Production_code: 'Production_code',
+  Sale: 'Sale',
+  Sale_item: 'Sale_item',
+  Tax: 'Tax'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -90,7 +94,9 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const CustomerScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  address: 'address',
+  contact: 'contact'
 } as const
 
 export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
@@ -103,6 +109,17 @@ export const ProductScalarFieldEnum = {
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
+
+
+export const Product_priceScalarFieldEnum = {
+  id: 'id',
+  price: 'price',
+  product_id: 'product_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Product_priceScalarFieldEnum = (typeof Product_priceScalarFieldEnum)[keyof typeof Product_priceScalarFieldEnum]
 
 
 export const Product_codeScalarFieldEnum = {
@@ -133,6 +150,51 @@ export const Production_codeScalarFieldEnum = {
 } as const
 
 export type Production_codeScalarFieldEnum = (typeof Production_codeScalarFieldEnum)[keyof typeof Production_codeScalarFieldEnum]
+
+
+export const SaleScalarFieldEnum = {
+  id: 'id',
+  no_spk: 'no_spk',
+  no_po: 'no_po',
+  spk_date: 'spk_date',
+  spk_type: 'spk_type',
+  customer_id: 'customer_id',
+  sales_person: 'sales_person',
+  total_amount: 'total_amount',
+  ecatalog: 'ecatalog',
+  status: 'status',
+  remarks: 'remarks',
+  user_id: 'user_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type SaleScalarFieldEnum = (typeof SaleScalarFieldEnum)[keyof typeof SaleScalarFieldEnum]
+
+
+export const Sale_itemScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  product_id: 'product_id',
+  tax_id: 'tax_id',
+  quantity: 'quantity',
+  unit_price: 'unit_price',
+  subtotal: 'subtotal',
+  tax_price: 'tax_price'
+} as const
+
+export type Sale_itemScalarFieldEnum = (typeof Sale_itemScalarFieldEnum)[keyof typeof Sale_itemScalarFieldEnum]
+
+
+export const TaxScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  rate: 'rate',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type TaxScalarFieldEnum = (typeof TaxScalarFieldEnum)[keyof typeof TaxScalarFieldEnum]
 
 
 export const SortOrder = {
