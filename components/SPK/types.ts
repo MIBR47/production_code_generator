@@ -19,7 +19,9 @@ export interface SaleItemSerialized {
 export interface SaleSerialized {
     id: number;
     no_spk: string | null;
+    no_po: string | null;
     spk_date: string;
+    expated_date: string;
     spk_type: string;
     sales_person: string | null;
     total_amount: number | string;

@@ -93,13 +93,14 @@ model Production_code {
 }
 
 model Sale {
-  id           Int      @id @default(autoincrement())
-  no_spk       String?  @db.VarChar(100) //E-SPK/2026/09/10134 atau R-SPK
-  no_po        String?  @db.VarChar(100)
-  spk_date     DateTime @default(now()) @db.Timestamptz(6)
-  spk_type     String   @db.VarChar(100)
-  customer_id  Int
-  sales_person String?  @db.VarChar(100)
+  id            Int       @id @default(autoincrement())
+  no_spk        String?   @db.VarChar(100) //E-SPK/2026/09/10134 atau R-SPK
+  no_po         String?   @db.VarChar(100)
+  spk_date      DateTime  @default(now()) @db.Timestamptz(6)
+  Expected_date DateTime? @db.Timestamptz(6)
+  spk_type      String    @db.VarChar(100)
+  customer_id   Int
+  sales_person  String?   @db.VarChar(100)
 
   total_amount Decimal @default(0) @db.Decimal(12, 2)
   ecatalog     String  @db.VarChar(100)

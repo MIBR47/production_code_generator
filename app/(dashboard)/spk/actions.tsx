@@ -14,9 +14,17 @@ export async function createSaleAction(prevState: any, formData: FormData) {
         const ecatalog = formData.get("ecatalog") as string;
         const remarks = formData.get("remarks") as string;
 
-        if (!customer_id || items.length === 0) {
-            return { success: false, message: "Data tidak lengkap." };
+        // Ambil field tanggal baru dari FormData
+        const rawSpkDate = formData.get("spk_date") as string;
+        const rawExpectedDate = formData.get("expected_date") as string;
+
+        if (!customer_id || items.length === 0 || !rawSpkDate) {
+            return { success: false, message: "Data tidak lengkap (Customer, Item, atau Tanggal SPK wajib diisi)." };
         }
+
+        // Format string tanggal menjadi objek Date
+        const spkDateObj = new Date(rawSpkDate);
+        const expectedDateObj = rawExpectedDate ? new Date(rawExpectedDate) : null;
 
         // Ambil data pajak dari DB untuk kalkulasi tax_price yang akurat
         const taxIds = items
@@ -83,10 +91,9 @@ export async function createSaleAction(prevState: any, formData: FormData) {
                 }
             }
 
-            // B. Generate Nomor SPK & PO Otomatis
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
+            // B. Generate Nomor SPK & PO Otomatis berdasarkan spk_date
+            const year = spkDateObj.getFullYear();
+            const month = String(spkDateObj.getMonth() + 1).padStart(2, "0");
 
             // 1. Hitung urutan SPK berdasarkan spk_type (E-Catalog vs Reguler)
             const prefixSpk = spk_type === "E-Catalog" ? "E-SPK" : "R-SPK";
@@ -106,6 +113,8 @@ export async function createSaleAction(prevState: any, formData: FormData) {
                 data: {
                     no_spk: generatedNoSpk,
                     no_po: generatedNoPo,
+                    spk_date: spkDateObj,
+                    expected_date: expectedDateObj, // Kolom DB (sesuaikan nama field dengan schema Prisma)
                     spk_type,
                     customer_id,
                     sales_person,

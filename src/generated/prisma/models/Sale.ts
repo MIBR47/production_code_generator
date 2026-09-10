@@ -45,6 +45,7 @@ export type SaleMinAggregateOutputType = {
   no_spk: string | null
   no_po: string | null
   spk_date: Date | null
+  Expected_date: Date | null
   spk_type: string | null
   customer_id: number | null
   sales_person: string | null
@@ -62,6 +63,7 @@ export type SaleMaxAggregateOutputType = {
   no_spk: string | null
   no_po: string | null
   spk_date: Date | null
+  Expected_date: Date | null
   spk_type: string | null
   customer_id: number | null
   sales_person: string | null
@@ -79,6 +81,7 @@ export type SaleCountAggregateOutputType = {
   no_spk: number
   no_po: number
   spk_date: number
+  Expected_date: number
   spk_type: number
   customer_id: number
   sales_person: number
@@ -112,6 +115,7 @@ export type SaleMinAggregateInputType = {
   no_spk?: true
   no_po?: true
   spk_date?: true
+  Expected_date?: true
   spk_type?: true
   customer_id?: true
   sales_person?: true
@@ -129,6 +133,7 @@ export type SaleMaxAggregateInputType = {
   no_spk?: true
   no_po?: true
   spk_date?: true
+  Expected_date?: true
   spk_type?: true
   customer_id?: true
   sales_person?: true
@@ -146,6 +151,7 @@ export type SaleCountAggregateInputType = {
   no_spk?: true
   no_po?: true
   spk_date?: true
+  Expected_date?: true
   spk_type?: true
   customer_id?: true
   sales_person?: true
@@ -250,6 +256,7 @@ export type SaleGroupByOutputType = {
   no_spk: string | null
   no_po: string | null
   spk_date: Date
+  Expected_date: Date | null
   spk_type: string
   customer_id: number
   sales_person: string | null
@@ -290,6 +297,7 @@ export type SaleWhereInput = {
   no_spk?: Prisma.StringNullableFilter<"Sale"> | string | null
   no_po?: Prisma.StringNullableFilter<"Sale"> | string | null
   spk_date?: Prisma.DateTimeFilter<"Sale"> | Date | string
+  Expected_date?: Prisma.DateTimeNullableFilter<"Sale"> | Date | string | null
   spk_type?: Prisma.StringFilter<"Sale"> | string
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -310,6 +318,7 @@ export type SaleOrderByWithRelationInput = {
   no_spk?: Prisma.SortOrderInput | Prisma.SortOrder
   no_po?: Prisma.SortOrderInput | Prisma.SortOrder
   spk_date?: Prisma.SortOrder
+  Expected_date?: Prisma.SortOrderInput | Prisma.SortOrder
   spk_type?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -333,6 +342,7 @@ export type SaleWhereUniqueInput = Prisma.AtLeast<{
   no_spk?: Prisma.StringNullableFilter<"Sale"> | string | null
   no_po?: Prisma.StringNullableFilter<"Sale"> | string | null
   spk_date?: Prisma.DateTimeFilter<"Sale"> | Date | string
+  Expected_date?: Prisma.DateTimeNullableFilter<"Sale"> | Date | string | null
   spk_type?: Prisma.StringFilter<"Sale"> | string
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -353,6 +363,7 @@ export type SaleOrderByWithAggregationInput = {
   no_spk?: Prisma.SortOrderInput | Prisma.SortOrder
   no_po?: Prisma.SortOrderInput | Prisma.SortOrder
   spk_date?: Prisma.SortOrder
+  Expected_date?: Prisma.SortOrderInput | Prisma.SortOrder
   spk_type?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -378,6 +389,7 @@ export type SaleScalarWhereWithAggregatesInput = {
   no_spk?: Prisma.StringNullableWithAggregatesFilter<"Sale"> | string | null
   no_po?: Prisma.StringNullableWithAggregatesFilter<"Sale"> | string | null
   spk_date?: Prisma.DateTimeWithAggregatesFilter<"Sale"> | Date | string
+  Expected_date?: Prisma.DateTimeNullableWithAggregatesFilter<"Sale"> | Date | string | null
   spk_type?: Prisma.StringWithAggregatesFilter<"Sale"> | string
   customer_id?: Prisma.IntWithAggregatesFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableWithAggregatesFilter<"Sale"> | string | null
@@ -394,6 +406,7 @@ export type SaleCreateInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -412,6 +425,7 @@ export type SaleUncheckedCreateInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   customer_id: number
   sales_person?: string | null
@@ -429,6 +443,7 @@ export type SaleUpdateInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -447,6 +462,7 @@ export type SaleUncheckedUpdateInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -465,6 +481,7 @@ export type SaleCreateManyInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   customer_id: number
   sales_person?: string | null
@@ -481,6 +498,7 @@ export type SaleUpdateManyMutationInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -496,6 +514,7 @@ export type SaleUncheckedUpdateManyInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -523,6 +542,7 @@ export type SaleCountOrderByAggregateInput = {
   no_spk?: Prisma.SortOrder
   no_po?: Prisma.SortOrder
   spk_date?: Prisma.SortOrder
+  Expected_date?: Prisma.SortOrder
   spk_type?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
@@ -547,6 +567,7 @@ export type SaleMaxOrderByAggregateInput = {
   no_spk?: Prisma.SortOrder
   no_po?: Prisma.SortOrder
   spk_date?: Prisma.SortOrder
+  Expected_date?: Prisma.SortOrder
   spk_type?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
@@ -564,6 +585,7 @@ export type SaleMinOrderByAggregateInput = {
   no_spk?: Prisma.SortOrder
   no_po?: Prisma.SortOrder
   spk_date?: Prisma.SortOrder
+  Expected_date?: Prisma.SortOrder
   spk_type?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
@@ -698,6 +720,7 @@ export type SaleCreateWithoutUserInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -715,6 +738,7 @@ export type SaleUncheckedCreateWithoutUserInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   customer_id: number
   sales_person?: string | null
@@ -761,6 +785,7 @@ export type SaleScalarWhereInput = {
   no_spk?: Prisma.StringNullableFilter<"Sale"> | string | null
   no_po?: Prisma.StringNullableFilter<"Sale"> | string | null
   spk_date?: Prisma.DateTimeFilter<"Sale"> | Date | string
+  Expected_date?: Prisma.DateTimeNullableFilter<"Sale"> | Date | string | null
   spk_type?: Prisma.StringFilter<"Sale"> | string
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -777,6 +802,7 @@ export type SaleCreateWithoutCustomerInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -794,6 +820,7 @@ export type SaleUncheckedCreateWithoutCustomerInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -836,6 +863,7 @@ export type SaleCreateWithoutSale_itemsInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -853,6 +881,7 @@ export type SaleUncheckedCreateWithoutSale_itemsInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   customer_id: number
   sales_person?: string | null
@@ -885,6 +914,7 @@ export type SaleUpdateWithoutSale_itemsInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -902,6 +932,7 @@ export type SaleUncheckedUpdateWithoutSale_itemsInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -919,6 +950,7 @@ export type SaleCreateManyUserInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   customer_id: number
   sales_person?: string | null
@@ -934,6 +966,7 @@ export type SaleUpdateWithoutUserInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -951,6 +984,7 @@ export type SaleUncheckedUpdateWithoutUserInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -968,6 +1002,7 @@ export type SaleUncheckedUpdateManyWithoutUserInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -984,6 +1019,7 @@ export type SaleCreateManyCustomerInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
+  Expected_date?: Date | string | null
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -999,6 +1035,7 @@ export type SaleUpdateWithoutCustomerInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1016,6 +1053,7 @@ export type SaleUncheckedUpdateWithoutCustomerInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1033,6 +1071,7 @@ export type SaleUncheckedUpdateManyWithoutCustomerInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  Expected_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1080,6 +1119,7 @@ export type SaleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   no_spk?: boolean
   no_po?: boolean
   spk_date?: boolean
+  Expected_date?: boolean
   spk_type?: boolean
   customer_id?: boolean
   sales_person?: boolean
@@ -1101,6 +1141,7 @@ export type SaleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   no_spk?: boolean
   no_po?: boolean
   spk_date?: boolean
+  Expected_date?: boolean
   spk_type?: boolean
   customer_id?: boolean
   sales_person?: boolean
@@ -1120,6 +1161,7 @@ export type SaleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   no_spk?: boolean
   no_po?: boolean
   spk_date?: boolean
+  Expected_date?: boolean
   spk_type?: boolean
   customer_id?: boolean
   sales_person?: boolean
@@ -1139,6 +1181,7 @@ export type SaleSelectScalar = {
   no_spk?: boolean
   no_po?: boolean
   spk_date?: boolean
+  Expected_date?: boolean
   spk_type?: boolean
   customer_id?: boolean
   sales_person?: boolean
@@ -1151,7 +1194,7 @@ export type SaleSelectScalar = {
   updated_at?: boolean
 }
 
-export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "no_spk" | "no_po" | "spk_date" | "spk_type" | "customer_id" | "sales_person" | "total_amount" | "ecatalog" | "status" | "remarks" | "user_id" | "created_at" | "updated_at", ExtArgs["result"]["sale"]>
+export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "no_spk" | "no_po" | "spk_date" | "Expected_date" | "spk_type" | "customer_id" | "sales_person" | "total_amount" | "ecatalog" | "status" | "remarks" | "user_id" | "created_at" | "updated_at", ExtArgs["result"]["sale"]>
 export type SaleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Sale$userArgs<ExtArgs>
@@ -1179,6 +1222,7 @@ export type $SalePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     no_spk: string | null
     no_po: string | null
     spk_date: Date
+    Expected_date: Date | null
     spk_type: string
     customer_id: number
     sales_person: string | null
@@ -1619,6 +1663,7 @@ export interface SaleFieldRefs {
   readonly no_spk: Prisma.FieldRef<"Sale", 'String'>
   readonly no_po: Prisma.FieldRef<"Sale", 'String'>
   readonly spk_date: Prisma.FieldRef<"Sale", 'DateTime'>
+  readonly Expected_date: Prisma.FieldRef<"Sale", 'DateTime'>
   readonly spk_type: Prisma.FieldRef<"Sale", 'String'>
   readonly customer_id: Prisma.FieldRef<"Sale", 'Int'>
   readonly sales_person: Prisma.FieldRef<"Sale", 'String'>

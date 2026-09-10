@@ -136,7 +136,7 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    @apply text-black bg-background;
+    /* @apply text-black bg-background; */
   }
   html {
     @apply font-sans;

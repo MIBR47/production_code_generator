@@ -157,6 +157,7 @@ export const SaleScalarFieldEnum = {
   no_spk: 'no_spk',
   no_po: 'no_po',
   spk_date: 'spk_date',
+  Expected_date: 'Expected_date',
   spk_type: 'spk_type',
   customer_id: 'customer_id',
   sales_person: 'sales_person',
