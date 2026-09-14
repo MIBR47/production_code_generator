@@ -5,7 +5,7 @@ export interface SaleItemSerialized {
     quantity: number;
     unit_price: number | string;
     subtotal: number | string;
-    tax_price: number | string;
+    tax_price: number;
     product: {
         product_name: string;
         product_type: string;
@@ -21,7 +21,7 @@ export interface SaleSerialized {
     no_spk: string | null;
     no_po: string | null;
     spk_date: string;
-    expated_date: string;
+    expected_date: string;
     spk_type: string;
     sales_person: string | null;
     total_amount: number | string;
@@ -36,6 +36,7 @@ export interface SaleSerialized {
         name: string;
     } | null;
     sale_items: SaleItemSerialized[];
+    sale_attachments?: SaleAttachment[];
 }
 export interface CustomerOption {
     id: number;
@@ -59,4 +60,13 @@ export interface ItemRow {
     tax_id: number | "";
     quantity: number;
     unit_price: number | "";
+}
+export interface SaleAttachment {
+    id: number;
+    sale_id: number;
+    file_name: string;
+    file_path: string;
+    file_type: string;
+    remarks?: string | null;
+    created_at: string | Date;
 }

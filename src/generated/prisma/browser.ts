@@ -58,6 +58,11 @@ export type Sale = Prisma.SaleModel
  */
 export type Sale_item = Prisma.Sale_itemModel
 /**
+ * Model Sale_attachment
+ * 
+ */
+export type Sale_attachment = Prisma.Sale_attachmentModel
+/**
  * Model Tax
  * 
  */

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CustomerOption, ProductOption, SaleSerialized, TaxOption } from "@/components/SPK/types";
 import { CreateSpkModal } from "./CreateSpkModal";
 import { SaleCard } from "./components/SaleCard";
-// import { SaleCard } from "./SaleCard";
+import { SaleDetailModal } from "./components/SaleDetailModal";
 
 interface SaleListProps {
     sales: SaleSerialized[];
@@ -25,13 +25,14 @@ export function SaleList({
     taxes = [],
     onAddNew,
 }: SaleListProps) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [selectedSale, setSelectedSale] = useState<SaleSerialized | null>(null);
 
-    const handleOpenModal = () => {
+    const handleOpenCreateModal = () => {
         if (onAddNew) {
             onAddNew();
         } else {
-            setIsModalOpen(true);
+            setIsCreateModalOpen(true);
         }
     };
 
@@ -45,24 +46,32 @@ export function SaleList({
 
     return (
         <div className="max-w-7xl space-y-4">
-            {/* Pop-up Modal */}
+            {/* Modal Tambah SPK Baru */}
             <CreateSpkModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
                 customers={customers}
                 products={products}
                 taxes={taxes}
             />
 
+            {/* Modal Detail SPK (Sales Items + Attachments) */}
+            <SaleDetailModal
+                sale={selectedSale}
+                isOpen={!!selectedSale}
+                onClose={() => setSelectedSale(null)}
+                formatCurrency={formatCurrency}
+            />
+
             {/* Header Halaman */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Daftar SPK</h1>
-                    <p className="text-sm text-muted-foreground">
+                    <h1 className="text-2xl font-bold text-black">Daftar SPK</h1>
+                    <p className="text-sm text-black/60">
                         Kelola pesanan dan dokumen SPK produksi
                     </p>
                 </div>
-                <Button onClick={handleOpenModal} className="bg-[#0E5EA2] hover:bg-sky-800 gap-2">
+                <Button onClick={handleOpenCreateModal} className="bg-[#0E5EA2] hover:bg-sky-800 gap-2">
                     <Plus className="w-4 h-4" />
                     Buat SPK Baru
                 </Button>
@@ -82,7 +91,13 @@ export function SaleList({
             ) : (
                 <div className="space-y-3">
                     {sales.map((sale) => (
-                        <SaleCard key={sale.id} sale={sale} formatCurrency={formatCurrency} />
+                        <SaleCard
+                            key={sale.id}
+                            sale={sale}
+                            formatCurrency={formatCurrency}
+                            onOpenDetail={(selected) => setSelectedSale(selected)}
+                        // onClick={() => setSelectedSale(sale)}  
+                        />
                     ))}
                 </div>
             )}

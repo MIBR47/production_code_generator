@@ -59,6 +59,7 @@ export const ModelName = {
   Production_code: 'Production_code',
   Sale: 'Sale',
   Sale_item: 'Sale_item',
+  Sale_attachment: 'Sale_attachment',
   Tax: 'Tax'
 } as const
 
@@ -157,7 +158,7 @@ export const SaleScalarFieldEnum = {
   no_spk: 'no_spk',
   no_po: 'no_po',
   spk_date: 'spk_date',
-  Expected_date: 'Expected_date',
+  expected_date: 'expected_date',
   spk_type: 'spk_type',
   customer_id: 'customer_id',
   sales_person: 'sales_person',
@@ -185,6 +186,19 @@ export const Sale_itemScalarFieldEnum = {
 } as const
 
 export type Sale_itemScalarFieldEnum = (typeof Sale_itemScalarFieldEnum)[keyof typeof Sale_itemScalarFieldEnum]
+
+
+export const Sale_attachmentScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_attachmentScalarFieldEnum = (typeof Sale_attachmentScalarFieldEnum)[keyof typeof Sale_attachmentScalarFieldEnum]
 
 
 export const TaxScalarFieldEnum = {

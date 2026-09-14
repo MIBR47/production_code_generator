@@ -97,7 +97,7 @@ model Sale {
   no_spk        String?   @db.VarChar(100) //E-SPK/2026/09/10134 atau R-SPK
   no_po         String?   @db.VarChar(100)
   spk_date      DateTime  @default(now()) @db.Timestamptz(6)
-  Expected_date DateTime? @db.Timestamptz(6)
+  expected_date DateTime? @db.Timestamptz(6)
   spk_type      String    @db.VarChar(100)
   customer_id   Int
   sales_person  String?   @db.VarChar(100)
@@ -111,9 +111,10 @@ model Sale {
   created_at DateTime  @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @updatedAt @db.Timestamptz(6)
 
-  customer   Customer    @relation(fields: [customer_id], references: [id], onDelete: Restrict)
-  user       User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  sale_items Sale_item[]
+  customer         Customer          @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  user             User?             @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  sale_items       Sale_item[]
+  sale_attachments Sale_attachment[]
 
   @@map("sales")
 }
@@ -134,6 +135,22 @@ model Sale_item {
   product Product @relation(fields: [product_id], references: [id], onDelete: Restrict)
 
   @@map("sale_items")
+}
+
+model Sale_attachment {
+  id         Int      @id @default(autoincrement())
+  sale_id    Int
+  file_name  String   @db.VarChar(255) // nama asli file (misal: "PO_Customer_A.pdf")
+  file_path  String   @db.VarChar(500) // URL/path penyimpanan (misal: "uploads/sales/abc-123.pdf" atau S3 URL)
+  file_type  String   @db.VarChar(100) // MIME type (misal: "application/pdf", "image/jpeg", "image/png")
+  remarks    String?  @db.Text // Catatan tambahan (opsional)
+  // file_size     Int? // Ukuran file dalam bytes (opsional tapi berguna)
+  // document_type String?  @db.VarChar(50) // Jenis dokumen: "PO", "PAYMENT_PROOF", "SIGNED_SPK", "OTHER"
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  sale Sale @relation(fields: [sale_id], references: [id], onDelete: Cascade)
+
+  @@map("sale_attachments")
 }
 
 model Tax {

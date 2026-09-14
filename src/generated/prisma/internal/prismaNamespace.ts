@@ -405,6 +405,7 @@ export const ModelName = {
   Production_code: 'Production_code',
   Sale: 'Sale',
   Sale_item: 'Sale_item',
+  Sale_attachment: 'Sale_attachment',
   Tax: 'Tax'
 } as const
 
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "customer" | "product" | "product_price" | "product_code" | "production_code" | "sale" | "sale_item" | "tax"
+    modelProps: "user" | "customer" | "product" | "product_price" | "product_code" | "production_code" | "sale" | "sale_item" | "sale_attachment" | "tax"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1017,6 +1018,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Sale_attachment: {
+      payload: Prisma.$Sale_attachmentPayload<ExtArgs>
+      fields: Prisma.Sale_attachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.Sale_attachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.Sale_attachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.Sale_attachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.Sale_attachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        findMany: {
+          args: Prisma.Sale_attachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>[]
+        }
+        create: {
+          args: Prisma.Sale_attachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        createMany: {
+          args: Prisma.Sale_attachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.Sale_attachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.Sale_attachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        update: {
+          args: Prisma.Sale_attachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.Sale_attachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.Sale_attachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.Sale_attachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.Sale_attachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_attachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.Sale_attachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSale_attachment>
+        }
+        groupBy: {
+          args: Prisma.Sale_attachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_attachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.Sale_attachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_attachmentCountAggregateOutputType> | number
+        }
+      }
+    }
     Tax: {
       payload: Prisma.$TaxPayload<ExtArgs>
       fields: Prisma.TaxFieldRefs
@@ -1209,7 +1284,7 @@ export const SaleScalarFieldEnum = {
   no_spk: 'no_spk',
   no_po: 'no_po',
   spk_date: 'spk_date',
-  Expected_date: 'Expected_date',
+  expected_date: 'expected_date',
   spk_type: 'spk_type',
   customer_id: 'customer_id',
   sales_person: 'sales_person',
@@ -1237,6 +1312,19 @@ export const Sale_itemScalarFieldEnum = {
 } as const
 
 export type Sale_itemScalarFieldEnum = (typeof Sale_itemScalarFieldEnum)[keyof typeof Sale_itemScalarFieldEnum]
+
+
+export const Sale_attachmentScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_attachmentScalarFieldEnum = (typeof Sale_attachmentScalarFieldEnum)[keyof typeof Sale_attachmentScalarFieldEnum]
 
 
 export const TaxScalarFieldEnum = {
@@ -1515,6 +1603,7 @@ export type GlobalOmitConfig = {
   production_code?: Prisma.Production_codeOmit
   sale?: Prisma.SaleOmit
   sale_item?: Prisma.Sale_itemOmit
+  sale_attachment?: Prisma.Sale_attachmentOmit
   tax?: Prisma.TaxOmit
 }
 
