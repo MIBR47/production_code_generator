@@ -27,26 +27,35 @@ export function SaleItemRow({ item, formatCurrency }: SaleItemRowProps) {
             </div>
 
             {/* Detail Ringkasan Harga & Pajak */}
-            <div className="flex flex-col gap-1 sm:items-end w-full sm:w-auto text-xs sm:text-sm pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+            {/* Detail Ringkasan Harga & Pajak */}
+            <div className="flex w-full flex-col gap-1 border-t border-slate-100 pt-2 text-xs sm:w-auto sm:items-end sm:border-t-0 sm:pt-0 sm:text-sm">
+
                 {/* Subtotal Item */}
-                <div className="flex items-center justify-between sm:justify-end gap-4 w-full">
+                <div className="flex w-full items-center justify-end gap-3 text-right">
                     <span className="text-slate-600">
                         {item.quantity} x {formatCurrency(item.unit_price)}
                     </span>
-                    <span className="font-semibold text-slate-900">
+                    <span className="min-w-[90px] font-semibold text-slate-900">
                         {formatCurrency(item.subtotal)}
                     </span>
                 </div>
 
                 {/* Rincian Pajak */}
-                <div className="flex items-center justify-between sm:justify-end gap-4 w-full text-xs text-slate-500">
-                    <span>
-                        Pajak ({taxRate.toString()}%):
-                    </span>
-                    <span className="font-medium text-slate-700">
+                <div className="flex w-full items-center justify-end gap-3 text-right text-xs text-slate-500">
+                    <span>Pajak ({taxRate.toString()}%):</span>
+                    <span className="min-w-[90px] font-medium text-slate-700">
                         {formatCurrency(item.tax_price ?? 0)}
                     </span>
                 </div>
+
+                {/* Rincian Diskon */}
+                <div className="flex w-full items-center justify-end gap-3 text-right text-xs text-slate-500">
+                    <span>Diskon ({item.discount?.toString() || '0'}%):</span>
+                    <span className="min-w-[90px] font-medium text-slate-700">
+                        {formatCurrency(item.subtotal * ((item.discount || 0) / 100))}
+                    </span>
+                </div>
+
             </div>
         </div>
     );

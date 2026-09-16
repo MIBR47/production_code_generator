@@ -406,7 +406,10 @@ export const ModelName = {
   Sale: 'Sale',
   Sale_item: 'Sale_item',
   Sale_attachment: 'Sale_attachment',
-  Tax: 'Tax'
+  Tax: 'Tax',
+  sale_additional: 'sale_additional',
+  Sale_payment: 'Sale_payment',
+  Sale_payment_attachment: 'Sale_payment_attachment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "customer" | "product" | "product_price" | "product_code" | "production_code" | "sale" | "sale_item" | "sale_attachment" | "tax"
+    modelProps: "user" | "customer" | "product" | "product_price" | "product_code" | "production_code" | "sale" | "sale_item" | "sale_attachment" | "tax" | "sale_additional" | "sale_payment" | "sale_payment_attachment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1166,6 +1169,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    sale_additional: {
+      payload: Prisma.$sale_additionalPayload<ExtArgs>
+      fields: Prisma.sale_additionalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.sale_additionalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.sale_additionalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        findFirst: {
+          args: Prisma.sale_additionalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.sale_additionalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        findMany: {
+          args: Prisma.sale_additionalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>[]
+        }
+        create: {
+          args: Prisma.sale_additionalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        createMany: {
+          args: Prisma.sale_additionalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.sale_additionalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>[]
+        }
+        delete: {
+          args: Prisma.sale_additionalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        update: {
+          args: Prisma.sale_additionalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        deleteMany: {
+          args: Prisma.sale_additionalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.sale_additionalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.sale_additionalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>[]
+        }
+        upsert: {
+          args: Prisma.sale_additionalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$sale_additionalPayload>
+        }
+        aggregate: {
+          args: Prisma.Sale_additionalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSale_additional>
+        }
+        groupBy: {
+          args: Prisma.sale_additionalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_additionalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.sale_additionalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_additionalCountAggregateOutputType> | number
+        }
+      }
+    }
+    Sale_payment: {
+      payload: Prisma.$Sale_paymentPayload<ExtArgs>
+      fields: Prisma.Sale_paymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.Sale_paymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.Sale_paymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        findFirst: {
+          args: Prisma.Sale_paymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.Sale_paymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        findMany: {
+          args: Prisma.Sale_paymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>[]
+        }
+        create: {
+          args: Prisma.Sale_paymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        createMany: {
+          args: Prisma.Sale_paymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.Sale_paymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>[]
+        }
+        delete: {
+          args: Prisma.Sale_paymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        update: {
+          args: Prisma.Sale_paymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.Sale_paymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.Sale_paymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.Sale_paymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.Sale_paymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_paymentPayload>
+        }
+        aggregate: {
+          args: Prisma.Sale_paymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSale_payment>
+        }
+        groupBy: {
+          args: Prisma.Sale_paymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_paymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.Sale_paymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_paymentCountAggregateOutputType> | number
+        }
+      }
+    }
+    Sale_payment_attachment: {
+      payload: Prisma.$Sale_payment_attachmentPayload<ExtArgs>
+      fields: Prisma.Sale_payment_attachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.Sale_payment_attachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.Sale_payment_attachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.Sale_payment_attachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.Sale_payment_attachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        findMany: {
+          args: Prisma.Sale_payment_attachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>[]
+        }
+        create: {
+          args: Prisma.Sale_payment_attachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        createMany: {
+          args: Prisma.Sale_payment_attachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.Sale_payment_attachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.Sale_payment_attachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        update: {
+          args: Prisma.Sale_payment_attachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.Sale_payment_attachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.Sale_payment_attachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.Sale_payment_attachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.Sale_payment_attachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$Sale_payment_attachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.Sale_payment_attachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSale_payment_attachment>
+        }
+        groupBy: {
+          args: Prisma.Sale_payment_attachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_payment_attachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.Sale_payment_attachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Sale_payment_attachmentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1308,7 +1533,8 @@ export const Sale_itemScalarFieldEnum = {
   quantity: 'quantity',
   unit_price: 'unit_price',
   subtotal: 'subtotal',
-  tax_price: 'tax_price'
+  tax_price: 'tax_price',
+  discount: 'discount'
 } as const
 
 export type Sale_itemScalarFieldEnum = (typeof Sale_itemScalarFieldEnum)[keyof typeof Sale_itemScalarFieldEnum]
@@ -1336,6 +1562,45 @@ export const TaxScalarFieldEnum = {
 } as const
 
 export type TaxScalarFieldEnum = (typeof TaxScalarFieldEnum)[keyof typeof TaxScalarFieldEnum]
+
+
+export const Sale_additionalScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  no_po_bis: 'no_po_bis',
+  date_po_bis: 'date_po_bis',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_additionalScalarFieldEnum = (typeof Sale_additionalScalarFieldEnum)[keyof typeof Sale_additionalScalarFieldEnum]
+
+
+export const Sale_paymentScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  payment_date: 'payment_date',
+  amount: 'amount',
+  method: 'method',
+  remarks: 'remarks',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sale_paymentScalarFieldEnum = (typeof Sale_paymentScalarFieldEnum)[keyof typeof Sale_paymentScalarFieldEnum]
+
+
+export const Sale_payment_attachmentScalarFieldEnum = {
+  id: 'id',
+  sale_payment_id: 'sale_payment_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_payment_attachmentScalarFieldEnum = (typeof Sale_payment_attachmentScalarFieldEnum)[keyof typeof Sale_payment_attachmentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1605,6 +1870,9 @@ export type GlobalOmitConfig = {
   sale_item?: Prisma.Sale_itemOmit
   sale_attachment?: Prisma.Sale_attachmentOmit
   tax?: Prisma.TaxOmit
+  sale_additional?: Prisma.sale_additionalOmit
+  sale_payment?: Prisma.Sale_paymentOmit
+  sale_payment_attachment?: Prisma.Sale_payment_attachmentOmit
 }
 
 /* Types for Logging */

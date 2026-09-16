@@ -39,7 +39,11 @@ export default async function SpkPage() {
         rate: Number(t.rate), // Ubah Decimal ke number
     }));
 
+    // const discount = sales.sale_items[0]?.discount ? Number(sales.sale_items[0].discount) : 0; // Ubah Decimal ke number
+
     return (
+
+
         <SaleList
             sales={JSON.parse(JSON.stringify(sales))}
             customers={customers}

@@ -3,8 +3,8 @@ import { Decimal } from "@/src/generated/prisma/internal/prismaNamespace";
 export interface SaleItemSerialized {
     id: number;
     quantity: number;
-    unit_price: number | string;
-    subtotal: number | string;
+    unit_price: number;
+    subtotal: number;
     tax_price: number;
     product: {
         product_name: string;
@@ -14,6 +14,7 @@ export interface SaleItemSerialized {
         name: string;
         rate: Decimal;
     };
+    discount?: number | null; //persen
 }
 
 export interface SaleSerialized {

@@ -41,6 +41,10 @@ export function SaleCard({ sale, formatCurrency, onOpenDetail }: SaleCardProps) 
 
     const totalAmount = Number(sale.total_amount || 0);
     const totalTax = Math.max(0, totalAmount - subtotalDPP);
+    const totalDiscount = sale.sale_items?.reduce(
+        (acc, item) => acc + (item.subtotal * ((item.discount || 0) / 100)),
+        0
+    ) || 0;
 
     const getStatusBadge = (status: string) => {
         switch (status?.toLowerCase()) {
@@ -214,13 +218,27 @@ export function SaleCard({ sale, formatCurrency, onOpenDetail }: SaleCardProps) 
                             <span>Pajak (PPN/PPh)</span>
                             <span className="font-semibold text-slate-900">{formatCurrency(totalTax)}</span>
                         </div>
+                        {totalDiscount > 0 && (
+                            <div className="flex justify-between items-center text-slate-600">
+                                <span>Total Diskon</span>
+                                <span>{formatCurrency(totalDiscount)}</span>
+                            </div>
+                        )}
                         <div className="flex justify-between items-center pt-2 border-t border-slate-100 text-sm font-bold text-[#0E5EA2]">
                             <span>Total Dengan Pajak</span>
-                            <span>{formatCurrency(totalAmount)}</span>
+                            <span>{formatCurrency(totalAmount - totalDiscount)}</span>
                         </div>
+
+
                     </div>
                 </div>
             )}
         </div>
     );
 }
+//                     </div>
+//                 </div>
+//             )}
+//         </div>
+//     );
+// }

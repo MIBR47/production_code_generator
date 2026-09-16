@@ -91,3 +91,18 @@ export type Sale_attachment = Prisma.Sale_attachmentModel
  * 
  */
 export type Tax = Prisma.TaxModel
+/**
+ * Model sale_additional
+ * 
+ */
+export type sale_additional = Prisma.sale_additionalModel
+/**
+ * Model Sale_payment
+ * 
+ */
+export type Sale_payment = Prisma.Sale_paymentModel
+/**
+ * Model Sale_payment_attachment
+ * 
+ */
+export type Sale_payment_attachment = Prisma.Sale_payment_attachmentModel

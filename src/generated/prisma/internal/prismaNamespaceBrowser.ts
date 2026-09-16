@@ -60,7 +60,10 @@ export const ModelName = {
   Sale: 'Sale',
   Sale_item: 'Sale_item',
   Sale_attachment: 'Sale_attachment',
-  Tax: 'Tax'
+  Tax: 'Tax',
+  sale_additional: 'sale_additional',
+  Sale_payment: 'Sale_payment',
+  Sale_payment_attachment: 'Sale_payment_attachment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -182,7 +185,8 @@ export const Sale_itemScalarFieldEnum = {
   quantity: 'quantity',
   unit_price: 'unit_price',
   subtotal: 'subtotal',
-  tax_price: 'tax_price'
+  tax_price: 'tax_price',
+  discount: 'discount'
 } as const
 
 export type Sale_itemScalarFieldEnum = (typeof Sale_itemScalarFieldEnum)[keyof typeof Sale_itemScalarFieldEnum]
@@ -210,6 +214,45 @@ export const TaxScalarFieldEnum = {
 } as const
 
 export type TaxScalarFieldEnum = (typeof TaxScalarFieldEnum)[keyof typeof TaxScalarFieldEnum]
+
+
+export const Sale_additionalScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  no_po_bis: 'no_po_bis',
+  date_po_bis: 'date_po_bis',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_additionalScalarFieldEnum = (typeof Sale_additionalScalarFieldEnum)[keyof typeof Sale_additionalScalarFieldEnum]
+
+
+export const Sale_paymentScalarFieldEnum = {
+  id: 'id',
+  sale_id: 'sale_id',
+  payment_date: 'payment_date',
+  amount: 'amount',
+  method: 'method',
+  remarks: 'remarks',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Sale_paymentScalarFieldEnum = (typeof Sale_paymentScalarFieldEnum)[keyof typeof Sale_paymentScalarFieldEnum]
+
+
+export const Sale_payment_attachmentScalarFieldEnum = {
+  id: 'id',
+  sale_payment_id: 'sale_payment_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type Sale_payment_attachmentScalarFieldEnum = (typeof Sale_payment_attachmentScalarFieldEnum)[keyof typeof Sale_payment_attachmentScalarFieldEnum]
 
 
 export const SortOrder = {
