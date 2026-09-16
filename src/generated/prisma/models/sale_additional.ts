@@ -243,16 +243,16 @@ export type sale_additionalOrderByWithRelationInput = {
 
 export type sale_additionalWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  sale_id?: number
   AND?: Prisma.sale_additionalWhereInput | Prisma.sale_additionalWhereInput[]
   OR?: Prisma.sale_additionalWhereInput[]
   NOT?: Prisma.sale_additionalWhereInput | Prisma.sale_additionalWhereInput[]
-  sale_id?: Prisma.IntFilter<"sale_additional"> | number
   no_po_bis?: Prisma.StringNullableFilter<"sale_additional"> | string | null
   date_po_bis?: Prisma.DateTimeNullableFilter<"sale_additional"> | Date | string | null
   remarks?: Prisma.StringNullableFilter<"sale_additional"> | string | null
   created_at?: Prisma.DateTimeFilter<"sale_additional"> | Date | string
   sale?: Prisma.XOR<Prisma.SaleScalarRelationFilter, Prisma.SaleWhereInput>
-}, "id">
+}, "id" | "sale_id">
 
 export type sale_additionalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -285,7 +285,7 @@ export type sale_additionalCreateInput = {
   date_po_bis?: Date | string | null
   remarks?: string | null
   created_at?: Date | string
-  sale: Prisma.SaleCreateNestedOneWithoutSale_additionalsInput
+  sale: Prisma.SaleCreateNestedOneWithoutSale_additionalInput
 }
 
 export type sale_additionalUncheckedCreateInput = {
@@ -302,7 +302,7 @@ export type sale_additionalUpdateInput = {
   date_po_bis?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sale?: Prisma.SaleUpdateOneRequiredWithoutSale_additionalsNestedInput
+  sale?: Prisma.SaleUpdateOneRequiredWithoutSale_additionalNestedInput
 }
 
 export type sale_additionalUncheckedUpdateInput = {
@@ -339,14 +339,9 @@ export type sale_additionalUncheckedUpdateManyInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type Sale_additionalListRelationFilter = {
-  every?: Prisma.sale_additionalWhereInput
-  some?: Prisma.sale_additionalWhereInput
-  none?: Prisma.sale_additionalWhereInput
-}
-
-export type sale_additionalOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type Sale_additionalNullableScalarRelationFilter = {
+  is?: Prisma.sale_additionalWhereInput | null
+  isNot?: Prisma.sale_additionalWhereInput | null
 }
 
 export type sale_additionalCountOrderByAggregateInput = {
@@ -386,46 +381,36 @@ export type sale_additionalSumOrderByAggregateInput = {
   sale_id?: Prisma.SortOrder
 }
 
-export type sale_additionalCreateNestedManyWithoutSaleInput = {
-  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput> | Prisma.sale_additionalCreateWithoutSaleInput[] | Prisma.sale_additionalUncheckedCreateWithoutSaleInput[]
-  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput | Prisma.sale_additionalCreateOrConnectWithoutSaleInput[]
-  createMany?: Prisma.sale_additionalCreateManySaleInputEnvelope
-  connect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
+export type sale_additionalCreateNestedOneWithoutSaleInput = {
+  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
+  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput
+  connect?: Prisma.sale_additionalWhereUniqueInput
 }
 
-export type sale_additionalUncheckedCreateNestedManyWithoutSaleInput = {
-  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput> | Prisma.sale_additionalCreateWithoutSaleInput[] | Prisma.sale_additionalUncheckedCreateWithoutSaleInput[]
-  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput | Prisma.sale_additionalCreateOrConnectWithoutSaleInput[]
-  createMany?: Prisma.sale_additionalCreateManySaleInputEnvelope
-  connect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
+export type sale_additionalUncheckedCreateNestedOneWithoutSaleInput = {
+  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
+  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput
+  connect?: Prisma.sale_additionalWhereUniqueInput
 }
 
-export type sale_additionalUpdateManyWithoutSaleNestedInput = {
-  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput> | Prisma.sale_additionalCreateWithoutSaleInput[] | Prisma.sale_additionalUncheckedCreateWithoutSaleInput[]
-  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput | Prisma.sale_additionalCreateOrConnectWithoutSaleInput[]
-  upsert?: Prisma.sale_additionalUpsertWithWhereUniqueWithoutSaleInput | Prisma.sale_additionalUpsertWithWhereUniqueWithoutSaleInput[]
-  createMany?: Prisma.sale_additionalCreateManySaleInputEnvelope
-  set?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  disconnect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  delete?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  connect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  update?: Prisma.sale_additionalUpdateWithWhereUniqueWithoutSaleInput | Prisma.sale_additionalUpdateWithWhereUniqueWithoutSaleInput[]
-  updateMany?: Prisma.sale_additionalUpdateManyWithWhereWithoutSaleInput | Prisma.sale_additionalUpdateManyWithWhereWithoutSaleInput[]
-  deleteMany?: Prisma.sale_additionalScalarWhereInput | Prisma.sale_additionalScalarWhereInput[]
+export type sale_additionalUpdateOneWithoutSaleNestedInput = {
+  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
+  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput
+  upsert?: Prisma.sale_additionalUpsertWithoutSaleInput
+  disconnect?: Prisma.sale_additionalWhereInput | boolean
+  delete?: Prisma.sale_additionalWhereInput | boolean
+  connect?: Prisma.sale_additionalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.sale_additionalUpdateToOneWithWhereWithoutSaleInput, Prisma.sale_additionalUpdateWithoutSaleInput>, Prisma.sale_additionalUncheckedUpdateWithoutSaleInput>
 }
 
-export type sale_additionalUncheckedUpdateManyWithoutSaleNestedInput = {
-  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput> | Prisma.sale_additionalCreateWithoutSaleInput[] | Prisma.sale_additionalUncheckedCreateWithoutSaleInput[]
-  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput | Prisma.sale_additionalCreateOrConnectWithoutSaleInput[]
-  upsert?: Prisma.sale_additionalUpsertWithWhereUniqueWithoutSaleInput | Prisma.sale_additionalUpsertWithWhereUniqueWithoutSaleInput[]
-  createMany?: Prisma.sale_additionalCreateManySaleInputEnvelope
-  set?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  disconnect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  delete?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  connect?: Prisma.sale_additionalWhereUniqueInput | Prisma.sale_additionalWhereUniqueInput[]
-  update?: Prisma.sale_additionalUpdateWithWhereUniqueWithoutSaleInput | Prisma.sale_additionalUpdateWithWhereUniqueWithoutSaleInput[]
-  updateMany?: Prisma.sale_additionalUpdateManyWithWhereWithoutSaleInput | Prisma.sale_additionalUpdateManyWithWhereWithoutSaleInput[]
-  deleteMany?: Prisma.sale_additionalScalarWhereInput | Prisma.sale_additionalScalarWhereInput[]
+export type sale_additionalUncheckedUpdateOneWithoutSaleNestedInput = {
+  create?: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
+  connectOrCreate?: Prisma.sale_additionalCreateOrConnectWithoutSaleInput
+  upsert?: Prisma.sale_additionalUpsertWithoutSaleInput
+  disconnect?: Prisma.sale_additionalWhereInput | boolean
+  delete?: Prisma.sale_additionalWhereInput | boolean
+  connect?: Prisma.sale_additionalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.sale_additionalUpdateToOneWithWhereWithoutSaleInput, Prisma.sale_additionalUpdateWithoutSaleInput>, Prisma.sale_additionalUncheckedUpdateWithoutSaleInput>
 }
 
 export type sale_additionalCreateWithoutSaleInput = {
@@ -448,45 +433,15 @@ export type sale_additionalCreateOrConnectWithoutSaleInput = {
   create: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
 }
 
-export type sale_additionalCreateManySaleInputEnvelope = {
-  data: Prisma.sale_additionalCreateManySaleInput | Prisma.sale_additionalCreateManySaleInput[]
-  skipDuplicates?: boolean
-}
-
-export type sale_additionalUpsertWithWhereUniqueWithoutSaleInput = {
-  where: Prisma.sale_additionalWhereUniqueInput
+export type sale_additionalUpsertWithoutSaleInput = {
   update: Prisma.XOR<Prisma.sale_additionalUpdateWithoutSaleInput, Prisma.sale_additionalUncheckedUpdateWithoutSaleInput>
   create: Prisma.XOR<Prisma.sale_additionalCreateWithoutSaleInput, Prisma.sale_additionalUncheckedCreateWithoutSaleInput>
+  where?: Prisma.sale_additionalWhereInput
 }
 
-export type sale_additionalUpdateWithWhereUniqueWithoutSaleInput = {
-  where: Prisma.sale_additionalWhereUniqueInput
+export type sale_additionalUpdateToOneWithWhereWithoutSaleInput = {
+  where?: Prisma.sale_additionalWhereInput
   data: Prisma.XOR<Prisma.sale_additionalUpdateWithoutSaleInput, Prisma.sale_additionalUncheckedUpdateWithoutSaleInput>
-}
-
-export type sale_additionalUpdateManyWithWhereWithoutSaleInput = {
-  where: Prisma.sale_additionalScalarWhereInput
-  data: Prisma.XOR<Prisma.sale_additionalUpdateManyMutationInput, Prisma.sale_additionalUncheckedUpdateManyWithoutSaleInput>
-}
-
-export type sale_additionalScalarWhereInput = {
-  AND?: Prisma.sale_additionalScalarWhereInput | Prisma.sale_additionalScalarWhereInput[]
-  OR?: Prisma.sale_additionalScalarWhereInput[]
-  NOT?: Prisma.sale_additionalScalarWhereInput | Prisma.sale_additionalScalarWhereInput[]
-  id?: Prisma.IntFilter<"sale_additional"> | number
-  sale_id?: Prisma.IntFilter<"sale_additional"> | number
-  no_po_bis?: Prisma.StringNullableFilter<"sale_additional"> | string | null
-  date_po_bis?: Prisma.DateTimeNullableFilter<"sale_additional"> | Date | string | null
-  remarks?: Prisma.StringNullableFilter<"sale_additional"> | string | null
-  created_at?: Prisma.DateTimeFilter<"sale_additional"> | Date | string
-}
-
-export type sale_additionalCreateManySaleInput = {
-  id?: number
-  no_po_bis?: string | null
-  date_po_bis?: Date | string | null
-  remarks?: string | null
-  created_at?: Date | string
 }
 
 export type sale_additionalUpdateWithoutSaleInput = {
@@ -497,14 +452,6 @@ export type sale_additionalUpdateWithoutSaleInput = {
 }
 
 export type sale_additionalUncheckedUpdateWithoutSaleInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  no_po_bis?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date_po_bis?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type sale_additionalUncheckedUpdateManyWithoutSaleInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   no_po_bis?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_po_bis?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null

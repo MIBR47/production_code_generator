@@ -14,19 +14,19 @@ export async function createSaleAction(prevState: any, formData: FormData) {
         const ecatalog = formData.get("ecatalog") as string;
         const remarks = formData.get("remarks") as string;
 
-        // Ambil field tanggal baru dari FormData
         const rawSpkDate = formData.get("spk_date") as string;
         const rawExpectedDate = formData.get("expected_date") as string;
 
         if (!customer_id || items.length === 0 || !rawSpkDate) {
-            return { success: false, message: "Data tidak lengkap (Customer, Item, atau Tanggal SPK wajib diisi)." };
+            return {
+                success: false,
+                message: "Data tidak lengkap (Customer, Item, atau Tanggal SPK wajib diisi)."
+            };
         }
 
-        // Format string tanggal menjadi objek Date
         const spkDateObj = new Date(rawSpkDate);
         const expectedDateObj = rawExpectedDate ? new Date(rawExpectedDate) : null;
 
-        // Ambil data pajak dari DB untuk kalkulasi tax_price yang akurat
         const taxIds = items
             .map((i: any) => Number(i.tax_id))
             .filter((id: number) => !isNaN(id) && id > 0);
@@ -41,7 +41,6 @@ export async function createSaleAction(prevState: any, formData: FormData) {
             taxMap.set(t.id, rateNum > 1 ? rateNum / 100 : rateNum);
         });
 
-        // 1. Hitung nilai item & grand total
         let saleGrandTotal = 0;
 
         const preparedSaleItems = items.map((i: any) => {
@@ -67,9 +66,7 @@ export async function createSaleAction(prevState: any, formData: FormData) {
             };
         });
 
-        // 2. Jalankan Prisma Transaction
         await prisma.$transaction(async (tx) => {
-            // A. Update / buat harga produk terbaru jika berubah
             for (const item of items) {
                 const productId = Number(item.product_id);
                 const inputPrice = Number(item.unit_price);
@@ -91,11 +88,9 @@ export async function createSaleAction(prevState: any, formData: FormData) {
                 }
             }
 
-            // B. Generate Nomor SPK & PO Otomatis berdasarkan spk_date
             const year = spkDateObj.getFullYear();
             const month = String(spkDateObj.getMonth() + 1).padStart(2, "0");
 
-            // 1. Hitung urutan SPK berdasarkan spk_type (E-Catalog vs Reguler)
             const prefixSpk = spk_type === "E-Catalog" ? "E-SPK" : "R-SPK";
             const spkTypeCount = await tx.sale.count({
                 where: { spk_type: spk_type },
@@ -103,18 +98,16 @@ export async function createSaleAction(prevState: any, formData: FormData) {
             const spkSeq = String(spkTypeCount + 1).padStart(4, "0");
             const generatedNoSpk = `${prefixSpk}/${year}/${month}/${spkSeq}`;
 
-            // 2. Hitung urutan PO berdasarkan TOTAL SELURUH SALES (tanpa pandang spk_type)
             const totalSalesCount = await tx.sale.count();
             const poSeq = String(totalSalesCount + 1).padStart(4, "0");
             const generatedNoPo = `PO/${year}/${month}/${poSeq}`;
 
-            // C. Simpan data Sale beserta Sale_items
-            const newSale = await tx.sale.create({
+            return await tx.sale.create({
                 data: {
                     no_spk: generatedNoSpk,
                     no_po: generatedNoPo,
                     spk_date: spkDateObj,
-                    expected_date: expectedDateObj, // Kolom DB (sesuaikan nama field dengan schema Prisma)
+                    expected_date: expectedDateObj,
                     spk_type,
                     customer_id,
                     sales_person,
@@ -127,12 +120,9 @@ export async function createSaleAction(prevState: any, formData: FormData) {
                     },
                 },
             });
-
-            return newSale;
         });
 
         revalidatePath("/sales");
-
         return { success: true, message: "SPK berhasil disimpan." };
     } catch (error: any) {
         console.error("Error creating sale:", error);
@@ -140,5 +130,127 @@ export async function createSaleAction(prevState: any, formData: FormData) {
             success: false,
             message: error?.message || "Gagal menyimpan SPK.",
         };
+    }
+}
+
+// 1. Update tingkat Sale (Tgl SPK, Sales Person, E-Catalog)
+export async function updateSaleInlineAction(payload: {
+    saleId: number;
+    spk_date?: string;
+    sales_person?: string;
+    ecatalog?: string;
+}) {
+    try {
+        const { saleId, spk_date, sales_person, ecatalog } = payload;
+
+        await prisma.sale.update({
+            where: { id: saleId },
+            data: {
+                ...(spk_date !== undefined && { spk_date: new Date(spk_date) }),
+                ...(sales_person !== undefined && { sales_person }),
+                ...(ecatalog !== undefined && { ecatalog }),
+            },
+        });
+
+        revalidatePath("/sales");
+        return { success: true, message: "Sale berhasil diperbarui." };
+    } catch (error: any) {
+        console.error("Error updating sale:", error);
+        return { success: false, message: error?.message || "Gagal memperbarui Sale." };
+    }
+}
+
+// 2. Update No PO BIS (Tingkat sale_additional)
+export async function updatePoBisInlineAction(payload: {
+    saleId: number;
+    no_po_bis: string;
+}) {
+    try {
+        const { saleId, no_po_bis } = payload;
+
+        await prisma.sale_additional.upsert({
+            where: { sale_id: saleId },
+            update: { no_po_bis },
+            create: {
+                sale_id: saleId,
+                no_po_bis,
+            },
+        });
+
+        revalidatePath("/sales");
+        return { success: true, message: "No PO BIS berhasil diperbarui." };
+    } catch (error: any) {
+        console.error("Error updating PO BIS:", error);
+        return { success: false, message: error?.message || "Gagal memperbarui PO BIS." };
+    }
+}
+
+// 3. Update Sale Item (QTY, Harga tanpa PPN / Unit Price, Discount) & Recalculate Totals
+export async function updateSaleItemInlineAction(payload: {
+    saleItemId: number;
+    saleId: number;
+    quantity?: number;
+    unitPriceWithoutTax?: number; // Nilai ini langsung disimpan ke unit_price database
+    discount?: number;
+}) {
+    try {
+        const { saleItemId, saleId, quantity, unitPriceWithoutTax, discount } = payload;
+
+        // Ambil data item saat ini
+        const existingItem = await prisma.sale_item.findUnique({
+            where: { id: saleItemId },
+            include: { tax: true },
+        });
+
+        if (!existingItem) {
+            return { success: false, message: "Item tidak ditemukan." };
+        }
+
+        const taxRate = existingItem.tax?.rate ? Number(existingItem.tax.rate) : 0;
+
+        // 1. Nilai unit_price di DB = Harga Tanpa PPN
+        const newUnitPrice = unitPriceWithoutTax !== undefined ? unitPriceWithoutTax : Number(existingItem.unit_price);
+        const newQty = quantity !== undefined ? quantity : existingItem.quantity;
+        const newDiscount = discount !== undefined ? discount : Number(existingItem.discount || 0);
+
+        // 2. Subtotal = Total harga tanpa PPN (setelah diskon)
+        const rawSubtotal = newQty * newUnitPrice;
+        const discountAmount = (rawSubtotal * newDiscount) / 100;
+        const finalSubtotal = rawSubtotal - discountAmount;
+
+        // 3. Tax Price (Nilai Pajak Nominal)
+        const taxPrice = (finalSubtotal * taxRate) / 100;
+
+        // Update item di database
+        await prisma.sale_item.update({
+            where: { id: saleItemId },
+            data: {
+                quantity: newQty,
+                unit_price: newUnitPrice,
+                discount: newDiscount,
+                subtotal: finalSubtotal,
+                tax_price: taxPrice,
+            },
+        });
+
+        // Hitung ulang total amount SPK (Penjumlahan seluruh subtotal item)
+        const allItems = await prisma.sale_item.findMany({
+            where: { sale_id: saleId },
+        });
+
+        const newTotalAmount = allItems.reduce((acc, item) => {
+            return acc + Number(item.subtotal) + Number(item.tax_price);
+        }, 0);
+
+        await prisma.sale.update({
+            where: { id: saleId },
+            data: { total_amount: newTotalAmount },
+        });
+
+        revalidatePath("/sales");
+        return { success: true, message: "Item berhasil diperbarui." };
+    } catch (error: any) {
+        console.error("Error updating sale item:", error);
+        return { success: false, message: error?.message || "Gagal memperbarui item." };
     }
 }

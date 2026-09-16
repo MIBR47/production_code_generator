@@ -76,7 +76,7 @@ export function SaleDetailModal({
     };
 
     const subtotalDPP = sale.sale_items?.reduce(
-        (acc, item) => acc + Number(item.quantity || 0) * Number(item.unit_price || 0),
+        (acc, item) => acc + Number(item.quantity || 0) * (Number(item.unit_price) || 0) * (1 - (Number(item.discount || 0) / 100)),
         0
     ) || 0;
 

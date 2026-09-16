@@ -313,7 +313,7 @@ export type SaleWhereInput = {
   sale_items?: Prisma.Sale_itemListRelationFilter
   sale_attachments?: Prisma.Sale_attachmentListRelationFilter
   sale_payments?: Prisma.Sale_paymentListRelationFilter
-  sale_additionals?: Prisma.Sale_additionalListRelationFilter
+  sale_additional?: Prisma.XOR<Prisma.Sale_additionalNullableScalarRelationFilter, Prisma.sale_additionalWhereInput> | null
 }
 
 export type SaleOrderByWithRelationInput = {
@@ -337,7 +337,7 @@ export type SaleOrderByWithRelationInput = {
   sale_items?: Prisma.Sale_itemOrderByRelationAggregateInput
   sale_attachments?: Prisma.Sale_attachmentOrderByRelationAggregateInput
   sale_payments?: Prisma.Sale_paymentOrderByRelationAggregateInput
-  sale_additionals?: Prisma.sale_additionalOrderByRelationAggregateInput
+  sale_additional?: Prisma.sale_additionalOrderByWithRelationInput
 }
 
 export type SaleWhereUniqueInput = Prisma.AtLeast<{
@@ -364,7 +364,7 @@ export type SaleWhereUniqueInput = Prisma.AtLeast<{
   sale_items?: Prisma.Sale_itemListRelationFilter
   sale_attachments?: Prisma.Sale_attachmentListRelationFilter
   sale_payments?: Prisma.Sale_paymentListRelationFilter
-  sale_additionals?: Prisma.Sale_additionalListRelationFilter
+  sale_additional?: Prisma.XOR<Prisma.Sale_additionalNullableScalarRelationFilter, Prisma.sale_additionalWhereInput> | null
 }, "id">
 
 export type SaleOrderByWithAggregationInput = {
@@ -429,7 +429,7 @@ export type SaleCreateInput = {
   sale_items?: Prisma.Sale_itemCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateInput = {
@@ -451,7 +451,7 @@ export type SaleUncheckedCreateInput = {
   sale_items?: Prisma.Sale_itemUncheckedCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUpdateInput = {
@@ -472,7 +472,7 @@ export type SaleUpdateInput = {
   sale_items?: Prisma.Sale_itemUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateInput = {
@@ -494,7 +494,7 @@ export type SaleUncheckedUpdateInput = {
   sale_items?: Prisma.Sale_itemUncheckedUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleCreateManyInput = {
@@ -751,18 +751,18 @@ export type SaleUpdateOneRequiredWithoutSale_attachmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SaleUpdateToOneWithWhereWithoutSale_attachmentsInput, Prisma.SaleUpdateWithoutSale_attachmentsInput>, Prisma.SaleUncheckedUpdateWithoutSale_attachmentsInput>
 }
 
-export type SaleCreateNestedOneWithoutSale_additionalsInput = {
-  create?: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalsInput, Prisma.SaleUncheckedCreateWithoutSale_additionalsInput>
-  connectOrCreate?: Prisma.SaleCreateOrConnectWithoutSale_additionalsInput
+export type SaleCreateNestedOneWithoutSale_additionalInput = {
+  create?: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalInput, Prisma.SaleUncheckedCreateWithoutSale_additionalInput>
+  connectOrCreate?: Prisma.SaleCreateOrConnectWithoutSale_additionalInput
   connect?: Prisma.SaleWhereUniqueInput
 }
 
-export type SaleUpdateOneRequiredWithoutSale_additionalsNestedInput = {
-  create?: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalsInput, Prisma.SaleUncheckedCreateWithoutSale_additionalsInput>
-  connectOrCreate?: Prisma.SaleCreateOrConnectWithoutSale_additionalsInput
-  upsert?: Prisma.SaleUpsertWithoutSale_additionalsInput
+export type SaleUpdateOneRequiredWithoutSale_additionalNestedInput = {
+  create?: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalInput, Prisma.SaleUncheckedCreateWithoutSale_additionalInput>
+  connectOrCreate?: Prisma.SaleCreateOrConnectWithoutSale_additionalInput
+  upsert?: Prisma.SaleUpsertWithoutSale_additionalInput
   connect?: Prisma.SaleWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.SaleUpdateToOneWithWhereWithoutSale_additionalsInput, Prisma.SaleUpdateWithoutSale_additionalsInput>, Prisma.SaleUncheckedUpdateWithoutSale_additionalsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SaleUpdateToOneWithWhereWithoutSale_additionalInput, Prisma.SaleUpdateWithoutSale_additionalInput>, Prisma.SaleUncheckedUpdateWithoutSale_additionalInput>
 }
 
 export type SaleCreateNestedOneWithoutSale_paymentsInput = {
@@ -796,7 +796,7 @@ export type SaleCreateWithoutUserInput = {
   sale_items?: Prisma.Sale_itemCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateWithoutUserInput = {
@@ -817,7 +817,7 @@ export type SaleUncheckedCreateWithoutUserInput = {
   sale_items?: Prisma.Sale_itemUncheckedCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleCreateOrConnectWithoutUserInput = {
@@ -884,7 +884,7 @@ export type SaleCreateWithoutCustomerInput = {
   sale_items?: Prisma.Sale_itemCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateWithoutCustomerInput = {
@@ -905,7 +905,7 @@ export type SaleUncheckedCreateWithoutCustomerInput = {
   sale_items?: Prisma.Sale_itemUncheckedCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleCreateOrConnectWithoutCustomerInput = {
@@ -951,7 +951,7 @@ export type SaleCreateWithoutSale_itemsInput = {
   user?: Prisma.UserCreateNestedOneWithoutSalesInput
   sale_attachments?: Prisma.Sale_attachmentCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateWithoutSale_itemsInput = {
@@ -972,7 +972,7 @@ export type SaleUncheckedCreateWithoutSale_itemsInput = {
   updated_at?: Date | string | null
   sale_attachments?: Prisma.Sale_attachmentUncheckedCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleCreateOrConnectWithoutSale_itemsInput = {
@@ -1008,7 +1008,7 @@ export type SaleUpdateWithoutSale_itemsInput = {
   user?: Prisma.UserUpdateOneWithoutSalesNestedInput
   sale_attachments?: Prisma.Sale_attachmentUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateWithoutSale_itemsInput = {
@@ -1029,7 +1029,7 @@ export type SaleUncheckedUpdateWithoutSale_itemsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sale_attachments?: Prisma.Sale_attachmentUncheckedUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleCreateWithoutSale_attachmentsInput = {
@@ -1049,7 +1049,7 @@ export type SaleCreateWithoutSale_attachmentsInput = {
   user?: Prisma.UserCreateNestedOneWithoutSalesInput
   sale_items?: Prisma.Sale_itemCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateWithoutSale_attachmentsInput = {
@@ -1070,7 +1070,7 @@ export type SaleUncheckedCreateWithoutSale_attachmentsInput = {
   updated_at?: Date | string | null
   sale_items?: Prisma.Sale_itemUncheckedCreateNestedManyWithoutSaleInput
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleCreateOrConnectWithoutSale_attachmentsInput = {
@@ -1106,7 +1106,7 @@ export type SaleUpdateWithoutSale_attachmentsInput = {
   user?: Prisma.UserUpdateOneWithoutSalesNestedInput
   sale_items?: Prisma.Sale_itemUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateWithoutSale_attachmentsInput = {
@@ -1127,10 +1127,10 @@ export type SaleUncheckedUpdateWithoutSale_attachmentsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sale_items?: Prisma.Sale_itemUncheckedUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
-export type SaleCreateWithoutSale_additionalsInput = {
+export type SaleCreateWithoutSale_additionalInput = {
   no_spk?: string | null
   no_po?: string | null
   spk_date?: Date | string
@@ -1150,7 +1150,7 @@ export type SaleCreateWithoutSale_additionalsInput = {
   sale_payments?: Prisma.Sale_paymentCreateNestedManyWithoutSaleInput
 }
 
-export type SaleUncheckedCreateWithoutSale_additionalsInput = {
+export type SaleUncheckedCreateWithoutSale_additionalInput = {
   id?: number
   no_spk?: string | null
   no_po?: string | null
@@ -1171,23 +1171,23 @@ export type SaleUncheckedCreateWithoutSale_additionalsInput = {
   sale_payments?: Prisma.Sale_paymentUncheckedCreateNestedManyWithoutSaleInput
 }
 
-export type SaleCreateOrConnectWithoutSale_additionalsInput = {
+export type SaleCreateOrConnectWithoutSale_additionalInput = {
   where: Prisma.SaleWhereUniqueInput
-  create: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalsInput, Prisma.SaleUncheckedCreateWithoutSale_additionalsInput>
+  create: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalInput, Prisma.SaleUncheckedCreateWithoutSale_additionalInput>
 }
 
-export type SaleUpsertWithoutSale_additionalsInput = {
-  update: Prisma.XOR<Prisma.SaleUpdateWithoutSale_additionalsInput, Prisma.SaleUncheckedUpdateWithoutSale_additionalsInput>
-  create: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalsInput, Prisma.SaleUncheckedCreateWithoutSale_additionalsInput>
+export type SaleUpsertWithoutSale_additionalInput = {
+  update: Prisma.XOR<Prisma.SaleUpdateWithoutSale_additionalInput, Prisma.SaleUncheckedUpdateWithoutSale_additionalInput>
+  create: Prisma.XOR<Prisma.SaleCreateWithoutSale_additionalInput, Prisma.SaleUncheckedCreateWithoutSale_additionalInput>
   where?: Prisma.SaleWhereInput
 }
 
-export type SaleUpdateToOneWithWhereWithoutSale_additionalsInput = {
+export type SaleUpdateToOneWithWhereWithoutSale_additionalInput = {
   where?: Prisma.SaleWhereInput
-  data: Prisma.XOR<Prisma.SaleUpdateWithoutSale_additionalsInput, Prisma.SaleUncheckedUpdateWithoutSale_additionalsInput>
+  data: Prisma.XOR<Prisma.SaleUpdateWithoutSale_additionalInput, Prisma.SaleUncheckedUpdateWithoutSale_additionalInput>
 }
 
-export type SaleUpdateWithoutSale_additionalsInput = {
+export type SaleUpdateWithoutSale_additionalInput = {
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spk_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1207,7 +1207,7 @@ export type SaleUpdateWithoutSale_additionalsInput = {
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
 }
 
-export type SaleUncheckedUpdateWithoutSale_additionalsInput = {
+export type SaleUncheckedUpdateWithoutSale_additionalInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   no_spk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   no_po?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1245,7 +1245,7 @@ export type SaleCreateWithoutSale_paymentsInput = {
   user?: Prisma.UserCreateNestedOneWithoutSalesInput
   sale_items?: Prisma.Sale_itemCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalCreateNestedOneWithoutSaleInput
 }
 
 export type SaleUncheckedCreateWithoutSale_paymentsInput = {
@@ -1266,7 +1266,7 @@ export type SaleUncheckedCreateWithoutSale_paymentsInput = {
   updated_at?: Date | string | null
   sale_items?: Prisma.Sale_itemUncheckedCreateNestedManyWithoutSaleInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedCreateNestedManyWithoutSaleInput
-  sale_additionals?: Prisma.sale_additionalUncheckedCreateNestedManyWithoutSaleInput
+  sale_additional?: Prisma.sale_additionalUncheckedCreateNestedOneWithoutSaleInput
 }
 
 export type SaleCreateOrConnectWithoutSale_paymentsInput = {
@@ -1302,7 +1302,7 @@ export type SaleUpdateWithoutSale_paymentsInput = {
   user?: Prisma.UserUpdateOneWithoutSalesNestedInput
   sale_items?: Prisma.Sale_itemUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateWithoutSale_paymentsInput = {
@@ -1323,7 +1323,7 @@ export type SaleUncheckedUpdateWithoutSale_paymentsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sale_items?: Prisma.Sale_itemUncheckedUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleCreateManyUserInput = {
@@ -1360,7 +1360,7 @@ export type SaleUpdateWithoutUserInput = {
   sale_items?: Prisma.Sale_itemUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateWithoutUserInput = {
@@ -1381,7 +1381,7 @@ export type SaleUncheckedUpdateWithoutUserInput = {
   sale_items?: Prisma.Sale_itemUncheckedUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateManyWithoutUserInput = {
@@ -1435,7 +1435,7 @@ export type SaleUpdateWithoutCustomerInput = {
   sale_items?: Prisma.Sale_itemUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateWithoutCustomerInput = {
@@ -1456,7 +1456,7 @@ export type SaleUncheckedUpdateWithoutCustomerInput = {
   sale_items?: Prisma.Sale_itemUncheckedUpdateManyWithoutSaleNestedInput
   sale_attachments?: Prisma.Sale_attachmentUncheckedUpdateManyWithoutSaleNestedInput
   sale_payments?: Prisma.Sale_paymentUncheckedUpdateManyWithoutSaleNestedInput
-  sale_additionals?: Prisma.sale_additionalUncheckedUpdateManyWithoutSaleNestedInput
+  sale_additional?: Prisma.sale_additionalUncheckedUpdateOneWithoutSaleNestedInput
 }
 
 export type SaleUncheckedUpdateManyWithoutCustomerInput = {
@@ -1485,14 +1485,12 @@ export type SaleCountOutputType = {
   sale_items: number
   sale_attachments: number
   sale_payments: number
-  sale_additionals: number
 }
 
 export type SaleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sale_items?: boolean | SaleCountOutputTypeCountSale_itemsArgs
   sale_attachments?: boolean | SaleCountOutputTypeCountSale_attachmentsArgs
   sale_payments?: boolean | SaleCountOutputTypeCountSale_paymentsArgs
-  sale_additionals?: boolean | SaleCountOutputTypeCountSale_additionalsArgs
 }
 
 /**
@@ -1526,13 +1524,6 @@ export type SaleCountOutputTypeCountSale_paymentsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.Sale_paymentWhereInput
 }
 
-/**
- * SaleCountOutputType without action
- */
-export type SaleCountOutputTypeCountSale_additionalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.sale_additionalWhereInput
-}
-
 
 export type SaleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1555,7 +1546,7 @@ export type SaleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sale_items?: boolean | Prisma.Sale$sale_itemsArgs<ExtArgs>
   sale_attachments?: boolean | Prisma.Sale$sale_attachmentsArgs<ExtArgs>
   sale_payments?: boolean | Prisma.Sale$sale_paymentsArgs<ExtArgs>
-  sale_additionals?: boolean | Prisma.Sale$sale_additionalsArgs<ExtArgs>
+  sale_additional?: boolean | Prisma.Sale$sale_additionalArgs<ExtArgs>
   _count?: boolean | Prisma.SaleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sale"]>
 
@@ -1624,7 +1615,7 @@ export type SaleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sale_items?: boolean | Prisma.Sale$sale_itemsArgs<ExtArgs>
   sale_attachments?: boolean | Prisma.Sale$sale_attachmentsArgs<ExtArgs>
   sale_payments?: boolean | Prisma.Sale$sale_paymentsArgs<ExtArgs>
-  sale_additionals?: boolean | Prisma.Sale$sale_additionalsArgs<ExtArgs>
+  sale_additional?: boolean | Prisma.Sale$sale_additionalArgs<ExtArgs>
   _count?: boolean | Prisma.SaleCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SaleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1644,7 +1635,7 @@ export type $SalePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sale_items: Prisma.$Sale_itemPayload<ExtArgs>[]
     sale_attachments: Prisma.$Sale_attachmentPayload<ExtArgs>[]
     sale_payments: Prisma.$Sale_paymentPayload<ExtArgs>[]
-    sale_additionals: Prisma.$sale_additionalPayload<ExtArgs>[]
+    sale_additional: Prisma.$sale_additionalPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2061,7 +2052,7 @@ export interface Prisma__SaleClient<T, Null = never, ExtArgs extends runtime.Typ
   sale_items<T extends Prisma.Sale$sale_itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sale$sale_itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$Sale_itemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sale_attachments<T extends Prisma.Sale$sale_attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sale$sale_attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$Sale_attachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sale_payments<T extends Prisma.Sale$sale_paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sale$sale_paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$Sale_paymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  sale_additionals<T extends Prisma.Sale$sale_additionalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sale$sale_additionalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$sale_additionalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sale_additional<T extends Prisma.Sale$sale_additionalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Sale$sale_additionalArgs<ExtArgs>>): Prisma.Prisma__sale_additionalClient<runtime.Types.Result.GetResult<Prisma.$sale_additionalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2598,9 +2589,9 @@ export type Sale$sale_paymentsArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Sale.sale_additionals
+ * Sale.sale_additional
  */
-export type Sale$sale_additionalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Sale$sale_additionalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the sale_additional
    */
@@ -2614,11 +2605,6 @@ export type Sale$sale_additionalsArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.sale_additionalInclude<ExtArgs> | null
   where?: Prisma.sale_additionalWhereInput
-  orderBy?: Prisma.sale_additionalOrderByWithRelationInput | Prisma.sale_additionalOrderByWithRelationInput[]
-  cursor?: Prisma.sale_additionalWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Sale_additionalScalarFieldEnum | Prisma.Sale_additionalScalarFieldEnum[]
 }
 
 /**

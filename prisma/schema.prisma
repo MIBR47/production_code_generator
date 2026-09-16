@@ -116,7 +116,7 @@ model Sale {
   sale_items       Sale_item[]
   sale_attachments Sale_attachment[]
   sale_payments    Sale_payment[]
-  sale_additionals sale_additional[]
+  sale_additional  sale_additional?
 
   @@map("sales")
 }
@@ -170,7 +170,7 @@ model Tax {
 
 model sale_additional {
   id          Int       @id @default(autoincrement())
-  sale_id     Int
+  sale_id     Int       @unique
   no_po_bis   String?   @db.VarChar(100)
   date_po_bis DateTime? @db.Timestamptz(6)
 

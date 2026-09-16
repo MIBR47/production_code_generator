@@ -7,6 +7,7 @@ export default async function SpkPage() {
             include: {
                 customer: true,
                 sale_items: { include: { product: true, tax: true } },
+                sale_additional: true,
             },
             orderBy: { id: "desc" },
         }),

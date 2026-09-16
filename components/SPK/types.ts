@@ -7,6 +7,7 @@ export interface SaleItemSerialized {
     subtotal: number;
     tax_price: number;
     product: {
+        product_codes: any;
         product_name: string;
         product_type: string;
     };
@@ -38,6 +39,10 @@ export interface SaleSerialized {
     } | null;
     sale_items: SaleItemSerialized[];
     sale_attachments?: SaleAttachment[];
+    sale_additionals?: {
+        no_po_bis?: string | null;
+        date_po_bis?: string | null;
+    } | null;
 }
 export interface CustomerOption {
     id: number;

@@ -26,7 +26,7 @@ export default function DashboardLayout({
                     setCollapsed={setCollapsed}
                 />
 
-                <main className="flex-1 overflow-auto p-6 text-black">
+                <main className="flex-1 overflow-auto p-6 text-black bg-[#E5E8EA]">
                     {children}
                 </main>
             </div>
