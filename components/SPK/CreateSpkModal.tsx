@@ -43,7 +43,6 @@ import {
 
 import { createSaleAction } from "@/actions/spk";
 import { CreateSpkItemRow } from "./CreateSpkItemRow";
-// import { CreateSpkItemRow } from "@/components/CreateSpkItemRow";
 
 interface CreateSpkModalProps {
     isOpen: boolean;
@@ -62,8 +61,8 @@ export function CreateSpkModal({
 }: CreateSpkModalProps) {
     const [isPending, startTransition] = useTransition();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Record<string, boolean>>({});
 
-    // Helper default tanggal hari ini (YYYY-MM-DD)
     const todayStr = new Date().toISOString().split("T")[0];
 
     // State Form
@@ -73,11 +72,15 @@ export function CreateSpkModal({
     const [customerId, setCustomerId] = useState<string>("");
     const [customerSearchQuery, setCustomerSearchQuery] = useState<string>("");
 
+    // State baru untuk field yang belum terhubung
+    const [salesPerson, setSalesPerson] = useState<string>("");
+    const [ecatalog, setEcatalog] = useState<string>("");
+    const [shippingCost, setShippingCost] = useState<string>("");
+
     const [items, setItems] = useState<ItemRow[]>([
         { product_id: "", tax_id: "", quantity: 1, unit_price: 0 },
     ]);
 
-    // Filter Pelanggan berdasarkan kata kunci pencarian
     const selectedCustomer = customers.find((c) => String(c.id) === String(customerId));
     const filteredCustomers = customers.filter((c) =>
         c.name.toLowerCase().includes(customerSearchQuery.toLowerCase())
@@ -135,7 +138,7 @@ export function CreateSpkModal({
         return sum + itemBase * taxRate;
     }, 0);
 
-    const grandTotal = subtotalBeforeTax + totalTax;
+    const grandTotal = subtotalBeforeTax + totalTax + (Number(shippingCost) || 0);
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat("id-ID", {
@@ -148,20 +151,64 @@ export function CreateSpkModal({
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setErrorMessage(null);
+        setErrors({});
 
+        const newErrors: Record<string, boolean> = {};
+
+        // Validasi Tipe SPK
+        if (!spkType) {
+            newErrors.spk_type = true;
+        }
+
+        // Validasi Tanggal SPK
         if (!spkDate) {
-            setErrorMessage("Harap isi Tanggal SPK.");
-            return;
+            newErrors.spk_date = true;
         }
 
+        // Validasi Customer
         if (!customerId) {
-            setErrorMessage("Harap pilih Customer.");
-            return;
+            newErrors.customer_id = true;
         }
 
+        // Validasi Estimasi Selesai
+        if (!expectedDate) {
+            newErrors.expected_date = true;
+        }
+
+        // Validasi Sales Person (Required)
+        if (!salesPerson.trim()) {
+            newErrors.sales_person = true;
+        }
+
+        // Validasi Nomor E-Catalog (Khusus jika tipe SPK = "E-Catalog")
+        if (spkType === "E-Catalog" && !ecatalog.trim()) {
+            newErrors.ecatalog = true;
+        }
+
+        // Validasi Biaya Pengiriman (Jika diisi, pastikan angka valid dan tidak negatif)
+        if (shippingCost !== "" && (isNaN(Number(shippingCost)) || Number(shippingCost) < 0)) {
+            newErrors.shipping_cost = true;
+        }
+
+        // Validasi Items
         const hasInvalidItem = items.some((item) => !item.product_id || item.quantity <= 0);
         if (hasInvalidItem) {
-            setErrorMessage("Harap lengkapi semua Produk dan Jumlah Barang dengan benar.");
+            newErrors.items = true;
+        }
+
+        // Jika ada error, hentikan submit dan tampilkan pesan
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+
+            if (newErrors.spk_type) setErrorMessage("Harap pilih Tipe SPK.");
+            else if (newErrors.customer_id) setErrorMessage("Harap pilih Customer.");
+            else if (newErrors.spk_date) setErrorMessage("Harap isi Tanggal SPK.");
+            else if (newErrors.expected_date) setErrorMessage("Harap isi Estimasi Selesai.");
+            else if (newErrors.sales_person) setErrorMessage("Harap isi Nama Sales Person.");
+            else if (newErrors.ecatalog) setErrorMessage("Harap isi Nomor E-Catalog untuk tipe SPK E-Catalog.");
+            else if (newErrors.shipping_cost) setErrorMessage("Biaya pengiriman harus berupa angka yang valid.");
+            else if (newErrors.items) setErrorMessage("Harap lengkapi semua Produk dan Jumlah Barang dengan benar.");
+
             return;
         }
 
@@ -170,6 +217,9 @@ export function CreateSpkModal({
         formData.append("spk_date", spkDate);
         formData.append("expected_date", expectedDate);
         formData.append("customer_id", customerId);
+        formData.append("sales_person", salesPerson);
+        formData.append("ecatalog", ecatalog);
+        formData.append("shipping_cost", shippingCost || "0");
         formData.append("items", JSON.stringify(items));
 
         startTransition(async () => {
@@ -177,7 +227,7 @@ export function CreateSpkModal({
             if (result?.success) {
                 onClose();
             } else {
-                setErrorMessage(result?.message || "Terjadi kesalahan.");
+                setErrorMessage(result?.message || "Terjadi kesalahan saat menyimpan.");
             }
         });
     };
@@ -197,7 +247,6 @@ export function CreateSpkModal({
                             </Alert>
                         )}
 
-                        {/* Form Fields Header */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {/* 1. Tipe SPK */}
                             <div className="space-y-2">
@@ -207,7 +256,7 @@ export function CreateSpkModal({
                                 <Select value={spkType ?? ""} onValueChange={setSpkType}>
                                     <SelectTrigger
                                         id="spk_type"
-                                        className="h-10 w-full bg-white border-slate-300 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        className={`h-10 w-full bg-white border-slate-300 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${errors.spk_type ? "border-red-500" : ""}`}
                                     >
                                         <SelectValue placeholder="Pilih Tipe SPK" />
                                     </SelectTrigger>
@@ -241,7 +290,7 @@ export function CreateSpkModal({
                                         showClear
                                         value={customerSearchQuery || selectedCustomer?.name || ""}
                                         onChange={(e) => setCustomerSearchQuery(e.target.value)}
-                                        className="w-full h-10 bg-white border-slate-300 text-slate-800 focus:ring-2 focus:ring-blue-500"
+                                        className={`w-full h-10 bg-white border-slate-300 text-slate-800 focus:ring-2 focus:ring-blue-500 ${errors.customer_id ? "border-red-500" : ""}`}
                                     />
                                     <ComboboxContent className="max-h-60 overflow-y-auto z-50 bg-white border border-slate-200 shadow-lg rounded-md">
                                         <ComboboxList>
@@ -264,6 +313,7 @@ export function CreateSpkModal({
                                     </ComboboxContent>
                                 </Combobox>
                             </div>
+
                             {/* 3. Tanggal SPK */}
                             <div className="space-y-2">
                                 <Label htmlFor="spk_date" className="text-sm font-semibold text-slate-700">
@@ -275,15 +325,14 @@ export function CreateSpkModal({
                                     type="date"
                                     value={spkDate}
                                     onChange={(e) => setSpkDate(e.target.value)}
-                                    className="h-10 bg-white border-slate-300 text-slate-800"
-                                    required
+                                    className={`h-10 bg-white border-slate-300 text-slate-800 ${errors.spk_date ? "border-red-500" : ""}`}
                                 />
                             </div>
 
                             {/* 4. Expected Date / Estimasi Selesai */}
                             <div className="space-y-2">
                                 <Label htmlFor="expected_date" className="text-sm font-semibold text-slate-700">
-                                    Estimasi Selesai (Expected Date)
+                                    Estimasi Selesai (Expected Date) <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
                                     id="expected_date"
@@ -291,35 +340,37 @@ export function CreateSpkModal({
                                     type="date"
                                     value={expectedDate}
                                     onChange={(e) => setExpectedDate(e.target.value)}
-                                    className="h-10 bg-white border-slate-300 text-slate-800"
+                                    className={`h-10 bg-white border-slate-300 text-slate-800 ${errors.expected_date ? "border-red-500" : ""}`}
                                 />
                             </div>
-
-
 
                             {/* 5. Sales Person */}
                             <div className="space-y-2">
                                 <Label htmlFor="sales_person" className="text-sm font-semibold text-slate-700">
-                                    Sales Person
+                                    Sales Person <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
                                     id="sales_person"
                                     name="sales_person"
+                                    value={salesPerson}
+                                    onChange={(e) => setSalesPerson(e.target.value)}
                                     placeholder="Nama Sales"
-                                    className="h-10 bg-white border-slate-300 text-slate-800"
+                                    className={`h-10 bg-white border-slate-300 text-slate-800 ${errors.sales_person ? "border-red-500" : ""}`}
                                 />
                             </div>
 
                             {/* 6. Nomor E-Catalog */}
                             <div className="space-y-2">
                                 <Label htmlFor="ecatalog" className="text-sm font-semibold text-slate-700">
-                                    Nomor E-Catalog
+                                    Nomor E-Catalog {spkType === "E-Catalog" && <span className="text-red-500">*</span>}
                                 </Label>
                                 <Input
                                     id="ecatalog"
                                     name="ecatalog"
+                                    value={ecatalog}
+                                    onChange={(e) => setEcatalog(e.target.value)}
                                     placeholder="Contoh: ECAT-102938"
-                                    className="h-10 bg-white border-slate-300 text-slate-800"
+                                    className={`h-10 bg-white border-slate-300 text-slate-800 ${errors.ecatalog ? "border-red-500" : ""}`}
                                 />
                             </div>
 
@@ -332,8 +383,11 @@ export function CreateSpkModal({
                                     id="shipping_cost"
                                     name="shipping_cost"
                                     type="number"
+                                    min="0"
+                                    value={shippingCost}
+                                    onChange={(e) => setShippingCost(e.target.value)}
                                     placeholder="Contoh: 100000"
-                                    className="h-10 bg-white border-slate-300 text-slate-800"
+                                    className={`h-10 bg-white border-slate-300 text-slate-800 ${errors.shipping_cost ? "border-red-500" : ""}`}
                                 />
                             </div>
                         </div>
@@ -382,6 +436,7 @@ export function CreateSpkModal({
                                                 canRemove={items.length > 1}
                                                 onItemChange={handleItemChange}
                                                 onRemoveItem={handleRemoveItem}
+                                                errors={errors.items}
                                                 getNormalizedTaxRate={getNormalizedTaxRate}
                                                 formatCurrency={formatCurrency}
                                             />
@@ -402,6 +457,12 @@ export function CreateSpkModal({
                                     <span>Total Pajak:</span>
                                     <span className="font-semibold text-slate-900">{formatCurrency(totalTax)}</span>
                                 </div>
+                                {Number(shippingCost) > 0 && (
+                                    <div className="flex justify-between items-center text-slate-600">
+                                        <span>Biaya Pengiriman:</span>
+                                        <span className="font-semibold text-slate-900">{formatCurrency(Number(shippingCost))}</span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between items-center text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
                                     <span>Total Keseluruhan :</span>
                                     <span className="text-base text-[#0E5EA2]">{formatCurrency(grandTotal)}</span>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
@@ -23,6 +23,7 @@ import {
 import { ItemRow, ProductOption, TaxOption } from "@/components/SPK/types";
 
 interface SpkItemRowProps {
+    errors?: boolean;
     index: number;
     item: ItemRow;
     products: ProductOption[];
@@ -35,6 +36,7 @@ interface SpkItemRowProps {
 }
 
 export function CreateSpkItemRow({
+    errors,
     index,
     item,
     products,
@@ -58,15 +60,19 @@ export function CreateSpkItemRow({
         p.product_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Cek error spesifik per input agar tidak semua field memerah bersamaan
+    const isProductInvalid = Boolean(errors && !item.product_id);
+    const isQuantityInvalid = Boolean(errors && (item.quantity === undefined || item.quantity === null || item.quantity <= 0));
+
     return (
         <TableRow className="hover:bg-slate-50 border-b border-slate-200">
-            {/* 1. Combobox Produk (Value berupa String ID agar tidak ter-render JSON) */}
-            <TableCell className="w-[45%] p-2 align-middle">
+            {/* 1. Combobox Produk */}
+            <TableCell className="w-[42%] p-2 align-middle">
                 <Combobox
                     value={item.product_id ? String(item.product_id) : ""}
                     onValueChange={(val: string | null) => {
                         onItemChange(index, "product_id", val ?? "");
-                        setSearchQuery(""); // Reset query pencarian setelah memilih
+                        setSearchQuery("");
                     }}
                 >
                     <ComboboxInput
@@ -74,15 +80,22 @@ export function CreateSpkItemRow({
                         showClear
                         value={searchQuery || selectedProduct?.product_name || ""}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-9 bg-white border-slate-300 text-slate-800"
+                        className={`w-full h-9 bg-white border-slate-300 text-slate-800 ${isProductInvalid ? "border-red-500 focus-visible:ring-red-500" : ""
+                            }`}
                     />
-                    <ComboboxContent className="max-h-60 overflow-y-auto z-50">
+                    <ComboboxContent className="max-h-60 overflow-y-auto z-50 bg-white border border-slate-200 shadow-md">
                         <ComboboxList>
                             {filteredProducts.length === 0 ? (
-                                <ComboboxEmpty>Produk tidak ditemukan.</ComboboxEmpty>
+                                <ComboboxEmpty className="p-2 text-xs text-slate-500 text-center">
+                                    Produk tidak ditemukan.
+                                </ComboboxEmpty>
                             ) : (
                                 filteredProducts.map((p) => (
-                                    <ComboboxItem key={p.id} value={String(p.id)}>
+                                    <ComboboxItem
+                                        key={p.id}
+                                        value={String(p.id)}
+                                        className="px-3 py-1.5 text-sm hover:bg-slate-100 cursor-pointer text-slate-800"
+                                    >
                                         {p.product_name}
                                     </ComboboxItem>
                                 ))
@@ -92,8 +105,8 @@ export function CreateSpkItemRow({
                 </Combobox>
             </TableCell>
 
-            {/* 2. Pilih Pajak (Menampilkan Nama Pajak + Persentase) */}
-            <TableCell className="w-[15%] p-2 align-middle">
+            {/* 2. Pilih Pajak */}
+            <TableCell className="w-[18%] p-2 align-middle">
                 <Select
                     value={
                         item.tax_id !== "" && item.tax_id !== null && item.tax_id !== undefined
@@ -114,13 +127,13 @@ export function CreateSpkItemRow({
                             })()}
                         </SelectValue>
                     </SelectTrigger>
-                    <SelectContent className="z-50">
-                        <SelectItem value="0">Tanpa Pajak (0%)</SelectItem>
+                    <SelectContent className="z-50 bg-white border border-slate-200 shadow-md">
+                        <SelectItem value="0" className="cursor-pointer">Tanpa Pajak (0%)</SelectItem>
                         {taxes.map((t) => {
                             const rateVal = Number(t.rate);
                             const displayPercent = rateVal > 1 ? rateVal : rateVal * 100;
                             return (
-                                <SelectItem key={t.id} value={String(t.id)}>
+                                <SelectItem key={t.id} value={String(t.id)} className="cursor-pointer">
                                     {t.name} ({displayPercent}%)
                                 </SelectItem>
                             );
@@ -134,9 +147,14 @@ export function CreateSpkItemRow({
                 <Input
                     type="number"
                     min="1"
-                    className="h-9 w-full bg-white border-slate-300 text-center text-slate-800 focus-visible:ring-blue-500"
-                    value={item.quantity || ""}
-                    onChange={(e) => onItemChange(index, "quantity", Number(e.target.value))}
+                    className={`h-9 w-full bg-white border-slate-300 text-center text-slate-800 focus-visible:ring-blue-500 ${isQuantityInvalid ? "border-red-500 focus-visible:ring-red-500" : ""
+                        }`}
+                    value={item.quantity === 0 ? "" : item.quantity}
+                    onChange={(e) => {
+                        const val = e.target.value === "" ? 0 : Number(e.target.value);
+                        onItemChange(index, "quantity", val);
+                    }}
+                    onFocus={(e) => e.target.select()}
                 />
             </TableCell>
 
