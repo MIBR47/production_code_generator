@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useActionState, useEffect, useMemo, useState, useTransition } from "react";
 import { Plus, X, Pencil, Trash2, Check } from "lucide-react";
-import { createCustomer, updateCustomer, deleteCustomer } from "./actions";
+import { createCustomer, updateCustomer, deleteCustomer } from "@/actions/customers";
 import { useRouter } from "next/navigation";
 
 interface Customer {

@@ -1,13 +1,13 @@
-"use client";
+﻿"use client";
 
 import { useActionState, useEffect, useState, useTransition } from "react";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
-import { createProductionCode, deleteProductionCode } from "./actions"; // 1. Updated Server Action imports
+import { createProductionCode, deleteProductionCode } from "@/actions/production-codes"; // 1. Updated Server Action imports
 
-import { DraftTableRow } from "./components/DraftTableRow";
-import { DbTableRow } from "./components/DbTableRow";
-import { ProductionCodeModal } from "./components/ProductionCodeModal"; // 2. Updated Modal component
+// import { DraftTableRow } from "./components/DraftTableRow";
+// import { DbTableRow } from "./components/DbTableRow";
+// import { ProductionCodeModal } from "./components/ProductionCodeModal"; // 2. Updated Modal component
 
 import {
     Table,
@@ -23,6 +23,9 @@ import { DraftItem, ProductionTableProps } from "@/components/production-codes/t
 import { getNextProductionNumber, formatDateIndonesia } from "@/components/production-codes/utils";
 import { TableFilterBar } from "@/components/TableFilterBar";
 import { TablePagination } from "@/components/TablePagination";
+import { ProductionCodeModal } from "./ProductionCodeModal";
+import { DraftTableRow } from "./DraftTableRow";
+import { DbTableRow } from "../SPK/DbTableRow";
 
 export default function ProductionCodeTable({ data, products, customers }: ProductionTableProps) {
     const [showCreateProductionCode, setShowCreateProductionCode] = useState(false); // Updated state name

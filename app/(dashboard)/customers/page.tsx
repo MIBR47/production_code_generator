@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import CustomerTable from "./CustomerTable";
+﻿import { prisma } from "@/lib/prisma";
+import CustomerTable from "@/components/customers/CustomerTable";
 
 
 export default async function CustomersPage() {

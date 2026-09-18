@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useTransition } from "react";
 import { Loader2, Plus, ShoppingBag } from "lucide-react";
@@ -41,8 +41,9 @@ import {
     ComboboxEmpty,
 } from "@/components/ui/combobox";
 
-import { createSaleAction } from "./actions";
-import { CreateSpkItemRow } from "./components/CreateSpkItemRow";
+import { createSaleAction } from "@/actions/spk";
+import { CreateSpkItemRow } from "./CreateSpkItemRow";
+// import { CreateSpkItemRow } from "@/components/CreateSpkItemRow";
 
 interface CreateSpkModalProps {
     isOpen: boolean;
@@ -318,6 +319,20 @@ export function CreateSpkModal({
                                     id="ecatalog"
                                     name="ecatalog"
                                     placeholder="Contoh: ECAT-102938"
+                                    className="h-10 bg-white border-slate-300 text-slate-800"
+                                />
+                            </div>
+
+                            {/* 7. Biaya Pengiriman */}
+                            <div className="space-y-2">
+                                <Label htmlFor="shipping_cost" className="text-sm font-semibold text-slate-700">
+                                    Biaya Pengiriman
+                                </Label>
+                                <Input
+                                    id="shipping_cost"
+                                    name="shipping_cost"
+                                    type="number"
+                                    placeholder="Contoh: 100000"
                                     className="h-10 bg-white border-slate-300 text-slate-800"
                                 />
                             </div>

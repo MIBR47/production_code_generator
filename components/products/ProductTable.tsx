@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useActionState, useEffect, useMemo, useState, useTransition } from "react";
 import { Plus, X, Pencil, Trash2, Check } from "lucide-react";
-import { createProduct, createProductCode, updateProduct, deleteProductItem } from "./actions";
+import { createProduct, createProductCode, updateProduct, deleteProductItem } from "@/actions/products";
 import { useRouter } from "next/navigation";
 
 interface Props {

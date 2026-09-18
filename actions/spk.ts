@@ -12,6 +12,7 @@ export async function createSaleAction(prevState: any, formData: FormData) {
         const spk_type = formData.get("spk_type") as string;
         const sales_person = formData.get("sales_person") as string;
         const ecatalog = formData.get("ecatalog") as string;
+        const shipping_cost = Number(formData.get("shipping_cost") || 0);
         const remarks = formData.get("remarks") as string;
 
         const rawSpkDate = formData.get("spk_date") as string;
@@ -112,6 +113,7 @@ export async function createSaleAction(prevState: any, formData: FormData) {
                     customer_id,
                     sales_person,
                     ecatalog,
+                    shipping_cost,
                     remarks,
                     total_amount: saleGrandTotal,
                     status: "On Progress",
@@ -252,5 +254,44 @@ export async function updateSaleItemInlineAction(payload: {
     } catch (error: any) {
         console.error("Error updating sale item:", error);
         return { success: false, message: error?.message || "Gagal memperbarui item." };
+    }
+}
+
+export async function updateSaleAction(saleId: number, formData: {
+    no_spk: string;
+    no_po: string;
+    spk_type: string;
+    status: string;
+    sales_person: string;
+    ecatalog: string;
+    shipping_cost: number;
+    remarks: string;
+    spk_date: string;
+    expected_date: string;
+}) {
+    try {
+        await prisma.sale.update({
+            where: { id: saleId },
+            data: {
+                no_spk: formData.no_spk,
+                no_po: formData.no_po,
+                spk_type: formData.spk_type,
+                status: formData.status,
+                sales_person: formData.sales_person,
+                ecatalog: formData.ecatalog,
+                shipping_cost: formData.shipping_cost,
+                remarks: formData.remarks,
+                spk_date: new Date(formData.spk_date),
+                expected_date: formData.expected_date ? new Date(formData.expected_date) : null,
+            },
+        });
+
+        // Revalidate cache halaman terkait (sesuaikan path rute Anda)
+        revalidatePath("/spk");
+
+        return { success: true, message: "Data SPK berhasil diperbarui." };
+    } catch (error: any) {
+        console.error("Error updating sale:", error);
+        return { success: false, message: error.message || "Gagal memperbarui data SPK." };
     }
 }

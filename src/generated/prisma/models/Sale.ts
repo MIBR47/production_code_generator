@@ -30,6 +30,7 @@ export type SaleAvgAggregateOutputType = {
   id: number | null
   customer_id: number | null
   total_amount: runtime.Decimal | null
+  shipping_cost: runtime.Decimal | null
   user_id: number | null
 }
 
@@ -37,6 +38,7 @@ export type SaleSumAggregateOutputType = {
   id: number | null
   customer_id: number | null
   total_amount: runtime.Decimal | null
+  shipping_cost: runtime.Decimal | null
   user_id: number | null
 }
 
@@ -50,6 +52,7 @@ export type SaleMinAggregateOutputType = {
   customer_id: number | null
   sales_person: string | null
   total_amount: runtime.Decimal | null
+  shipping_cost: runtime.Decimal | null
   ecatalog: string | null
   status: string | null
   remarks: string | null
@@ -68,6 +71,7 @@ export type SaleMaxAggregateOutputType = {
   customer_id: number | null
   sales_person: string | null
   total_amount: runtime.Decimal | null
+  shipping_cost: runtime.Decimal | null
   ecatalog: string | null
   status: string | null
   remarks: string | null
@@ -86,6 +90,7 @@ export type SaleCountAggregateOutputType = {
   customer_id: number
   sales_person: number
   total_amount: number
+  shipping_cost: number
   ecatalog: number
   status: number
   remarks: number
@@ -100,6 +105,7 @@ export type SaleAvgAggregateInputType = {
   id?: true
   customer_id?: true
   total_amount?: true
+  shipping_cost?: true
   user_id?: true
 }
 
@@ -107,6 +113,7 @@ export type SaleSumAggregateInputType = {
   id?: true
   customer_id?: true
   total_amount?: true
+  shipping_cost?: true
   user_id?: true
 }
 
@@ -120,6 +127,7 @@ export type SaleMinAggregateInputType = {
   customer_id?: true
   sales_person?: true
   total_amount?: true
+  shipping_cost?: true
   ecatalog?: true
   status?: true
   remarks?: true
@@ -138,6 +146,7 @@ export type SaleMaxAggregateInputType = {
   customer_id?: true
   sales_person?: true
   total_amount?: true
+  shipping_cost?: true
   ecatalog?: true
   status?: true
   remarks?: true
@@ -156,6 +165,7 @@ export type SaleCountAggregateInputType = {
   customer_id?: true
   sales_person?: true
   total_amount?: true
+  shipping_cost?: true
   ecatalog?: true
   status?: true
   remarks?: true
@@ -261,6 +271,7 @@ export type SaleGroupByOutputType = {
   customer_id: number
   sales_person: string | null
   total_amount: runtime.Decimal
+  shipping_cost: runtime.Decimal
   ecatalog: string
   status: string
   remarks: string | null
@@ -302,6 +313,7 @@ export type SaleWhereInput = {
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
   total_amount?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFilter<"Sale"> | string
   status?: Prisma.StringFilter<"Sale"> | string
   remarks?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -326,6 +338,7 @@ export type SaleOrderByWithRelationInput = {
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrderInput | Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   ecatalog?: Prisma.SortOrder
   status?: Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -353,6 +366,7 @@ export type SaleWhereUniqueInput = Prisma.AtLeast<{
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
   total_amount?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFilter<"Sale"> | string
   status?: Prisma.StringFilter<"Sale"> | string
   remarks?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -377,6 +391,7 @@ export type SaleOrderByWithAggregationInput = {
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrderInput | Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   ecatalog?: Prisma.SortOrder
   status?: Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -403,6 +418,7 @@ export type SaleScalarWhereWithAggregatesInput = {
   customer_id?: Prisma.IntWithAggregatesFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableWithAggregatesFilter<"Sale"> | string | null
   total_amount?: Prisma.DecimalWithAggregatesFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalWithAggregatesFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringWithAggregatesFilter<"Sale"> | string
   status?: Prisma.StringWithAggregatesFilter<"Sale"> | string
   remarks?: Prisma.StringNullableWithAggregatesFilter<"Sale"> | string | null
@@ -419,6 +435,7 @@ export type SaleCreateInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -442,6 +459,7 @@ export type SaleUncheckedCreateInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -462,6 +480,7 @@ export type SaleUpdateInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -485,6 +504,7 @@ export type SaleUncheckedUpdateInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -507,6 +527,7 @@ export type SaleCreateManyInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -523,6 +544,7 @@ export type SaleUpdateManyMutationInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -540,6 +562,7 @@ export type SaleUncheckedUpdateManyInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -568,6 +591,7 @@ export type SaleCountOrderByAggregateInput = {
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   ecatalog?: Prisma.SortOrder
   status?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -580,6 +604,7 @@ export type SaleAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
 }
 
@@ -593,6 +618,7 @@ export type SaleMaxOrderByAggregateInput = {
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   ecatalog?: Prisma.SortOrder
   status?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -611,6 +637,7 @@ export type SaleMinOrderByAggregateInput = {
   customer_id?: Prisma.SortOrder
   sales_person?: Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   ecatalog?: Prisma.SortOrder
   status?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -623,6 +650,7 @@ export type SaleSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customer_id?: Prisma.SortOrder
   total_amount?: Prisma.SortOrder
+  shipping_cost?: Prisma.SortOrder
   user_id?: Prisma.SortOrder
 }
 
@@ -787,6 +815,7 @@ export type SaleCreateWithoutUserInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -809,6 +838,7 @@ export type SaleUncheckedCreateWithoutUserInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -859,6 +889,7 @@ export type SaleScalarWhereInput = {
   customer_id?: Prisma.IntFilter<"Sale"> | number
   sales_person?: Prisma.StringNullableFilter<"Sale"> | string | null
   total_amount?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFilter<"Sale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFilter<"Sale"> | string
   status?: Prisma.StringFilter<"Sale"> | string
   remarks?: Prisma.StringNullableFilter<"Sale"> | string | null
@@ -875,6 +906,7 @@ export type SaleCreateWithoutCustomerInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -896,6 +928,7 @@ export type SaleUncheckedCreateWithoutCustomerInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -942,6 +975,7 @@ export type SaleCreateWithoutSale_itemsInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -964,6 +998,7 @@ export type SaleUncheckedCreateWithoutSale_itemsInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -999,6 +1034,7 @@ export type SaleUpdateWithoutSale_itemsInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1021,6 +1057,7 @@ export type SaleUncheckedUpdateWithoutSale_itemsInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1040,6 +1077,7 @@ export type SaleCreateWithoutSale_attachmentsInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1062,6 +1100,7 @@ export type SaleUncheckedCreateWithoutSale_attachmentsInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1097,6 +1136,7 @@ export type SaleUpdateWithoutSale_attachmentsInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1119,6 +1159,7 @@ export type SaleUncheckedUpdateWithoutSale_attachmentsInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1138,6 +1179,7 @@ export type SaleCreateWithoutSale_additionalInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1160,6 +1202,7 @@ export type SaleUncheckedCreateWithoutSale_additionalInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1195,6 +1238,7 @@ export type SaleUpdateWithoutSale_additionalInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1217,6 +1261,7 @@ export type SaleUncheckedUpdateWithoutSale_additionalInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1236,6 +1281,7 @@ export type SaleCreateWithoutSale_paymentsInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1258,6 +1304,7 @@ export type SaleUncheckedCreateWithoutSale_paymentsInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1293,6 +1340,7 @@ export type SaleUpdateWithoutSale_paymentsInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1315,6 +1363,7 @@ export type SaleUncheckedUpdateWithoutSale_paymentsInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1336,6 +1385,7 @@ export type SaleCreateManyUserInput = {
   customer_id: number
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1351,6 +1401,7 @@ export type SaleUpdateWithoutUserInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1373,6 +1424,7 @@ export type SaleUncheckedUpdateWithoutUserInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1394,6 +1446,7 @@ export type SaleUncheckedUpdateManyWithoutUserInput = {
   customer_id?: Prisma.IntFieldUpdateOperationsInput | number
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1410,6 +1463,7 @@ export type SaleCreateManyCustomerInput = {
   spk_type: string
   sales_person?: string | null
   total_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog: string
   status?: string
   remarks?: string | null
@@ -1426,6 +1480,7 @@ export type SaleUpdateWithoutCustomerInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1447,6 +1502,7 @@ export type SaleUncheckedUpdateWithoutCustomerInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1468,6 +1524,7 @@ export type SaleUncheckedUpdateManyWithoutCustomerInput = {
   spk_type?: Prisma.StringFieldUpdateOperationsInput | string
   sales_person?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total_amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  shipping_cost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   ecatalog?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1535,6 +1592,7 @@ export type SaleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   customer_id?: boolean
   sales_person?: boolean
   total_amount?: boolean
+  shipping_cost?: boolean
   ecatalog?: boolean
   status?: boolean
   remarks?: boolean
@@ -1560,6 +1618,7 @@ export type SaleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   customer_id?: boolean
   sales_person?: boolean
   total_amount?: boolean
+  shipping_cost?: boolean
   ecatalog?: boolean
   status?: boolean
   remarks?: boolean
@@ -1580,6 +1639,7 @@ export type SaleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   customer_id?: boolean
   sales_person?: boolean
   total_amount?: boolean
+  shipping_cost?: boolean
   ecatalog?: boolean
   status?: boolean
   remarks?: boolean
@@ -1600,6 +1660,7 @@ export type SaleSelectScalar = {
   customer_id?: boolean
   sales_person?: boolean
   total_amount?: boolean
+  shipping_cost?: boolean
   ecatalog?: boolean
   status?: boolean
   remarks?: boolean
@@ -1608,7 +1669,7 @@ export type SaleSelectScalar = {
   updated_at?: boolean
 }
 
-export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "no_spk" | "no_po" | "spk_date" | "expected_date" | "spk_type" | "customer_id" | "sales_person" | "total_amount" | "ecatalog" | "status" | "remarks" | "user_id" | "created_at" | "updated_at", ExtArgs["result"]["sale"]>
+export type SaleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "no_spk" | "no_po" | "spk_date" | "expected_date" | "spk_type" | "customer_id" | "sales_person" | "total_amount" | "shipping_cost" | "ecatalog" | "status" | "remarks" | "user_id" | "created_at" | "updated_at", ExtArgs["result"]["sale"]>
 export type SaleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.Sale$userArgs<ExtArgs>
@@ -1647,6 +1708,7 @@ export type $SalePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     customer_id: number
     sales_person: string | null
     total_amount: runtime.Decimal
+    shipping_cost: runtime.Decimal
     ecatalog: string
     status: string
     remarks: string | null
@@ -2091,6 +2153,7 @@ export interface SaleFieldRefs {
   readonly customer_id: Prisma.FieldRef<"Sale", 'Int'>
   readonly sales_person: Prisma.FieldRef<"Sale", 'String'>
   readonly total_amount: Prisma.FieldRef<"Sale", 'Decimal'>
+  readonly shipping_cost: Prisma.FieldRef<"Sale", 'Decimal'>
   readonly ecatalog: Prisma.FieldRef<"Sale", 'String'>
   readonly status: Prisma.FieldRef<"Sale", 'String'>
   readonly remarks: Prisma.FieldRef<"Sale", 'String'>

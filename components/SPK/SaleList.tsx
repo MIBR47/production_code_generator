@@ -1,20 +1,23 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerOption, ProductOption, SaleSerialized, TaxOption } from "@/components/SPK/types";
 import { CreateSpkModal } from "./CreateSpkModal";
-import { SaleCard } from "./components/SaleCard";
-import { SaleDetailModal } from "./components/SaleDetailModal";
+// import { SaleCard } from "./components/SaleCard";
+// import { SaleDetailModal } from "./components/SaleDetailModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Paperclip, FileText, Plus } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { EditableCell } from "./components/EditableCell";
+// import { EditableCell } from "./components/EditableCell";
 import {
     updateSaleInlineAction,
     updatePoBisInlineAction,
     updateSaleItemInlineAction
-} from "./actions";
+} from "@/actions/spk";
+import { SaleCard } from "./SaleCard";
+import { EditableCell } from "./EditableCell";
+import { SaleDetailModal } from "./SaleDetailModal";
 
 interface SaleListProps {
     sales: SaleSerialized[];
@@ -57,7 +60,7 @@ export function SaleList({
     };
 
     return (
-        <div className="max-w-7xl space-y-4">
+        <div className="space-y-4">
             <CreateSpkModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
@@ -130,7 +133,7 @@ export function SaleList({
 
                     {/* TAB 2: SEAMLESS EDITABLE TABLE VIEW */}
                     <TabsContent value="attachments" className="m-0">
-                        <div className="space-y-4 [zoom:0.75] origin-top-left">
+                        <div className="space-y-4 [zoom:0.80] origin-top-left">
                             <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
                                 <Table>
                                     <TableHeader className="bg-[#0E5EA2] hover:bg-[#0E5EA2]">
@@ -224,8 +227,10 @@ export function SaleList({
                                                     const unitPriceWithoutTax = Number(item.unit_price);
                                                     const taxRate = item.tax?.rate ? Number(item.tax.rate) : 0;
 
+                                                    const taxPricePerUnit = unitPriceWithoutTax * (taxRate / 100);
+
                                                     // 2. Harga PO (With PPN) dihitung secara dinamis
-                                                    const hargaPoWithTax = unitPriceWithoutTax * (1 + taxRate / 100);
+                                                    const hargaPoWithTax = (unitPriceWithoutTax * (1 + taxRate / 100));
 
                                                     const discount = Number(item.discount) || 0;
                                                     const itemSubtotal = Number(item.subtotal); // Subtotal Tanpa PPN
@@ -234,7 +239,7 @@ export function SaleList({
                                                     return (
                                                         <TableRow
                                                             key={`${sale.id}-${item.id || itemIndex}`}
-                                                            className={`hover:bg-slate-50/80 transition-colors ${itemIndex === items.length - 1 ? "border-b-2 border-slate-200" : "border-b border-slate-100"
+                                                            className={`hover:bg-black transition-colors ${itemIndex === items.length - 1 ? "border-b-2 border-slate-200" : "border-b border-slate-100"
                                                                 }`}
                                                         >
                                                             {/* Merged Columns */}
@@ -336,7 +341,7 @@ export function SaleList({
 
                                                             {/* Calculated PPN */}
                                                             <TableCell className="text-right font-mono whitespace-nowrap text-slate-600 bg-slate-50/50">
-                                                                {formatCurrency(item.tax_price || 0)}
+                                                                {formatCurrency(taxPricePerUnit)}
                                                             </TableCell>
 
                                                             {/* Calculated Harga PO (Include PPN) */}

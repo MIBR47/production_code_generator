@@ -166,6 +166,7 @@ export const SaleScalarFieldEnum = {
   customer_id: 'customer_id',
   sales_person: 'sales_person',
   total_amount: 'total_amount',
+  shipping_cost: 'shipping_cost',
   ecatalog: 'ecatalog',
   status: 'status',
   remarks: 'remarks',

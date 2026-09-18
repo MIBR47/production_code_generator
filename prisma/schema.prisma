@@ -102,10 +102,11 @@ model Sale {
   customer_id   Int
   sales_person  String?   @db.VarChar(100)
 
-  total_amount Decimal @default(0) @db.Decimal(12, 2)
-  ecatalog     String  @db.VarChar(100)
-  status       String  @default("On Progress") @db.VarChar(50)
-  remarks      String? @db.Text
+  total_amount  Decimal @default(0) @db.Decimal(12, 2)
+  shipping_cost Decimal @default(0) @db.Decimal(12, 2)
+  ecatalog      String  @db.VarChar(100)
+  status        String  @default("On Progress") @db.VarChar(50)
+  remarks       String? @db.Text
 
   user_id    Int?
   created_at DateTime  @default(now()) @db.Timestamptz(6)

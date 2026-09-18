@@ -1,5 +1,6 @@
+﻿import { SaleList } from "@/components/SPK/SaleList";
 import { prisma } from "@/lib/prisma";
-import { SaleList } from "./SaleList";
+// import { SaleList } from "@/components/spk/SaleList";
 
 export default async function SpkPage() {
     const [sales, customers, rawProducts, rawTaxes] = await Promise.all([

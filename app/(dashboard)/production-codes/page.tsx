@@ -1,10 +1,10 @@
-// "use client";
+﻿// "use client";
 
 // import Input from "@/components/ui/Input";
 // import { useState } from "react";
 
 import { prisma } from "@/lib/prisma";
-import ProductionCodeTable from "./ProductionCodeTable";
+import ProductionCodeTable from "@/components/production-codes/ProductionCodeTable";
 
 export default async function ProductioncodesPage() {
 

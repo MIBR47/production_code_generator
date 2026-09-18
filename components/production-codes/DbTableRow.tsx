@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { updateProductionCode } from "../actions";
+// import { updateProductionCode } from "../actions";
 import { Input } from "@/components/ui/input";
+import { updateProductionCode } from "@/actions/production-codes";
 
 interface Props {
     item: any;

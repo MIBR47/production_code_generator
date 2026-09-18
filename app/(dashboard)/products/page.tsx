@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import ProductTable from "./ProductTable";
+﻿import { prisma } from "@/lib/prisma";
+import ProductTable from "@/components/products/ProductTable";
 
 
 type Products = {

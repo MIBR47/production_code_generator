@@ -28,6 +28,7 @@ export interface SaleSerialized {
     sales_person: string | null;
     total_amount: number | string;
     ecatalog: string;
+    shipping_cost: number | string;
     status: string;
     remarks: string | null;
     customer: {
