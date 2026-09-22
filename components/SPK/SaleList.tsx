@@ -3,21 +3,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerOption, ProductOption, SaleSerialized, TaxOption } from "@/components/SPK/types";
-import { CreateSpkModal } from "./CreateSpkModal";
-// import { SaleCard } from "./components/SaleCard";
-// import { SaleDetailModal } from "./components/SaleDetailModal";
+import { CreateSpkModal } from "./create/CreateSpkModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Paperclip, FileText, Plus } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-// import { EditableCell } from "./components/EditableCell";
 import {
     updateSaleInlineAction,
     updatePoBisInlineAction,
-    updateSaleItemInlineAction
+    updateSaleItemInlineAction,
 } from "@/actions/spk";
-import { SaleCard } from "./SaleCard";
+import { SaleCard } from "./modal/SaleCard";
 import { EditableCell } from "./EditableCell";
-import { SaleDetailModal } from "./SaleDetailModal";
+import { SaleDetailModal } from "./modal/SaleDetailModal";
 
 interface SaleListProps {
     sales: SaleSerialized[];
@@ -95,7 +92,7 @@ export function SaleList({
                     <TabsList className="w-full max-w-md h-10 bg-slate-100 rounded-lg border border-[#0E5EA2] ml-auto">
                         <TabsTrigger
                             value="items"
-                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white"
+                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white"
                         >
                             <Package className="w-4 h-4" />
                             <span>List SPK</span>
@@ -103,7 +100,7 @@ export function SaleList({
 
                         <TabsTrigger
                             value="attachments"
-                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white"
+                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white"
                         >
                             <Paperclip className="w-4 h-4" />
                             <span>Table</span>
@@ -134,10 +131,10 @@ export function SaleList({
                     {/* TAB 2: SEAMLESS EDITABLE TABLE VIEW */}
                     <TabsContent value="attachments" className="m-0">
                         <div className="space-y-4 [zoom:0.80] origin-top-left">
-                            <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+                            <div className="rounded-xl border border-black bg-card shadow-sm overflow-x-auto">
                                 <Table>
-                                    <TableHeader className="bg-[#0E5EA2] hover:bg-[#0E5EA2]">
-                                        <TableRow className="hover:bg-[#0E5EA2]">
+                                    <TableHeader className="bg-[#0E5EA2] hover:bg-[#0E5EA2] border-b-2 border-black">
+                                        <TableRow className="group hover:bg-[#0E5EA2] border-b-2 border-black">
                                             <TableHead className="text-center text-white font-semibold w-12">No</TableHead>
                                             <TableHead className="text-white font-semibold">Customer</TableHead>
                                             <TableHead className="text-white font-semibold">No SPK</TableHead>
@@ -159,8 +156,8 @@ export function SaleList({
                                     </TableHeader>
                                     <TableBody>
                                         {sales.length === 0 ? (
-                                            <TableRow>
-                                                <TableCell colSpan={16} className="text-center py-8 text-muted-foreground">
+                                            <TableRow className="group">
+                                                <TableCell colSpan={17} className="text-center py-8 text-muted-foreground">
                                                     Tidak ada data SPK untuk ditampilkan.
                                                 </TableCell>
                                             </TableRow>
@@ -170,9 +167,16 @@ export function SaleList({
                                                 const rowSpan = items.length > 0 ? items.length : 1;
                                                 const noPoBis = sale.sale_additionals?.no_po_bis || "";
 
+                                                const isEven = saleIndex % 2 === 0;
+                                                const groupBgColor = isEven ? "bg-white" : "bg-sky-50/50";
+                                                const hoverBgColor = isEven ? "hover:bg-slate-100/70" : "hover:bg-sky-100/60";
+
                                                 if (items.length === 0) {
                                                     return (
-                                                        <TableRow key={sale.id} className="border-b hover:bg-slate-50 transition-colors">
+                                                        <TableRow
+                                                            key={sale.id}
+                                                            className={`group transition-colors border-b-2 border-black ${groupBgColor} ${hoverBgColor}`}
+                                                        >
                                                             <TableCell className="text-center font-medium text-slate-600">{saleIndex + 1}</TableCell>
                                                             <TableCell className="font-semibold text-slate-900 whitespace-nowrap">{sale.customer?.name || "-"}</TableCell>
                                                             <TableCell className="font-medium text-[#0E5EA2] whitespace-nowrap">{sale.no_spk || "-"}</TableCell>
@@ -180,7 +184,7 @@ export function SaleList({
                                                                 <EditableCell
                                                                     type="date"
                                                                     value={formatDateForInput(sale.spk_date)}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updateSaleInlineAction({ saleId: sale.id, spk_date: String(val) });
                                                                     }}
                                                                 />
@@ -190,7 +194,7 @@ export function SaleList({
                                                             <TableCell>
                                                                 <EditableCell
                                                                     value={noPoBis}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updatePoBisInlineAction({ saleId: sale.id, no_po_bis: String(val) });
                                                                     }}
                                                                 />
@@ -198,7 +202,7 @@ export function SaleList({
                                                             <TableCell>
                                                                 <EditableCell
                                                                     value={sale.sales_person || ""}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updateSaleInlineAction({ saleId: sale.id, sales_person: String(val) });
                                                                     }}
                                                                 />
@@ -206,11 +210,12 @@ export function SaleList({
                                                             <TableCell>
                                                                 <EditableCell
                                                                     value={sale.ecatalog || ""}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updateSaleInlineAction({ saleId: sale.id, ecatalog: String(val) });
                                                                     }}
                                                                 />
                                                             </TableCell>
+                                                            <TableCell className="text-right font-mono text-slate-400">-</TableCell>
                                                             <TableCell className="text-right font-mono text-slate-400">-</TableCell>
                                                             <TableCell className="text-right font-mono text-slate-400">-</TableCell>
                                                             <TableCell className="text-center text-slate-400">-</TableCell>
@@ -223,42 +228,39 @@ export function SaleList({
                                                 }
 
                                                 return items.map((item, itemIndex) => {
-                                                    // 1. unit_price di DB = Harga Tanpa PPN
-                                                    const unitPriceWithoutTax = Number(item.unit_price);
+                                                    const unitPriceWithoutTax = Number(item.unit_price) || 0;
                                                     const taxRate = item.tax?.rate ? Number(item.tax.rate) : 0;
-
-                                                    const taxPricePerUnit = unitPriceWithoutTax * (taxRate / 100);
-
-                                                    // 2. Harga PO (With PPN) dihitung secara dinamis
-                                                    const hargaPoWithTax = (unitPriceWithoutTax * (1 + taxRate / 100));
-
+                                                    const taxPriceTotal = (unitPriceWithoutTax * (taxRate / 100)) * item.quantity;
+                                                    const hargaPoWithTax = unitPriceWithoutTax * (1 + taxRate / 100);
                                                     const discount = Number(item.discount) || 0;
-                                                    const itemSubtotal = Number(item.subtotal); // Subtotal Tanpa PPN
+                                                    const itemSubtotal = Number(item.subtotal) || 0;
                                                     const productCode = item.product?.product_type || "-";
+
+                                                    const isLastItem = itemIndex === items.length - 1;
 
                                                     return (
                                                         <TableRow
                                                             key={`${sale.id}-${item.id || itemIndex}`}
-                                                            className={`hover:bg-black transition-colors ${itemIndex === items.length - 1 ? "border-b-2 border-slate-200" : "border-b border-slate-100"
+                                                            className={`group transition-colors ${groupBgColor} ${hoverBgColor} ${isLastItem ? "border-b-2 border-black" : "border-b border-slate-200"
                                                                 }`}
                                                         >
-                                                            {/* Merged Columns */}
+                                                            {/* Merged Columns (First item row) */}
                                                             {itemIndex === 0 && (
                                                                 <>
-                                                                    <TableCell rowSpan={rowSpan} className="text-center font-medium text-slate-600 align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="text-center font-medium text-slate-600 align-top">
                                                                         {saleIndex + 1}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="font-semibold text-slate-900 whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="font-semibold text-slate-900 whitespace-nowrap align-top">
                                                                         {sale.customer?.name || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="font-medium text-[#0E5EA2] whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="font-medium text-[#0E5EA2] whitespace-nowrap align-top">
                                                                         {sale.no_spk || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
                                                                         <EditableCell
                                                                             type="date"
                                                                             value={formatDateForInput(sale.spk_date)}
-                                                                            onSave={async (val: any) => {
+                                                                            onSave={async (val: string | number) => {
                                                                                 await updateSaleInlineAction({ saleId: sale.id, spk_date: String(val) });
                                                                             }}
                                                                         />
@@ -266,21 +268,19 @@ export function SaleList({
                                                                 </>
                                                             )}
 
-                                                            {/* Product Details */}
+                                                            {/* Item Specific Columns */}
                                                             <TableCell className="max-w-[200px] truncate font-medium text-slate-800" title={item.product?.product_name}>
                                                                 {item.product?.product_name || "-"}
                                                             </TableCell>
                                                             <TableCell className="font-mono text-xs text-slate-600 whitespace-nowrap">
                                                                 {productCode}
                                                             </TableCell>
-
-                                                            {/* Editable QTY */}
                                                             <TableCell className="text-center">
                                                                 <EditableCell
                                                                     type="number"
                                                                     className="text-center font-semibold"
                                                                     value={item.quantity}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updateSaleItemInlineAction({
                                                                             saleItemId: item.id,
                                                                             saleId: sale.id,
@@ -293,29 +293,29 @@ export function SaleList({
                                                             {/* Additional Merged Columns */}
                                                             {itemIndex === 0 && (
                                                                 <>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap text-slate-700 align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap text-slate-700 align-top">
                                                                         {sale.no_po || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
                                                                         <EditableCell
                                                                             value={noPoBis}
-                                                                            onSave={async (val: any) => {
+                                                                            onSave={async (val: string | number) => {
                                                                                 await updatePoBisInlineAction({ saleId: sale.id, no_po_bis: String(val) });
                                                                             }}
                                                                         />
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
                                                                         <EditableCell
                                                                             value={sale.sales_person || ""}
-                                                                            onSave={async (val: any) => {
+                                                                            onSave={async (val: string | number) => {
                                                                                 await updateSaleInlineAction({ saleId: sale.id, sales_person: String(val) });
                                                                             }}
                                                                         />
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top bg-slate-50/30">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
                                                                         <EditableCell
                                                                             value={sale.ecatalog || ""}
-                                                                            onSave={async (val: any) => {
+                                                                            onSave={async (val: string | number) => {
                                                                                 await updateSaleInlineAction({ saleId: sale.id, ecatalog: String(val) });
                                                                             }}
                                                                         />
@@ -323,13 +323,13 @@ export function SaleList({
                                                                 </>
                                                             )}
 
-                                                            {/* Editable Harga Tanpa PPN (Membaca & Memperbarui unit_price DB) */}
+                                                            {/* Item Numerical Values & Calculations */}
                                                             <TableCell className="text-right font-mono whitespace-nowrap">
                                                                 <EditableCell
                                                                     type="number"
                                                                     className="text-right font-medium text-slate-900"
                                                                     value={unitPriceWithoutTax}
-                                                                    onSave={async (val: any) => {
+                                                                    onSave={async (val: string | number) => {
                                                                         await updateSaleItemInlineAction({
                                                                             saleItemId: item.id,
                                                                             saleId: sale.id,
@@ -338,45 +338,25 @@ export function SaleList({
                                                                     }}
                                                                 />
                                                             </TableCell>
-
-                                                            {/* Calculated PPN */}
-                                                            <TableCell className="text-right font-mono whitespace-nowrap text-slate-600 bg-slate-50/50">
-                                                                {formatCurrency(taxPricePerUnit)}
+                                                            <TableCell className="text-right font-mono text-slate-600 whitespace-nowrap">
+                                                                {formatCurrency(taxPriceTotal)}
                                                             </TableCell>
-
-                                                            {/* Calculated Harga PO (Include PPN) */}
-                                                            <TableCell className="text-right font-mono whitespace-nowrap text-slate-600 bg-slate-50/50">
+                                                            <TableCell className="text-right font-mono text-slate-700 whitespace-nowrap">
                                                                 {formatCurrency(hargaPoWithTax)}
                                                             </TableCell>
-
-
-
-
-
-                                                            {/* Editable Discount */}
-                                                            <TableCell className="text-center font-medium">
-                                                                <EditableCell
-                                                                    type="number"
-                                                                    className="text-center"
-                                                                    value={discount}
-                                                                    onSave={async (val: any) => {
-                                                                        await updateSaleItemInlineAction({
-                                                                            saleItemId: item.id,
-                                                                            saleId: sale.id,
-                                                                            discount: Number(val),
-                                                                        });
-                                                                    }}
-                                                                />
+                                                            <TableCell className="text-center font-mono text-slate-600">
+                                                                {discount}%
                                                             </TableCell>
-
-                                                            {/* Subtotal (Tanpa PPN) */}
-                                                            <TableCell className="text-right font-mono text-slate-900 font-semibold whitespace-nowrap">
+                                                            <TableCell className="text-right font-mono font-medium text-slate-900 whitespace-nowrap">
                                                                 {formatCurrency(itemSubtotal)}
                                                             </TableCell>
 
-                                                            {/* Merged Total SPK */}
+                                                            {/* Total SPK Merged Column */}
                                                             {itemIndex === 0 && (
-                                                                <TableCell rowSpan={rowSpan} className="text-right font-mono font-bold text-[#0E5EA2] whitespace-nowrap align-top bg-slate-50/30">
+                                                                <TableCell
+                                                                    rowSpan={rowSpan}
+                                                                    className="text-right font-mono font-bold text-[#0E5EA2] whitespace-nowrap align-top"
+                                                                >
                                                                     {formatCurrency(sale.total_amount)}
                                                                 </TableCell>
                                                             )}

@@ -1,7 +1,10 @@
 "use server";
 
+import { SaleItemSerialized } from "@/components/SPK/types";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import path from "path";
+import { writeFile, mkdir } from "fs/promises";
 
 export async function createSaleAction(prevState: any, formData: FormData) {
     try {
@@ -268,6 +271,7 @@ export async function updateSaleAction(saleId: number, formData: {
     remarks: string;
     spk_date: string;
     expected_date: string;
+    items?: SaleItemSerialized[];
 }) {
     try {
         await prisma.sale.update({
@@ -293,5 +297,59 @@ export async function updateSaleAction(saleId: number, formData: {
     } catch (error: any) {
         console.error("Error updating sale:", error);
         return { success: false, message: error.message || "Gagal memperbarui data SPK." };
+    }
+}
+export async function uploadAttachmentAction(formData: FormData) {
+    try {
+        const saleId = formData.get("sale_id");
+        const remarks = formData.get("remarks") as string;
+        const files = formData.getAll("files") as File[];
+
+        if (!saleId || files.length === 0) {
+            return { success: false, message: "File atau Data SPK tidak valid." };
+        }
+
+        const numericSaleId = Number(saleId);
+
+        // 1. Tentukan lokasi folder penyimpanan lokal: /public/uploads/spk-[id]
+        const uploadDir = path.join(process.cwd(), "public", "uploads", `spk-${numericSaleId}`);
+
+        // Buat folder jika belum ada
+        await mkdir(uploadDir, { recursive: true });
+
+        // 2. Loop setiap file yang diunggah
+        for (const file of files) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
+
+            // Buat nama file unik untuk menghindari duplikasi
+            const uniqueFileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+            const filePathOnDisk = path.join(uploadDir, uniqueFileName);
+
+            // Simpan fisik file ke Disk Server
+            await writeFile(filePathOnDisk, buffer);
+
+            // Buat Public URL relatif yang bisa diakses via browser
+            const publicUrlPath = `/uploads/spk-${numericSaleId}/${uniqueFileName}`;
+
+            // 3. Simpan record metadata ke PostgreSQL via PRISMA
+            await prisma.sale_attachment.create({
+                data: {
+                    sale_id: numericSaleId,
+                    file_name: file.name,
+                    file_path: publicUrlPath,
+                    file_type: file.type || "application/octet-stream",
+                    remarks: remarks || null,
+                },
+            });
+        }
+
+        // Revalidate halaman SPK agar data terbaru langsung muncul
+        revalidatePath("/spk");
+
+        return { success: true, message: "Lampiran berhasil diunggah!" };
+    } catch (error: any) {
+        console.error("Upload error:", error);
+        return { success: false, message: error.message || "Gagal mengunggah lampiran." };
     }
 }

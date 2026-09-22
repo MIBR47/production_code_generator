@@ -1,7 +1,7 @@
 // components/SPK/SaleDetailModal.tsx
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, ChangeEvent } from "react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import {
@@ -22,6 +22,7 @@ import {
     X,
     Save,
     Loader2,
+    Upload,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -35,9 +36,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { SaleSerialized } from "@/components/SPK/types";
+import { SaleItemSerialized, SaleSerialized } from "@/components/SPK/types";
 import { SaleItemRow } from "./SaleItemRow";
-import { updateSaleAction } from "@/actions/spk";
+import { updateSaleAction, uploadAttachmentAction } from "@/actions/spk";
+import { SaleDetailTabs } from "./SaleDetailTabs";
 // import { updateSaleAction } from "../actions";
 
 interface SaleDetailModalProps {
@@ -56,6 +58,7 @@ export function SaleDetailModal({
     const [isEditing, setIsEditing] = useState(false);
     const [isPending, startTransition] = useTransition();
 
+    // State untuk Form Utama
     const [formData, setFormData] = useState({
         status: "",
         sales_person: "",
@@ -65,6 +68,14 @@ export function SaleDetailModal({
         spk_date: "",
         expected_date: "",
     });
+
+    // State Editable Item Produk
+    const [editableItems, setEditableItems] = useState<SaleItemSerialized[]>([]);
+
+    // State Upload Lampiran Baru
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [attachmentRemarks, setAttachmentRemarks] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         if (sale) {
@@ -77,8 +88,11 @@ export function SaleDetailModal({
                 spk_date: sale.spk_date ? new Date(sale.spk_date).toISOString().split("T")[0] : "",
                 expected_date: sale.expected_date ? new Date(sale.expected_date).toISOString().split("T")[0] : "",
             });
+            setEditableItems(sale.sale_items ? JSON.parse(JSON.stringify(sale.sale_items)) : []);
         }
         setIsEditing(false);
+        setSelectedFiles([]);
+        setAttachmentRemarks("");
     }, [sale]);
 
     if (!sale) return null;
@@ -87,14 +101,62 @@ export function SaleDetailModal({
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
+    // Handler Perubahan Item Produk (Qty, Harga, Diskon)
+    const handleItemChange = (index: number, field: keyof SaleItemSerialized, value: number) => {
+        setEditableItems((prev) => {
+            const updated = [...prev];
+            const currentItem = { ...updated[index], [field]: value };
+
+            // Perhitungan ulang Subtotal secara dinamis: (Qty * Price) * (1 - Discount/100)
+            const qty = Number(currentItem.quantity) || 0;
+            const price = Number(currentItem.unit_price) || 0;
+            const discount = Number(currentItem.discount) || 0;
+
+            currentItem.subtotal = qty * price * (1 - discount / 100);
+            updated[index] = currentItem;
+            return updated;
+        });
+    };
+
+    const handleUploadAttachments = async () => {
+        if (selectedFiles.length === 0) return;
+
+        setIsUploading(true);
+        try {
+            const uploadFormData = new FormData();
+            uploadFormData.append("sale_id", String(sale.id));
+            uploadFormData.append("remarks", attachmentRemarks);
+
+            selectedFiles.forEach((file) => {
+                uploadFormData.append("files", file);
+            });
+
+            // Panggil Server Action Prisma
+            const res = await uploadAttachmentAction(uploadFormData);
+
+            if (res.success) {
+                setSelectedFiles([]);
+                setAttachmentRemarks("");
+                alert("File berhasil diunggah!");
+            } else {
+                alert(res.message);
+            }
+        } catch (error) {
+            alert("Terjadi kesalahan saat mengunggah file.");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    // Handler Simpan Data (Termasuk Item yang Di-edit)
     const handleSave = () => {
         startTransition(async () => {
-            // Mengirim data update (no_spk, no_po, spk_type tetap dikirim menggunakan nilai asli dari sale)
             const res = await updateSaleAction(sale.id, {
                 no_spk: sale.no_spk || "",
                 no_po: sale.no_po || "",
                 spk_type: sale.spk_type || "",
                 ...formData,
+                items: editableItems, // Mengirimkan array item yang telah diperbarui
             });
 
             if (res.success) {
@@ -104,6 +166,15 @@ export function SaleDetailModal({
             }
         });
     };
+
+    // Handler Upload Lampiran File
+    const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFiles(Array.from(e.target.files));
+        }
+    };
+
+
 
     const getStatusBadge = (status: string) => {
         switch (status?.toLowerCase()) {
@@ -134,14 +205,15 @@ export function SaleDetailModal({
         }
     };
 
-    const subtotalDPP = sale.sale_items?.reduce(
-        (acc, item) => acc + Number(item.quantity || 0) * (Number(item.unit_price) || 0) * (1 - (Number(item.discount || 0) / 100)),
+    // Kalkulasi Total & DPP dari state editableItems
+    const activeItems = isEditing ? editableItems : (sale.sale_items || []);
+    const subtotalDPP = activeItems.reduce(
+        (acc, item) => acc + Number(item.quantity || 0) * Number(item.unit_price || 0) * (1 - (Number(item.discount || 0) / 100)),
         0
-    ) || 0;
+    );
 
-    const totalAmount = Number(sale.total_amount || 0);
-    const totalTax = Math.max(0, totalAmount - subtotalDPP);
-
+    const totalAmount = subtotalDPP + Number(formData.shipping_cost || 0);
+    const totalTax = Math.max(0, Number(sale.total_amount || 0) - subtotalDPP);
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { setIsEditing(false); onClose(); } }}>
             <DialogContent className="!max-w-full sm:!max-w-4xl lg:!max-w-5xl w-[95vw] max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-xl">
@@ -349,7 +421,19 @@ export function SaleDetailModal({
                             )}
                         </div>
                     </div>
-
+                    <SaleDetailTabs
+                        sale={sale}
+                        subtotalDPP={subtotalDPP}
+                        totalTax={totalTax}
+                        totalAmount={totalAmount}
+                        selectedFiles={selectedFiles}
+                        isUploading={isUploading}
+                        attachmentRemarks={attachmentRemarks}
+                        setAttachmentRemarks={setAttachmentRemarks}
+                        handleFileSelect={handleFileSelect}
+                        handleUploadAttachments={handleUploadAttachments}
+                        formatCurrency={formatCurrency}
+                    />
                     {/* TAB ITEM PRODUK & LAMPIRAN */}
                     <Tabs defaultValue="items" className="w-full space-y-4">
                         <TabsList className="grid w-full grid-cols-2 max-w-md h-10 p-1 bg-slate-100 rounded-lg">
@@ -399,7 +483,55 @@ export function SaleDetailModal({
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="attachments" className="m-0">
+                        {/* CONTENT TAB: LAMPIRAN & UPLOAD */}
+                        <TabsContent value="attachments" className="space-y-4 m-0">
+                            {/* Form Box Upload Lampiran Baru */}
+                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                                    <Upload className="w-3.5 h-3.5 text-[#0E5EA2]" /> Unggah Dokumen / Lampiran Baru
+                                </h4>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-xs text-slate-500 font-medium block mb-1">Pilih File</label>
+                                        <Input
+                                            type="file"
+                                            multiple
+                                            onChange={handleFileSelect}
+                                            className="h-9 text-xs bg-white cursor-pointer"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-slate-500 font-medium block mb-1">Catatan Lampiran (Opsional)</label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Contoh: Bukti Transfer / PO ditandatangani"
+                                            value={attachmentRemarks}
+                                            onChange={(e) => setAttachmentRemarks(e.target.value)}
+                                            className="h-9 text-xs bg-white"
+                                        />
+                                    </div>
+                                </div>
+
+                                {selectedFiles.length > 0 && (
+                                    <div className="flex items-center justify-between pt-2">
+                                        <span className="text-xs text-slate-500">
+                                            {selectedFiles.length} file dipilih
+                                        </span>
+                                        <Button
+                                            size="sm"
+                                            onClick={handleUploadAttachments}
+                                            disabled={isUploading}
+                                            className="h-8 px-3 text-xs bg-[#0E5EA2] hover:bg-[#0b4b82] text-white"
+                                        >
+                                            {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Upload className="w-3.5 h-3.5 mr-1" />}
+                                            Unggah File
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* List Lampiran */}
                             {sale.sale_attachments && sale.sale_attachments.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {sale.sale_attachments.map((file) => (
