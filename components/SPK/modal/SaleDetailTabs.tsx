@@ -20,7 +20,6 @@ interface SaleDetailTabsProps {
     setAttachmentRemarks: (value: string) => void;
     handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleUploadAttachments: () => void;
-    // UPDATE DIPERLUKAN DI SINI: tambahkan string pada tipe parameter amount
     formatCurrency: (amount: number | string) => string;
 }
 
@@ -102,7 +101,7 @@ export const SaleDetailTabs: React.FC<SaleDetailTabsProps> = ({
                                 type="file"
                                 multiple
                                 onChange={handleFileSelect}
-                                className="h-9 text-xs bg-white cursor-pointer"
+                                className="h-9 text-xs file:text-black bg-white cursor-pointer"
                             />
                         </div>
                         <div>
@@ -151,11 +150,12 @@ export const SaleDetailTabs: React.FC<SaleDetailTabsProps> = ({
                                         <p className="text-sm font-semibold text-slate-800 truncate" title={file.file_name}>
                                             {file.file_name}
                                         </p>
-                                        {file.remarks && (
-                                            <p className="text-xs text-slate-500 italic truncate">
-                                                {file.remarks}
-                                            </p>
-                                        )}
+                                        <p className="text-xs text-slate-500 italic truncate">
+                                            {file.remarks}
+                                        </p>
+                                        {/* {file.remarks && (
+                                          
+                                        )} */}
                                         <p className="text-[10px] text-slate-400 mt-0.5">
                                             {format(new Date(file.created_at), "dd MMM yyyy, HH:mm", { locale: id })}
                                         </p>

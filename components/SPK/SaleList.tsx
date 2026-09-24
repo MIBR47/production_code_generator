@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CustomerOption, ProductOption, SaleSerialized, TaxOption } from "@/components/SPK/types";
 import { CreateSpkModal } from "./create/CreateSpkModal";
@@ -15,6 +15,8 @@ import {
 import { SaleCard } from "./modal/SaleCard";
 import { EditableCell } from "./EditableCell";
 import { SaleDetailModal } from "./modal/SaleDetailModal";
+import { FilterCategoryOption, TableFilterBar } from "../TableFilterBar";
+import { useProductionFilter } from "../production-codes/useProductionFilter";
 
 interface SaleListProps {
     sales: SaleSerialized[];
@@ -24,6 +26,11 @@ interface SaleListProps {
     onAddNew?: () => void;
 }
 
+type SaleFilter = {
+    id: number;
+    category: string;
+    value: string;
+};
 export function SaleList({
     sales,
     customers = [],
@@ -33,6 +40,17 @@ export function SaleList({
 }: SaleListProps) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectedSale, setSelectedSale] = useState<SaleSerialized | null>(null);
+
+    const [filters, setFilters] = useState<SaleFilter[]>([
+        {
+            id: 1,
+            category: "customer",
+            value: "",
+        },
+    ]);
+
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     const handleOpenCreateModal = () => {
         if (onAddNew) {
@@ -55,7 +73,225 @@ export function SaleList({
         const d = new Date(dateString);
         return d.toISOString().split("T")[0];
     };
+    const addFilter = () => {
+        setFilters((prev) => [
+            ...prev,
+            {
+                id: Date.now(),
+                category: "customer",
+                value: "",
+            },
+        ]);
+    };
 
+    const removeFilter = (id: number) => {
+        setFilters((prev) =>
+            prev.filter((filter) => filter.id !== id)
+        );
+    };
+
+    const updateFilterCategory = (
+        id: number,
+        category: string
+    ) => {
+        setFilters((prev) =>
+            prev.map((filter) =>
+                filter.id === id
+                    ? {
+                        ...filter,
+                        category,
+                        value: "",
+                    }
+                    : filter
+            )
+        );
+    };
+
+    const updateFilterValue = (
+        id: number,
+        value: string
+    ) => {
+        setFilters((prev) =>
+            prev.map((filter) =>
+                filter.id === id
+                    ? {
+                        ...filter,
+                        value,
+                    }
+                    : filter
+            )
+        );
+    };
+
+    const matchesFilter = (
+        sale: SaleSerialized,
+        category: string,
+        searchValue: string
+    ) => {
+        const keyword = searchValue.toLowerCase().trim();
+
+        if (!keyword) return true;
+
+        switch (category) {
+            case "customer":
+                return String(sale.customer?.name ?? "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            case "no_spk":
+                return String(sale.no_spk ?? "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            case "spk_date":
+                return sale.spk_date
+                    ? new Date(sale.spk_date)
+                        .toISOString()
+                        .split("T")[0] === searchValue
+                    : false;
+
+            case "product_name":
+                return sale.sale_items?.some((item) =>
+                    String(item.product?.product_name ?? "")
+                        .toLowerCase()
+                        .includes(keyword)
+                );
+
+            case "product_code":
+                return sale.sale_items?.some((item) =>
+                    item.product?.product_codes?.some((code: any) =>
+                        String(code.product_code ?? "")
+                            .toLowerCase()
+                            .includes(keyword)
+                    )
+                );
+
+            case "quantity":
+                return sale.sale_items?.some((item) =>
+                    String(item.quantity).includes(keyword)
+                );
+
+            case "no_po":
+                return String(sale.no_po ?? "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            case "no_po_bis":
+                return String(
+                    sale.sale_additional?.no_po_bis ?? ""
+                )
+                    .toLowerCase()
+                    .includes(keyword);
+
+            case "sales_person":
+                return String(sale.sales_person ?? "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            case "ecatalog":
+                return String(sale.ecatalog ?? "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            default:
+                return true;
+        }
+    };
+
+    const categoryOptions = [
+        { value: "all", label: "Semua Kategori" },
+        { value: "customer", label: "Customer" },
+        { value: "no_spk", label: "No SPK" },
+        { value: "spk_date", label: "Tgl SPK" },
+        { value: "product_name", label: "Nama Barang" },
+        { value: "product_code", label: "Code" },
+        { value: "quantity", label: "QTY" },
+        { value: "no_po", label: "No PO" },
+        { value: "no_po_bis", label: "No PO BIS" },
+        { value: "sales_person", label: "Sales Person" },
+        { value: "ecatalog", label: "E-Catalog" },
+    ];
+    const handleToday = () => {
+        const today = new Date();
+
+        const date = today.toISOString().split("T")[0];
+
+        setStartDate(date);
+        setEndDate(date);
+    };
+
+    const handleThisWeek = () => {
+        const today = new Date();
+
+        // Senin sebagai awal minggu
+        const day = today.getDay();
+        const diffToMonday = day === 0 ? -6 : 1 - day;
+
+        const monday = new Date(today);
+        monday.setDate(today.getDate() + diffToMonday);
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+
+        setStartDate(monday.toISOString().split("T")[0]);
+        setEndDate(sunday.toISOString().split("T")[0]);
+    };
+
+    const handleThisMonth = () => {
+        const today = new Date();
+
+        const firstDay = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1
+        );
+
+        const lastDay = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+        );
+
+        setStartDate(firstDay.toISOString().split("T")[0]);
+        setEndDate(lastDay.toISOString().split("T")[0]);
+    };
+    const filteredData = useMemo(() => {
+        return sales.filter((sale) => {
+
+            // =========================
+            // FILTER TANGGAL
+            // =========================
+            if (startDate || endDate) {
+                const saleDate = new Date(sale.spk_date)
+                    .toISOString()
+                    .split("T")[0];
+
+                if (startDate && saleDate < startDate) {
+                    return false;
+                }
+
+                if (endDate && saleDate > endDate) {
+                    return false;
+                }
+            }
+
+            // =========================
+            // MULTIPLE FILTERS
+            // =========================
+            return filters.every((filter) =>
+                matchesFilter(
+                    sale,
+                    filter.category,
+                    filter.value
+                )
+            );
+        });
+    }, [
+        sales,
+        filters,
+        startDate,
+        endDate,
+    ]);
     return (
         <div className="space-y-4">
             <CreateSpkModal
@@ -86,13 +322,37 @@ export function SaleList({
                     Buat SPK Baru
                 </Button>
             </div>
+            <TableFilterBar
+                filters={filters}
+                categoryOptions={categoryOptions}
+
+                onAddFilter={addFilter}
+                onRemoveFilter={removeFilter}
+                onCategoryChange={updateFilterCategory}
+                onValueChange={updateFilterValue}
+
+                startDate={startDate}
+                setStartDate={setStartDate}
+
+                endDate={endDate}
+                setEndDate={setEndDate}
+
+                dateFilterLabel="Filter Tanggal SPK:"
+
+                showQuickDateButtons={true}
+
+                onToday={handleToday}
+                onThisWeek={handleThisWeek}
+                onThisMonth={handleThisMonth}
+            />
+
 
             <div>
                 <Tabs defaultValue="items" className="w-full space-y-4">
                     <TabsList className="w-full max-w-md h-10 bg-slate-100 rounded-lg border border-[#0E5EA2] ml-auto">
                         <TabsTrigger
                             value="items"
-                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white"
+                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white hover:text-black"
                         >
                             <Package className="w-4 h-4" />
                             <span>List SPK</span>
@@ -100,7 +360,7 @@ export function SaleList({
 
                         <TabsTrigger
                             value="attachments"
-                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white"
+                            className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-active:bg-[#0E5EA2] data-active:text-white data-active:hover:text-white hover:text-black"
                         >
                             <Paperclip className="w-4 h-4" />
                             <span>Table</span>
@@ -109,14 +369,14 @@ export function SaleList({
 
                     {/* TAB 1: CARD VIEW */}
                     <TabsContent value="items" className="space-y-3 m-0">
-                        {sales.length === 0 ? (
+                        {filteredData.length === 0 ? (
                             <div className="text-center py-12 bg-muted/20 rounded-xl border border-dashed border-border">
                                 <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
                                 <h3 className="text-base font-semibold text-foreground">Belum ada data SPK</h3>
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                {sales.map((sale) => (
+                                {filteredData.map((sale) => (
                                     <SaleCard
                                         key={sale.id}
                                         sale={sale}
@@ -146,26 +406,28 @@ export function SaleList({
                                             <TableHead className="text-white font-semibold min-w-[130px]">No PO BIS</TableHead>
                                             <TableHead className="text-white font-semibold min-w-[130px]">Sales Person</TableHead>
                                             <TableHead className="text-white font-semibold min-w-[130px]">E-Catalog</TableHead>
-                                            <TableHead className="text-right text-white font-semibold whitespace-nowrap min-w-[140px]">Harga Tanpa PPN</TableHead>
+                                            <TableHead className="text-center text-white font-semibold whitespace-nowrap min-w-[140px]">Harga Tanpa PPN</TableHead>
+                                            <TableHead className="text-center text-white font-semibold w-20">Disc (%)</TableHead>
+                                            <TableHead className="text-center text-white font-semibold whitespace-nowrap">with disc</TableHead>
                                             <TableHead className="text-right text-white font-semibold whitespace-nowrap">PPN</TableHead>
                                             <TableHead className="text-right text-white font-semibold whitespace-nowrap">Harga PO (Inc. PPN)</TableHead>
-                                            <TableHead className="text-center text-white font-semibold w-20">Disc (%)</TableHead>
-                                            <TableHead className="text-right text-white font-semibold whitespace-nowrap">Subtotal (Ex. PPN)</TableHead>
+                                            <TableHead className="text-right text-white font-semibold whitespace-nowrap">Subtotal (Inc. PPN)</TableHead>
                                             <TableHead className="text-right text-white font-semibold whitespace-nowrap">Total SPK</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {sales.length === 0 ? (
+                                        {filteredData.length === 0 ? (
                                             <TableRow className="group">
                                                 <TableCell colSpan={17} className="text-center py-8 text-muted-foreground">
                                                     Tidak ada data SPK untuk ditampilkan.
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
-                                            sales.map((sale, saleIndex) => {
+                                            filteredData.map((sale, saleIndex) => {
                                                 const items = sale.sale_items || [];
                                                 const rowSpan = items.length > 0 ? items.length : 1;
-                                                const noPoBis = sale.sale_additionals?.no_po_bis || "";
+                                                const noPoBis = sale.sale_additional?.no_po_bis || "-";
+
 
                                                 const isEven = saleIndex % 2 === 0;
                                                 const groupBgColor = isEven ? "bg-white" : "bg-sky-50/50";
@@ -220,6 +482,7 @@ export function SaleList({
                                                             <TableCell className="text-right font-mono text-slate-400">-</TableCell>
                                                             <TableCell className="text-center text-slate-400">-</TableCell>
                                                             <TableCell className="text-right font-mono text-slate-400">-</TableCell>
+                                                            <TableCell className="text-right font-mono text-slate-400">-</TableCell>
                                                             <TableCell className="text-right font-mono font-bold text-[#0E5EA2] whitespace-nowrap">
                                                                 {formatCurrency(sale.total_amount)}
                                                             </TableCell>
@@ -230,10 +493,11 @@ export function SaleList({
                                                 return items.map((item, itemIndex) => {
                                                     const unitPriceWithoutTax = Number(item.unit_price) || 0;
                                                     const taxRate = item.tax?.rate ? Number(item.tax.rate) : 0;
-                                                    const taxPriceTotal = (unitPriceWithoutTax * (taxRate / 100)) * item.quantity;
-                                                    const hargaPoWithTax = unitPriceWithoutTax * (1 + taxRate / 100);
                                                     const discount = Number(item.discount) || 0;
-                                                    const itemSubtotal = Number(item.subtotal) || 0;
+                                                    const priceAfterDisc = unitPriceWithoutTax - (unitPriceWithoutTax * discount / 100);
+                                                    const taxPrice = (priceAfterDisc * (taxRate / 100));
+                                                    const hargaPoWithTax = priceAfterDisc * (1 + taxRate / 100);
+                                                    const itemSubtotal = Number(item.subtotal) + (taxPrice * item.quantity) || 0;
                                                     const productCode = item.product?.product_type || "-";
 
                                                     const isLastItem = itemIndex === items.length - 1;
@@ -247,16 +511,16 @@ export function SaleList({
                                                             {/* Merged Columns (First item row) */}
                                                             {itemIndex === 0 && (
                                                                 <>
-                                                                    <TableCell rowSpan={rowSpan} className="text-center font-medium text-slate-600 align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="text-center font-medium text-slate-600">
                                                                         {saleIndex + 1}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="font-semibold text-slate-900 whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="font-semibold text-slate-900 whitespace-nowrap ">
                                                                         {sale.customer?.name || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="font-medium text-[#0E5EA2] whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="font-medium text-[#0E5EA2] whitespace-nowrap ">
                                                                         {sale.no_spk || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap">
                                                                         <EditableCell
                                                                             type="date"
                                                                             value={formatDateForInput(sale.spk_date)}
@@ -293,10 +557,10 @@ export function SaleList({
                                                             {/* Additional Merged Columns */}
                                                             {itemIndex === 0 && (
                                                                 <>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap text-slate-700 align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap text-slate-700">
                                                                         {sale.no_po || "-"}
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap">
                                                                         <EditableCell
                                                                             value={noPoBis}
                                                                             onSave={async (val: string | number) => {
@@ -304,7 +568,7 @@ export function SaleList({
                                                                             }}
                                                                         />
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap">
                                                                         <EditableCell
                                                                             value={sale.sales_person || ""}
                                                                             onSave={async (val: string | number) => {
@@ -312,7 +576,7 @@ export function SaleList({
                                                                             }}
                                                                         />
                                                                     </TableCell>
-                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap align-top">
+                                                                    <TableCell rowSpan={rowSpan} className="whitespace-nowrap">
                                                                         <EditableCell
                                                                             value={sale.ecatalog || ""}
                                                                             onSave={async (val: string | number) => {
@@ -338,24 +602,32 @@ export function SaleList({
                                                                     }}
                                                                 />
                                                             </TableCell>
-                                                            <TableCell className="text-right font-mono text-slate-600 whitespace-nowrap">
-                                                                {formatCurrency(taxPriceTotal)}
-                                                            </TableCell>
-                                                            <TableCell className="text-right font-mono text-slate-700 whitespace-nowrap">
-                                                                {formatCurrency(hargaPoWithTax)}
-                                                            </TableCell>
+
+
                                                             <TableCell className="text-center font-mono text-slate-600">
                                                                 {discount}%
                                                             </TableCell>
-                                                            <TableCell className="text-right font-mono font-medium text-slate-900 whitespace-nowrap">
+                                                            <TableCell className="text-center font-mono font-medium text-slate-900 whitespace-nowrap">
+                                                                {
+                                                                    formatCurrency(priceAfterDisc)
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell className="text-center font-mono text-slate-600 whitespace-nowrap">
+                                                                {formatCurrency(taxPrice)}
+                                                            </TableCell>
+                                                            <TableCell className="text-center font-mono text-slate-700 whitespace-nowrap">
+                                                                {formatCurrency(hargaPoWithTax)}
+                                                            </TableCell>
+                                                            <TableCell className="text-center font-mono font-medium text-slate-900 whitespace-nowrap">
                                                                 {formatCurrency(itemSubtotal)}
                                                             </TableCell>
+
 
                                                             {/* Total SPK Merged Column */}
                                                             {itemIndex === 0 && (
                                                                 <TableCell
                                                                     rowSpan={rowSpan}
-                                                                    className="text-right font-mono font-bold text-[#0E5EA2] whitespace-nowrap align-top"
+                                                                    className="text-right font-mono font-bold text-[#0E5EA2] whitespace-nowrap"
                                                                 >
                                                                     {formatCurrency(sale.total_amount)}
                                                                 </TableCell>

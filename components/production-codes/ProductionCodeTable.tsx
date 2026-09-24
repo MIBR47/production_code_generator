@@ -269,15 +269,32 @@ export default function ProductionCodeTable({ data, products, customers }: Produ
                     filter.setFilterCategory(val);
                     filter.setSearch("");
                 }}
+                categoryOptions={[
+                    { value: "all", label: "Semua Kategori" },
+                    { value: "productName", label: "Nama Barang" },
+                    { value: "productType", label: "Tipe Barang" },
+                    { value: "productCode", label: "Kode Barang" },
+                    { value: "customerName", label: "Customer" },
+                    { value: "batch", label: "Batch" },
+                    { value: "spk", label: "SPK" },
+                    { value: "item_code_recipient", label: "Penerima" },
+                    { value: "remarks", label: "Keterangan" },
+                    { value: "status", label: "Status" },
+                    { value: "out_code_date", label: "Tanggal Kode Keluar" },
+                ]}
                 search={filter.search}
                 setSearch={filter.setSearch}
+                isDateSearch={filter.filterCategory === "out_code_date"}
                 startDate={filter.startDate}
                 setStartDate={filter.setStartDate}
                 endDate={filter.endDate}
                 setEndDate={filter.setEndDate}
+                dateFilterLabel="Filter Tanggal Dibuat:"
                 selectedCount={selectedIds.length}
                 onExport={handleExportToExcel}
-                onOpenCreateModal={() => setShowCreateProductionCode(true)} // 7. Updated state trigger
+                exportLabel="Export Excel"
+                onOpenCreateModal={() => setShowCreateProductionCode(true)}
+                createLabel="Tambah Data"
                 onToday={filter.setTodayFilter}
                 onThisWeek={filter.setThisWeekFilter}
                 onThisMonth={filter.setThisMonthFilter}

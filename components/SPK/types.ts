@@ -18,6 +18,8 @@ export interface SaleItemSerialized {
     discount?: number | null; //persen
 }
 
+
+
 export interface SaleSerialized {
     id: number;
     no_spk: string | null;
@@ -40,7 +42,7 @@ export interface SaleSerialized {
     } | null;
     sale_items: SaleItemSerialized[];
     sale_attachments?: SaleAttachment[];
-    sale_additionals?: {
+    sale_additional?: {
         no_po_bis?: string | null;
         date_po_bis?: string | null;
     } | null;
