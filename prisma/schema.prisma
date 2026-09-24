@@ -212,3 +212,381 @@ model Sale_payment_attachment {
 
   @@map("sale_payment_attachments")
 }
+
+enum ItemCategory {
+  RAW_MATERIAL
+  SUPPORTING_MATERIAL
+  SERVICE
+}
+
+enum ItemType {
+  STORABLE
+  CONSUMABLE
+  SERVICE
+}
+
+enum TrackingType {
+  NONE
+  LOT
+}
+
+// Master barang/material/jasa.
+// Menyimpan identitas item, kategori, UOM, cost, dan metode tracking.
+model Item {
+  id        Int    @id @default(autoincrement())
+  name      String @db.VarChar(255)
+  reference String @unique @db.VarChar(50)
+
+  group_id  Int
+  category  ItemCategory
+  item_type ItemType
+
+  // UOM utama untuk inventory/manufacturing.
+  // Contoh vinil = MTR
+  uom_id Int
+
+  // UOM ketika purchasing.
+  // Contoh vinil = ROLL
+  purchase_uom_id Int?
+
+  // Isi normal/estimasi purchase UOM.
+  // Contoh 1 ROLL biasanya 50 MTR.
+  // BUKAN actual qty saat receiving.
+  default_purchase_qty Decimal? @db.Decimal(12, 3)
+
+  // Harga/cost saat ini
+  cost Decimal @default(0) @db.Decimal(15, 2)
+
+  // Apakah item perlu dilacak per roll/batch
+  tracking TrackingType @default(NONE)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  group ItemGroup @relation(fields: [group_id], references: [id], onDelete: Restrict)
+
+  uom UnitOfMeasure @relation("ItemInventoryUom", fields: [uom_id], references: [id])
+
+  purchase_uom UnitOfMeasure? @relation("ItemPurchaseUom", fields: [purchase_uom_id], references: [id])
+
+  lots                   ItemLot[]
+  stock_movements        StockMovement[]
+  purchase_order_items   PurchaseOrderItem[]
+  purchase_receipt_items PurchaseReceiptItem[]
+
+  @@index([group_id])
+  @@index([category])
+  @@map("items")
+}
+
+// =====================================================
+// ITEM GROUP
+// =====================================================
+
+// Master group item.
+// Digunakan untuk mengelompokkan item sejenis dan menentukan prefix kode.
+model ItemGroup {
+  id Int @id @default(autoincrement())
+
+  name String @unique @db.VarChar(150)
+
+  // Untuk generator reference
+  // contoh:
+  // Sheet Plate SPCC -> SPCC
+  // Vinyl Cherokee   -> VCH
+  code_prefix String @unique @db.VarChar(20)
+
+  // Nomor terakhir yang sudah digunakan untuk reference.
+  last_number Int @default(0)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  items Item[]
+
+  @@map("item_groups")
+}
+
+// =====================================================
+// UNIT OF MEASURE
+// =====================================================
+
+// Master satuan.
+// Digunakan oleh inventory, purchasing, receiving, dan stock movement.
+model UnitOfMeasure {
+  id Int @id @default(autoincrement())
+
+  name   String  @unique @db.VarChar(100)
+  symbol String? @db.VarChar(20)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  inventory_items Item[] @relation("ItemInventoryUom")
+  purchase_items  Item[] @relation("ItemPurchaseUom")
+
+  purchase_order_items   PurchaseOrderItem[]
+  purchase_receipt_items PurchaseReceiptItem[]
+  stock_movements        StockMovement[]
+
+  @@map("units_of_measure")
+}
+
+// =====================================================
+// SUPPLIER
+// =====================================================
+
+// Master supplier/vendor.
+// Digunakan sebagai supplier pada Purchase Order.
+model Supplier {
+  id Int @id @default(autoincrement())
+
+  name    String  @db.VarChar(255)
+  address String? @db.Text
+  contact String? @db.VarChar(100)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  purchase_orders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+// =====================================================
+// PURCHASE ORDER
+// =====================================================
+
+enum PurchaseOrderStatus {
+  DRAFT
+  CONFIRMED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+// Header transaksi pembelian.
+// Satu Purchase Order dapat memiliki banyak item dan banyak receipt.
+model PurchaseOrder {
+  id Int @id @default(autoincrement())
+
+  po_number   String @unique @db.VarChar(100)
+  supplier_id Int
+
+  order_date    DateTime  @default(now()) @db.Timestamptz(6)
+  expected_date DateTime? @db.Timestamptz(6)
+
+  status PurchaseOrderStatus @default(DRAFT)
+
+  remarks String? @db.Text
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
+
+  items    PurchaseOrderItem[]
+  receipts PurchaseReceipt[]
+
+  @@index([supplier_id])
+  @@map("purchase_orders")
+}
+
+// =====================================================
+// PURCHASE ORDER ITEM
+// =====================================================
+
+// Detail barang yang dibeli dalam Purchase Order.
+// Quantity menggunakan purchase UOM.
+model PurchaseOrderItem {
+  id Int @id @default(autoincrement())
+
+  purchase_order_id Int
+  item_id           Int
+
+  // contoh beli 2 ROLL
+  quantity Decimal @db.Decimal(12, 3)
+
+  // ROLL
+  uom_id Int
+
+  // harga per ROLL
+  unit_price Decimal @db.Decimal(15, 2)
+
+  subtotal Decimal @db.Decimal(15, 2)
+
+  purchase_order PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Cascade)
+
+  item Item @relation(fields: [item_id], references: [id], onDelete: Restrict)
+
+  uom           UnitOfMeasure         @relation(fields: [uom_id], references: [id], onDelete: Restrict)
+  receipt_items PurchaseReceiptItem[]
+
+  @@index([purchase_order_id])
+  @@index([item_id])
+  @@map("purchase_order_items")
+}
+
+// =====================================================
+// GOODS RECEIPT
+// Barang benar-benar diterima gudang
+// =====================================================
+
+// Header penerimaan barang.
+// Dibuat ketika barang dari Purchase Order benar-benar diterima.
+model PurchaseReceipt {
+  id Int @id @default(autoincrement())
+
+  receipt_number String @unique @db.VarChar(100)
+
+  purchase_order_id Int
+
+  receipt_date DateTime @default(now()) @db.Timestamptz(6)
+
+  remarks String? @db.Text
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+
+  purchase_order PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Restrict)
+
+  items PurchaseReceiptItem[]
+
+  @@index([purchase_order_id])
+  @@map("purchase_receipts")
+}
+
+// =====================================================
+// GOODS RECEIPT ITEM
+// =====================================================
+
+// Detail barang yang benar-benar diterima.
+// Menyimpan purchase quantity dan actual inventory quantity.
+model PurchaseReceiptItem {
+  id Int @id @default(autoincrement())
+
+  purchase_receipt_id    Int
+  purchase_order_item_id Int
+  item_id                Int
+
+  // Berapa purchase package diterima
+  // contoh = 1 ROLL
+  received_purchase_qty Decimal @db.Decimal(12, 3)
+
+  // Actual inventory quantity
+  // contoh ternyata roll tersebut = 30 MTR
+  actual_qty Decimal @db.Decimal(12, 3)
+
+  // Inventory UOM
+  // contoh MTR
+  uom_id Int
+
+  purchase_receipt PurchaseReceipt @relation(fields: [purchase_receipt_id], references: [id], onDelete: Cascade)
+
+  purchase_order_item PurchaseOrderItem @relation(fields: [purchase_order_item_id], references: [id], onDelete: Restrict)
+
+  item Item @relation(fields: [item_id], references: [id], onDelete: Restrict)
+
+  uom UnitOfMeasure @relation(fields: [uom_id], references: [id], onDelete: Restrict)
+
+  lots ItemLot[]
+
+  @@index([purchase_receipt_id])
+  @@index([purchase_order_item_id])
+  @@index([item_id])
+  @@map("purchase_receipt_items")
+}
+
+// =====================================================
+// LOT / ROLL / BATCH
+// =====================================================
+
+// Lot / batch / roll fisik dari suatu item.
+// Digunakan jika Item.tracking = LOT.
+model ItemLot {
+  id Int @id @default(autoincrement())
+
+  item_id                  Int
+  purchase_receipt_item_id Int?
+
+  // Nomor unik lot / roll / batch.
+  lot_number String @unique @db.VarChar(100)
+
+  // contoh roll datang 30 meter
+  initial_qty Decimal @db.Decimal(12, 3)
+
+  // qty yang masih tersedia
+  remaining_qty Decimal @db.Decimal(12, 3)
+
+  received_at DateTime @default(now()) @db.Timestamptz(6)
+
+  remarks String? @db.Text
+
+  item Item @relation(fields: [item_id], references: [id], onDelete: Restrict)
+
+  purchase_receipt_item PurchaseReceiptItem? @relation(fields: [purchase_receipt_item_id], references: [id], onDelete: SetNull)
+
+  stock_movements StockMovement[]
+
+  @@index([item_id])
+  @@index([purchase_receipt_item_id])
+  @@map("item_lots")
+}
+
+// =====================================================
+// STOCK MOVEMENT
+// Semua barang masuk/keluar dicatat di sini
+// =====================================================
+
+enum StockMovementType {
+  PURCHASE_IN
+  MANUFACTURING_OUT
+  MANUFACTURING_IN
+  ADJUSTMENT_IN
+  ADJUSTMENT_OUT
+  RETURN_IN
+  RETURN_OUT
+}
+
+// Ledger / history perubahan stock.
+// Semua barang masuk dan keluar dicatat di tabel ini.
+model StockMovement {
+  id Int @id @default(autoincrement())
+
+  item_id Int
+  lot_id  Int?
+
+  movement_type StockMovementType
+
+  // Selalu menggunakan inventory UOM
+  quantity Decimal @db.Decimal(12, 3)
+
+  uom_id Int
+
+  // optional reference ke transaksi lain
+  reference String? @db.VarChar(100)
+
+  remarks String? @db.Text
+
+  movement_date DateTime @default(now()) @db.Timestamptz(6)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  item Item @relation(fields: [item_id], references: [id], onDelete: Restrict)
+
+  lot ItemLot? @relation(fields: [lot_id], references: [id], onDelete: Restrict)
+
+  uom UnitOfMeasure @relation(fields: [uom_id], references: [id], onDelete: Restrict)
+
+  @@index([item_id])
+  @@index([lot_id])
+  @@index([movement_date])
+  @@map("stock_movements")
+}

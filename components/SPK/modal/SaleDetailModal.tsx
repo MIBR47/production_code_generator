@@ -286,9 +286,9 @@ export function SaleDetailModal({
                                         size="sm"
                                         variant="outline"
                                         onClick={() => setIsEditing(true)}
-                                        className="h-8 px-2.5 text-xs border-slate-300 bg-white hover:bg-slate-100"
+                                        className="h-8 px-2.5 text-xs border-slate-300 bg-white hover:bg-slate-100 hover:text-black"
                                     >
-                                        <Pencil className="w-3.5 h-3.5 mr-1 text-slate-600" /> Edit SPK
+                                        <Pencil className="w-3.5 h-3.5 mr-1 text-slate-600" />Edit SPK
                                     </Button>
                                 )}
                             </div>

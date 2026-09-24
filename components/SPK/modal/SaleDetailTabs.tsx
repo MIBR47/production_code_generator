@@ -41,7 +41,7 @@ export const SaleDetailTabs: React.FC<SaleDetailTabsProps> = ({
             <TabsList className="grid w-full grid-cols-2 max-w-md h-10 p-1 bg-slate-100 rounded-lg">
                 <TabsTrigger
                     value="items"
-                    className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+                    className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-active:hover:text-white hover:text-black"
                 >
                     <Package className="w-4 h-4" />
                     <span>Rincian Produk ({sale.sale_items?.length || 0})</span>
@@ -49,7 +49,7 @@ export const SaleDetailTabs: React.FC<SaleDetailTabsProps> = ({
 
                 <TabsTrigger
                     value="attachments"
-                    className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm"
+                    className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-active:hover:text-white hover:text-black"
                 >
                     <Paperclip className="w-4 h-4" />
                     <span>Lampiran ({sale.sale_attachments?.length || 0})</span>

@@ -39,7 +39,17 @@ export function SaleList({
     onAddNew,
 }: SaleListProps) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [selectedSale, setSelectedSale] = useState<SaleSerialized | null>(null);
+    // const [selectedSale, setSelectedSale] = useState<SaleSerialized | null>(null);
+    const [selectedSaleId, setSelectedSaleId] =
+        useState<number | null>(null);
+
+    const selectedSale = useMemo(() => {
+        if (selectedSaleId === null) return null;
+
+        return sales.find(
+            (sale) => sale.id === selectedSaleId
+        ) ?? null;
+    }, [sales, selectedSaleId]);
 
     const [filters, setFilters] = useState<SaleFilter[]>([
         {
@@ -293,7 +303,7 @@ export function SaleList({
         endDate,
     ]);
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 [zoom:0.85]">
             <CreateSpkModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
@@ -302,10 +312,16 @@ export function SaleList({
                 taxes={taxes}
             />
 
-            <SaleDetailModal
+            {/* <SaleDetailModal
                 sale={selectedSale}
                 isOpen={!!selectedSale}
                 onClose={() => setSelectedSale(null)}
+                formatCurrency={formatCurrency}
+            /> */}
+            <SaleDetailModal
+                sale={selectedSale}
+                isOpen={selectedSaleId !== null}
+                onClose={() => setSelectedSaleId(null)}
                 formatCurrency={formatCurrency}
             />
 
@@ -381,7 +397,9 @@ export function SaleList({
                                         key={sale.id}
                                         sale={sale}
                                         formatCurrency={formatCurrency}
-                                        onOpenDetail={(selected) => setSelectedSale(selected)}
+                                        onOpenDetail={(selected) =>
+                                            setSelectedSaleId(selected.id)
+                                        }
                                     />
                                 ))}
                             </div>
