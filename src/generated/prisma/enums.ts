@@ -9,7 +9,51 @@
 * 🟢 You can import this file directly.
 */
 
+export const ItemCategory = {
+  RAW_MATERIAL: 'RAW_MATERIAL',
+  SUPPORTING_MATERIAL: 'SUPPORTING_MATERIAL',
+  SERVICE: 'SERVICE'
+} as const
+
+export type ItemCategory = (typeof ItemCategory)[keyof typeof ItemCategory]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ItemType = {
+  STORABLE: 'STORABLE',
+  CONSUMABLE: 'CONSUMABLE',
+  SERVICE: 'SERVICE'
+} as const
+
+export type ItemType = (typeof ItemType)[keyof typeof ItemType]
+
+
+export const TrackingType = {
+  NONE: 'NONE',
+  LOT: 'LOT'
+} as const
+
+export type TrackingType = (typeof TrackingType)[keyof typeof TrackingType]
+
+
+export const PurchaseOrderStatus = {
+  DRAFT: 'DRAFT',
+  CONFIRMED: 'CONFIRMED',
+  PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
+  RECEIVED: 'RECEIVED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PurchaseOrderStatus = (typeof PurchaseOrderStatus)[keyof typeof PurchaseOrderStatus]
+
+
+export const StockMovementType = {
+  PURCHASE_IN: 'PURCHASE_IN',
+  MANUFACTURING_OUT: 'MANUFACTURING_OUT',
+  MANUFACTURING_IN: 'MANUFACTURING_IN',
+  ADJUSTMENT_IN: 'ADJUSTMENT_IN',
+  ADJUSTMENT_OUT: 'ADJUSTMENT_OUT',
+  RETURN_IN: 'RETURN_IN',
+  RETURN_OUT: 'RETURN_OUT'
+} as const
+
+export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]

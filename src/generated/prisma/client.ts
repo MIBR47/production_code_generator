@@ -106,3 +106,53 @@ export type Sale_payment = Prisma.Sale_paymentModel
  * 
  */
 export type Sale_payment_attachment = Prisma.Sale_payment_attachmentModel
+/**
+ * Model Item
+ * 
+ */
+export type Item = Prisma.ItemModel
+/**
+ * Model ItemGroup
+ * 
+ */
+export type ItemGroup = Prisma.ItemGroupModel
+/**
+ * Model UnitOfMeasure
+ * 
+ */
+export type UnitOfMeasure = Prisma.UnitOfMeasureModel
+/**
+ * Model Supplier
+ * 
+ */
+export type Supplier = Prisma.SupplierModel
+/**
+ * Model PurchaseOrder
+ * 
+ */
+export type PurchaseOrder = Prisma.PurchaseOrderModel
+/**
+ * Model PurchaseOrderItem
+ * 
+ */
+export type PurchaseOrderItem = Prisma.PurchaseOrderItemModel
+/**
+ * Model PurchaseReceipt
+ * 
+ */
+export type PurchaseReceipt = Prisma.PurchaseReceiptModel
+/**
+ * Model PurchaseReceiptItem
+ * 
+ */
+export type PurchaseReceiptItem = Prisma.PurchaseReceiptItemModel
+/**
+ * Model ItemLot
+ * 
+ */
+export type ItemLot = Prisma.ItemLotModel
+/**
+ * Model StockMovement
+ * 
+ */
+export type StockMovement = Prisma.StockMovementModel

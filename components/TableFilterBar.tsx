@@ -193,19 +193,19 @@ export function TableFilterBar({
                                             </SelectTrigger>
 
                                             <SelectContent
-                                                sideOffset={6}
-                                                className="max-h-[450px] w-[220px] overflow-y-auto"
+                                                sideOffset={4}
+                                                align="start"
+                                                className="w-[220px] max-h-[320px] overflow-y-auto"
                                             >
-                                                {categoryOptions.map(
-                                                    (opt) => (
-                                                        <SelectItem
-                                                            key={opt.value}
-                                                            value={opt.value}
-                                                        >
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    )
-                                                )}
+                                                {categoryOptions.map((opt) => (
+                                                    <SelectItem
+                                                        key={opt.value}
+                                                        value={opt.value}
+                                                        className="h-9 text-sm cursor-pointer"
+                                                    >
+                                                        {opt.label}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
 
@@ -285,19 +285,20 @@ export function TableFilterBar({
                             >
                                 <SelectTrigger className="h-10 w-[220px] rounded-lg border-input bg-white text-black shadow-sm">
                                     <span className="truncate text-sm">
-                                        {selectedCategory?.label ??
-                                            "Pilih Kategori"}
+                                        {selectedCategory?.label ?? "Pilih Kategori"}
                                     </span>
                                 </SelectTrigger>
 
                                 <SelectContent
-                                    sideOffset={6}
-                                    className="max-h-[450px] w-[220px] overflow-y-auto"
+                                    sideOffset={4}
+                                    align="start"
+                                    className="w-[220px] max-h-[320px] overflow-y-auto"
                                 >
                                     {categoryOptions.map((opt) => (
                                         <SelectItem
                                             key={opt.value}
                                             value={opt.value}
+                                            className="h-9 text-sm cursor-pointer"
                                         >
                                             {opt.label}
                                         </SelectItem>

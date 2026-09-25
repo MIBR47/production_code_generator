@@ -36,6 +36,11 @@ const menus = [
         icon: Package,
     },
     {
+        title: "Items",
+        href: "/items",
+        icon: Factory,
+    },
+    {
         title: "Customers",
         href: "/customers",
         icon: Factory,
