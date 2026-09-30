@@ -1,9 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertCircle, Loader2, Package, Plus, Search } from "lucide-react";
+import { AlertCircle, Loader2, Package } from "lucide-react";
 
 import ItemModal from "@/components/items/ItemModal";
+import { TableFilterBar, TableFilter, FilterCategoryOption } from "@/components/TableFilterBar";
+import { Pencil, Power } from "lucide-react";
+import { deactivateItemAction } from "@/actions/items";
+
 import {
     ItemCategory,
     ItemGroupSerialized,
@@ -13,14 +17,18 @@ import {
 
 import { getItemGroups, getItems, getUnitOfMeasures } from "@/actions/items";
 
-type CategoryFilter = "ALL" | ItemCategory;
+// const ITEM_FILTER_OPTIONS: FilterCategoryOption[] = [
+//     { value: "name", label: "Nama Item" },
+//     { value: "reference", label: "Reference" },
+//     { value: "category", label: "Category" },
+//     { value: "group", label: "Group" },
+//     { value: "item_type", label: "Item Type" },
+//     { value: "uom", label: "UOM" },
+//     { value: "purchase_uom", label: "Purchase UOM" },
+//     { value: "tracking", label: "Tracking" },
+// ];
 
-const CATEGORY_TABS: { value: CategoryFilter; label: string }[] = [
-    { value: "ALL", label: "Semua" },
-    { value: "RAW_MATERIAL", label: "Raw Material" },
-    { value: "SUPPORTING_MATERIAL", label: "Supporting Material" },
-    { value: "SERVICE", label: "Service" },
-];
+
 
 function getCategoryLabel(category: ItemCategory) {
     switch (category) {
@@ -52,40 +60,59 @@ function formatRupiah(value: number | string) {
     return new Intl.NumberFormat("id-ID").format(Number(value) || 0);
 }
 
+function getFilterValue(item: ItemSerialized, category: string) {
+    switch (category) {
+        case "name":
+            return item.name;
+        case "reference":
+            return item.reference;
+        case "category":
+            return `${item.category} ${getCategoryLabel(item.category)}`;
+        case "group":
+            return item.group.name;
+        case "item_type":
+            return `${item.item_type} ${getItemTypeLabel(item.item_type)}`;
+        case "uom":
+            return `${item.uom.name} ${item.uom.symbol ?? ""}`;
+        case "purchase_uom":
+            return item.purchase_uom
+                ? `${item.purchase_uom.name} ${item.purchase_uom.symbol ?? ""}`
+                : "";
+        case "tracking":
+            return item.tracking;
+        default:
+            return "";
+    }
+}
+
 export default function ItemsPage() {
     const [items, setItems] = useState<ItemSerialized[]>([]);
     const [groups, setGroups] = useState<ItemGroupSerialized[]>([]);
     const [uoms, setUoms] = useState<UnitOfMeasureSerialized[]>([]);
+    const [filters, setFilters] = useState<TableFilter[]>([
+        { id: 1, category: "name", value: "" },
+    ]);
 
-    const [search, setSearch] = useState("");
-    const [activeCategory, setActiveCategory] = useState<CategoryFilter>("ALL");
+    const [editingItem, setEditingItem] = useState<ItemSerialized | null>(null);
+    const [isDeactivating, setIsDeactivating] = useState<number | null>(null);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const loadItems = useCallback(async () => {
-        try {
-            const data = await getItems();
-            setItems(data);
-        } catch (error) {
-            console.error("Error loading items:", error);
-            throw error;
-        }
+        const data = await getItems();
+        setItems(data);
     }, []);
 
     const loadMasterData = useCallback(async () => {
-        try {
-            const [groupData, uomData] = await Promise.all([
-                getItemGroups(),
-                getUnitOfMeasures(),
-            ]);
+        const [groupData, uomData] = await Promise.all([
+            getItemGroups(),
+            getUnitOfMeasures(),
+        ]);
 
-            setGroups(groupData);
-            setUoms(uomData);
-        } catch (error) {
-            console.error("Error loading item master:", error);
-            throw error;
-        }
+        setGroups(groupData);
+        setUoms(uomData);
     }, []);
 
     useEffect(() => {
@@ -93,11 +120,7 @@ export default function ItemsPage() {
             try {
                 setLoading(true);
                 setError(null);
-
-                await Promise.all([
-                    loadItems(),
-                    loadMasterData(),
-                ]);
+                await Promise.all([loadItems(), loadMasterData()]);
             } catch (error) {
                 console.error(error);
                 setError("Gagal mengambil data item.");
@@ -109,98 +132,226 @@ export default function ItemsPage() {
         loadData();
     }, [loadItems, loadMasterData]);
 
-    const filteredItems = useMemo(() => {
-        const keyword = search.trim().toLowerCase();
+    const handleAddFilter = () => {
+        setFilters((prev) => {
+            const nextId = Math.max(0, ...prev.map((filter) => filter.id)) + 1;
 
-        return items.filter((item) => {
-            const matchCategory =
-                activeCategory === "ALL" ||
-                item.category === activeCategory;
-
-            const matchSearch =
-                !keyword ||
-                item.name.toLowerCase().includes(keyword) ||
-                item.reference.toLowerCase().includes(keyword) ||
-                item.group.name.toLowerCase().includes(keyword);
-
-            return matchCategory && matchSearch;
+            return [
+                ...prev,
+                {
+                    id: nextId,
+                    category: "name",
+                    value: "",
+                },
+            ];
         });
-    }, [items, search, activeCategory]);
+    };
+
+    const handleRemoveFilter = (id: number) => {
+        setFilters((prev) => prev.filter((filter) => filter.id !== id));
+    };
+
+    const handleCategoryChange = (id: number, category: string) => {
+        setFilters((prev) =>
+            prev.map((filter) =>
+                filter.id === id
+                    ? { ...filter, category, value: "" }
+                    : filter
+            )
+        );
+    };
+
+    const handleValueChange = (id: number, value: string) => {
+        setFilters((prev) =>
+            prev.map((filter) =>
+                filter.id === id
+                    ? { ...filter, value }
+                    : filter
+            )
+        );
+    };
+
+    const filteredItems = useMemo(() => {
+        return items.filter((item) => {
+            return filters.every((filter) => {
+                if (!filter.value) return true;
+
+                const keyword = filter.value.toLowerCase();
+
+                switch (filter.category) {
+                    case "name":
+                        return item.name.toLowerCase().includes(keyword);
+
+                    case "reference":
+                        return item.reference.toLowerCase().includes(keyword);
+
+                    case "category":
+                        return item.category === filter.value;
+
+                    case "group":
+                        return item.group_id === Number(filter.value);
+
+                    case "item_type":
+                        return item.item_type === filter.value;
+
+                    case "uom":
+                        return item.uom_id === Number(filter.value);
+
+                    case "purchase_uom":
+                        return item.purchase_uom_id === Number(filter.value);
+
+                    case "tracking":
+                        return item.tracking === filter.value;
+
+                    default:
+                        return true;
+                }
+            });
+        });
+    }, [items, filters]);
+
+    const itemFilterOptions: FilterCategoryOption[] = useMemo(() => [
+        {
+            value: "name",
+            label: "Nama Item",
+            inputType: "text",
+        },
+        {
+            value: "reference",
+            label: "Reference",
+            inputType: "text",
+        },
+        {
+            value: "category",
+            label: "Category",
+            inputType: "select",
+            options: [
+                { value: "RAW_MATERIAL", label: "Raw Material" },
+                { value: "SUPPORTING_MATERIAL", label: "Supporting Material" },
+                { value: "SERVICE", label: "Service" },
+            ],
+        },
+        {
+            value: "group",
+            label: "Group",
+            inputType: "select",
+            options: groups.map((group) => ({
+                value: String(group.id),
+                label: group.name,
+            })),
+        },
+        {
+            value: "item_type",
+            label: "Item Type",
+            inputType: "select",
+            options: [
+                { value: "STORABLE", label: "Storable" },
+                { value: "CONSUMABLE", label: "Consumable" },
+                { value: "SERVICE", label: "Service" },
+            ],
+        },
+        {
+            value: "uom",
+            label: "Inventory UOM",
+            inputType: "select",
+            options: uoms.map((uom) => ({
+                value: String(uom.id),
+                label: uom.symbol ? `${uom.name} (${uom.symbol})` : uom.name,
+            })),
+        },
+        {
+            value: "purchase_uom",
+            label: "Purchase UOM",
+            inputType: "select",
+            options: uoms.map((uom) => ({
+                value: String(uom.id),
+                label: uom.symbol ? `${uom.name} (${uom.symbol})` : uom.name,
+            })),
+        },
+        {
+            value: "tracking",
+            label: "Tracking",
+            inputType: "select",
+            options: [
+                { value: "NONE", label: "None" },
+                { value: "LOT", label: "Lot / Roll / Batch" },
+            ],
+        },
+    ], [groups, uoms]);
 
     const handleItemCreated = useCallback(async () => {
-        await loadItems();
+        await Promise.all([
+            loadItems(),
+            loadMasterData(),
+        ]);
+    }, [loadItems, loadMasterData]);
 
-        // Refresh group karena last_number berubah setelah create item.
-        const groupData = await getItemGroups();
-        setGroups(groupData);
-    }, [loadItems]);
+    const handleOpenCreate = () => {
+        setEditingItem(null);
+        setIsModalOpen(true);
+    };
 
+    const handleEdit = (item: ItemSerialized) => {
+        setEditingItem(item);
+        setIsModalOpen(true);
+    };
+
+    const handleDeactivate = async (item: ItemSerialized) => {
+        const confirmed = window.confirm(
+            `Nonaktifkan item "${item.name}" (${item.reference})?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            setIsDeactivating(item.id);
+            setError(null);
+
+            const result = await deactivateItemAction(item.id);
+
+            if (!result.success) {
+                setError(result.message);
+                return;
+            }
+
+            await loadItems();
+        } catch (error) {
+            console.error(error);
+            setError("Gagal menonaktifkan item.");
+        } finally {
+            setIsDeactivating(null);
+        }
+    };
     return (
         <div className="min-h-screen bg-slate-50 p-6">
             <div className="mx-auto max-w-7xl">
                 {/* HEADER */}
-                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
-                            <Package size={22} />
-                        </div>
-
-                        <div>
-                            <h1 className="text-2xl font-semibold text-slate-900">Items</h1>
-                            <p className="mt-1 text-sm text-slate-500">
-                                Kelola raw material, supporting material, dan service.
-                            </p>
-                        </div>
+                <div className="mb-6 flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+                        <Package size={22} />
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => setIsModalOpen(true)}
-                        className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-                    >
-                        <Plus size={18} />
-                        Tambah Item
-                    </button>
-                </div>
-
-                {/* FILTER CATEGORY */}
-                <div className="mb-4 flex flex-wrap gap-2">
-                    {CATEGORY_TABS.map((tab) => {
-                        const active = activeCategory === tab.value;
-
-                        return (
-                            <button
-                                key={tab.value}
-                                type="button"
-                                onClick={() => setActiveCategory(tab.value)}
-                                className={
-                                    active
-                                        ? "rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-                                        : "rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-                                }
-                            >
-                                {tab.label}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* SEARCH */}
-                <div className="mb-4 rounded-xl border border-slate-200 bg-white p-4">
-                    <div className="relative max-w-md">
-                        <Search
-                            size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                        />
-
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Cari nama, reference, atau group..."
-                            className="w-full rounded-lg border border-slate-200 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400"
-                        />
+                    <div>
+                        <h1 className="text-2xl font-semibold text-slate-900">Items</h1>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Kelola raw material, supporting material, dan service.
+                        </p>
                     </div>
+                </div>
+
+                {/* FILTER */}
+                <div className="mb-4">
+                    <TableFilterBar
+                        categoryOptions={itemFilterOptions}
+                        filters={filters}
+                        onAddFilter={handleAddFilter}
+                        onRemoveFilter={handleRemoveFilter}
+                        onCategoryChange={handleCategoryChange}
+                        onValueChange={handleValueChange}
+                        searchPlaceholder="Masukkan nilai filter..."
+                        onOpenCreateModal={handleOpenCreate}
+                        createLabel="Tambah Item"
+                    />
                 </div>
 
                 {/* ERROR */}
@@ -233,16 +384,15 @@ export default function ItemsPage() {
                                         <th className="px-5 py-3">Default Qty</th>
                                         <th className="px-5 py-3">Tracking</th>
                                         <th className="px-5 py-3 text-right">Cost</th>
+                                        <th className="px-5 py-3 text-center">Action</th>
                                     </tr>
                                 </thead>
 
                                 <tbody className="divide-y divide-slate-100">
                                     {filteredItems.map((item) => (
                                         <tr key={item.id} className="transition hover:bg-slate-50">
-                                            <td className="whitespace-nowrap px-5 py-4">
-                                                <span className="font-mono text-sm font-semibold text-slate-700">
-                                                    {item.reference}
-                                                </span>
+                                            <td className="whitespace-nowrap px-5 py-4 font-mono text-sm font-semibold text-slate-700">
+                                                {item.reference}
                                             </td>
 
                                             <td className="px-5 py-4 text-sm font-medium text-slate-900">
@@ -298,23 +448,44 @@ export default function ItemsPage() {
                                             <td className="whitespace-nowrap px-5 py-4 text-right text-sm font-medium text-slate-700">
                                                 Rp {formatRupiah(item.cost)}
                                             </td>
+                                            <td className="whitespace-nowrap px-5 py-4">
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleEdit(item)}
+                                                        title="Edit Item"
+                                                        className="rounded-md p-2 text-slate-500 transition hover:bg-blue-50 hover:text-blue-600"
+                                                    >
+                                                        <Pencil size={16} />
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeactivate(item)}
+                                                        disabled={isDeactivating === item.id}
+                                                        title="Deactivate Item"
+                                                        className="rounded-md p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                                                    >
+                                                        {isDeactivating === item.id ? (
+                                                            <Loader2 size={16} className="animate-spin" />
+                                                        ) : (
+                                                            <Power size={16} />
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))}
 
                                     {filteredItems.length === 0 && (
                                         <tr>
-                                            <td colSpan={10} className="px-5 py-16 text-center">
-                                                <Package
-                                                    size={32}
-                                                    className="mx-auto mb-3 text-slate-300"
-                                                />
-
+                                            <td colSpan={11} className="px-5 py-16 text-center">
+                                                <Package size={32} className="mx-auto mb-3 text-slate-300" />
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Item tidak ditemukan
                                                 </p>
-
                                                 <p className="mt-1 text-xs text-slate-400">
-                                                    Coba ubah pencarian atau category filter.
+                                                    Coba ubah filter yang digunakan.
                                                 </p>
                                             </td>
                                         </tr>
@@ -328,10 +499,15 @@ export default function ItemsPage() {
 
             <ItemModal
                 open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                item={editingItem}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setEditingItem(null);
+                }}
                 groups={groups}
                 uoms={uoms}
                 onCreated={handleItemCreated}
+                onMasterUpdated={loadMasterData}
             />
         </div>
     );

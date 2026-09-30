@@ -15,9 +15,16 @@ import {
     X,
 } from "lucide-react";
 
+export interface FilterValueOption {
+    value: string;
+    label: string;
+}
+
 export interface FilterCategoryOption {
     value: string;
     label: string;
+    inputType?: "text" | "select";
+    options?: FilterValueOption[];
 }
 
 export interface TableFilter {
@@ -210,26 +217,42 @@ export function TableFilterBar({
                                         </Select>
 
                                         {/* VALUE */}
-                                        <Input
-                                            type={
-                                                isDate
-                                                    ? "date"
-                                                    : "text"
-                                            }
-                                            placeholder={
-                                                isDate
-                                                    ? ""
-                                                    : searchPlaceholder
-                                            }
-                                            value={filter.value}
-                                            onChange={(e) =>
-                                                onValueChange?.(
-                                                    filter.id,
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="w-64"
-                                        />
+                                        {selected?.inputType === "select" ? (
+                                            <Select
+                                                value={filter.value}
+                                                onValueChange={(val) => onValueChange?.(filter.id, val ?? "")}
+                                            >
+                                                <SelectTrigger className="h-10 w-64 rounded-lg border-input bg-white text-black shadow-sm">
+                                                    <span className="truncate text-sm">
+                                                        {selected.options?.find((opt) => opt.value === filter.value)?.label ?? "Pilih Data"}
+                                                    </span>
+                                                </SelectTrigger>
+
+                                                <SelectContent
+                                                    sideOffset={4}
+                                                    align="start"
+                                                    className="w-64 max-h-[320px] overflow-y-auto"
+                                                >
+                                                    {selected.options?.map((opt) => (
+                                                        <SelectItem
+                                                            key={opt.value}
+                                                            value={opt.value}
+                                                            className="h-9 cursor-pointer text-sm"
+                                                        >
+                                                            {opt.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        ) : (
+                                            <Input
+                                                type={isDate ? "date" : "text"}
+                                                placeholder={isDate ? "" : searchPlaceholder}
+                                                value={filter.value}
+                                                onChange={(e) => onValueChange?.(filter.id, e.target.value)}
+                                                className="w-64"
+                                            />
+                                        )}
 
                                         {/* REMOVE */}
                                         {filters.length > 1 && (

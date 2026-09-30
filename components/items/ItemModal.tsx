@@ -1,9 +1,15 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Loader2, X } from "lucide-react";
-import { createItemAction } from "@/actions/items";
-import { ItemCategory, ItemType, TrackingType, ItemGroupSerialized, UnitOfMeasureSerialized } from "./types";
+import { createItemAction, updateItemAction } from "@/actions/items";
+import { ItemCategory, ItemType, TrackingType, ItemGroupSerialized, UnitOfMeasureSerialized, ItemSerialized } from "./types";
+
+import { Plus } from "lucide-react";
+import ItemGroupModal from "./ItemGroupModal";
+import UomModal from "./UomModal";
+
+
 
 interface Props {
     open: boolean;
@@ -11,9 +17,19 @@ interface Props {
     groups: ItemGroupSerialized[];
     uoms: UnitOfMeasureSerialized[];
     onCreated: () => Promise<void>;
+    onMasterUpdated: () => Promise<void>;
+    item?: ItemSerialized | null;
 }
 
-export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Props) {
+export default function ItemModal({
+    open,
+    onClose,
+    groups,
+    uoms,
+    onCreated,
+    onMasterUpdated,
+    item,
+}: Props) {
     const [name, setName] = useState("");
     const [groupId, setGroupId] = useState<number | null>(null);
     const [category, setCategory] = useState<ItemCategory>("RAW_MATERIAL");
@@ -25,16 +41,43 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
     const [cost, setCost] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [groupModalOpen, setGroupModalOpen] = useState(false);
+    const [uomModalOpen, setUomModalOpen] = useState(false);
 
+    const isEdit = !!item;
     const selectedGroup = groups.find((group) => group.id === groupId);
     const isService = category === "SERVICE";
 
+    useEffect(() => {
+        if (!open) return;
+
+        if (item) {
+            setName(item.name);
+            setGroupId(item.group_id);
+            setCategory(item.category);
+            setItemType(item.item_type);
+            setUomId(item.uom_id);
+            setPurchaseUomId(item.purchase_uom_id);
+            setDefaultPurchaseQty(
+                item.default_purchase_qty !== null
+                    ? String(item.default_purchase_qty)
+                    : ""
+            );
+            setTracking(item.tracking);
+            setCost(String(item.cost));
+            setError(null);
+        } else {
+            resetForm();
+        }
+    }, [open, item]);
+
     const referencePreview = useMemo(() => {
+        if (item) return item.reference;
         if (!selectedGroup) return "";
 
         const nextNumber = selectedGroup.last_number + 1;
         return `${selectedGroup.code_prefix}${String(nextNumber).padStart(4, "0")}`;
-    }, [selectedGroup]);
+    }, [item, selectedGroup]);
 
     const resetForm = () => {
         setName("");
@@ -79,17 +122,29 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
         try {
             setIsSubmitting(true);
 
-            const result = await createItemAction({
+            const commonPayload = {
                 name: name.trim(),
-                group_id: groupId,
                 category,
                 item_type: itemType,
                 uom_id: uomId,
                 purchase_uom_id: isService ? null : purchaseUomId,
-                default_purchase_qty: isService || defaultPurchaseQty === "" ? null : Number(defaultPurchaseQty),
+                default_purchase_qty:
+                    isService || defaultPurchaseQty === ""
+                        ? null
+                        : Number(defaultPurchaseQty),
                 cost: cost === "" ? 0 : Number(cost),
-                tracking: isService ? "NONE" : tracking,
-            });
+                tracking: isService ? "NONE" as const : tracking,
+            };
+
+            const result = isEdit
+                ? await updateItemAction({
+                    id: item.id,
+                    ...commonPayload,
+                })
+                : await createItemAction({
+                    group_id: groupId,
+                    ...commonPayload,
+                });
 
             if (!result.success) {
                 setError(result.message);
@@ -101,7 +156,11 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
             onClose();
         } catch (error) {
             console.error(error);
-            setError("Terjadi kesalahan saat menyimpan item.");
+            setError(
+                isEdit
+                    ? "Terjadi kesalahan saat memperbarui item."
+                    : "Terjadi kesalahan saat menyimpan item."
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -115,9 +174,14 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
                 {/* HEADER */}
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Tambah Item</h2>
+                        <h2 className="text-lg font-semibold text-slate-900">
+                            {isEdit ? "Edit Item" : "Tambah Item"}
+                        </h2>
+
                         <p className="mt-1 text-sm text-slate-500">
-                            Tambahkan raw material, supporting material, atau jasa.
+                            {isEdit
+                                ? "Perbarui informasi item."
+                                : "Tambahkan raw material, supporting material, atau jasa."}
                         </p>
                     </div>
 
@@ -168,19 +232,37 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
                         {/* GROUP + REFERENCE */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">Group</label>
+                                <div className="flex items-center justify-between">
+                                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                                        Group
+                                    </label>
+
+                                    {!isEdit && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setGroupModalOpen(true)}
+                                            className="mb-2 flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900"
+                                        >
+                                            <Plus size={14} />
+                                            Tambah
+                                        </button>
+                                    )}
+                                </div>
                                 <select
                                     value={groupId ?? ""}
+                                    disabled={isEdit}
                                     onChange={(e) => setGroupId(e.target.value ? Number(e.target.value) : null)}
-                                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm"
+                                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm disabled:bg-slate-100 disabled:text-slate-500"
                                 >
                                     <option value="">Pilih Group</option>
+
                                     {groups.map((group) => (
                                         <option key={group.id} value={group.id}>
                                             {group.name}
                                         </option>
                                     ))}
                                 </select>
+
                             </div>
 
                             <div>
@@ -228,7 +310,20 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
                         {/* UOM */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">Inventory UOM</label>
+                                <div className="flex items-center justify-between">
+                                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                                        Inventory UOM
+                                    </label>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setUomModalOpen(true)}
+                                        className="mb-2 flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900"
+                                    >
+                                        <Plus size={14} />
+                                        Tambah
+                                    </button>
+                                </div>
                                 <select
                                     value={uomId ?? ""}
                                     onChange={(e) => setUomId(e.target.value ? Number(e.target.value) : null)}
@@ -320,12 +415,24 @@ export default function ItemModal({ open, onClose, groups, uoms, onCreated }: Pr
                                     Menyimpan...
                                 </>
                             ) : (
-                                "Simpan Item"
+                                isEdit ? "Simpan Perubahan" : "Simpan Item"
                             )}
                         </button>
                     </div>
                 </form>
             </div>
+            <ItemGroupModal
+                open={groupModalOpen}
+                onClose={() => setGroupModalOpen(false)}
+                onCreated={onMasterUpdated}
+            />
+
+            <UomModal
+                open={uomModalOpen}
+                onClose={() => setUomModalOpen(false)}
+                onCreated={onMasterUpdated}
+            />
         </div>
+
     );
 }

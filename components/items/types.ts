@@ -87,3 +87,30 @@ export type ItemActionResult = {
     message: string;
     item?: ItemSerialized;
 };
+
+export type CreateItemGroupInput = {
+    name: string;
+    code_prefix: string;
+};
+
+export type CreateUomInput = {
+    name: string;
+    symbol: string | null;
+};
+
+export type MasterActionResult = {
+    success: boolean;
+    message: string;
+};
+
+export type UpdateItemInput = {
+    id: number;
+    name: string;
+    category: ItemCategory;
+    item_type: ItemType;
+    uom_id: number;
+    purchase_uom_id: number | null;
+    default_purchase_qty: number | null;
+    cost: number;
+    tracking: TrackingType;
+};
