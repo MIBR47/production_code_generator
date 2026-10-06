@@ -26,6 +26,11 @@ const menus = [
         icon: BriefcaseMedical,
     },
     {
+        title: "Purchases",
+        href: "/purchases",
+        icon: Factory,
+    },
+    {
         title: "Production Codes",
         href: "/production-codes",
         icon: BriefcaseMedical,
@@ -43,6 +48,11 @@ const menus = [
     {
         title: "Customers",
         href: "/customers",
+        icon: Factory,
+    },
+    {
+        title: "Suppliers",
+        href: "/suppliers",
         icon: Factory,
     },
 

@@ -395,9 +395,46 @@ model PurchaseOrder {
 
   items    PurchaseOrderItem[]
   receipts PurchaseReceipt[]
+  payments PurchasePayment[]
 
   @@index([supplier_id])
   @@map("purchase_orders")
+}
+
+model PurchasePayment {
+  id                Int      @id @default(autoincrement())
+  purchase_order_id Int
+  payment_date      DateTime @db.Timestamptz(6)
+  amount            Decimal  @db.Decimal(15, 2)
+  payment_method    String?  @db.VarChar(100)
+  reference_number  String?  @db.VarChar(150)
+  remarks           String?  @db.Text
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime @updatedAt @db.Timestamptz(6)
+
+  purchase_order PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Restrict)
+
+  attachments PurchasePaymentAttachment[]
+
+  @@index([purchase_order_id])
+  @@map("purchase_payments")
+}
+
+model PurchasePaymentAttachment {
+  id                  Int @id @default(autoincrement())
+  purchase_payment_id Int
+
+  file_name String  @db.VarChar(255)
+  file_path String  @db.VarChar(500)
+  file_type String  @db.VarChar(100)
+  remarks   String? @db.Text
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  purchase_payment PurchasePayment @relation(fields: [purchase_payment_id], references: [id], onDelete: Cascade)
+
+  @@index([purchase_payment_id])
+  @@map("purchase_payment_attachments")
 }
 
 // =====================================================
