@@ -27,8 +27,13 @@ import {
 
 import { getItems } from "@/actions/items";
 import { getSuppliers } from "@/actions/suppliers";
-import { PurchaseOrderSerialized } from "@/components/pruchases/types";
-import PurchaseOrderModal from "@/components/pruchases/PurchaseOrderModal";
+import { PurchaseOrderSerialized } from "@/components/purchases/types";
+import PurchaseOrderModal from "@/components/purchases/PurchaseOrderModal";
+
+import { PackageCheck } from "lucide-react";
+import PurchaseReceiptModal from "@/components/purchases/PurchaseReceiptModal";
+
+import PurchaseDetailModal from "@/components/purchases/PurchaseDetailModal";
 
 function formatRupiah(value: number) {
     return new Intl.NumberFormat("id-ID").format(value);
@@ -52,6 +57,10 @@ export default function PurchasesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [receivingPO, setReceivingPO] =
+        useState<PurchaseOrderSerialized | null>(null);
+    const [selectedPO, setSelectedPO] =
+        useState<PurchaseOrderSerialized | null>(null);
     const loadPurchaseOrders = useCallback(async () => {
         setPurchaseOrders(await getPurchaseOrders());
     }, []);
@@ -247,7 +256,7 @@ export default function PurchasesPage() {
 
                                 <tbody className="divide-y">
                                     {filteredPO.map((po) => (
-                                        <tr key={po.id} className="hover:bg-slate-50">
+                                        <tr key={po.id} onClick={() => setSelectedPO(po)} className="hover:bg-slate-50">
                                             <td className="px-5 py-4 font-mono text-sm font-semibold">
                                                 {po.po_number}
                                             </td>
@@ -280,7 +289,8 @@ export default function PurchasesPage() {
                                                         <>
                                                             <button
                                                                 title="Edit"
-                                                                onClick={() => {
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
                                                                     setEditingPO(po);
                                                                     setIsModalOpen(true);
                                                                 }}
@@ -291,7 +301,10 @@ export default function PurchasesPage() {
 
                                                             <button
                                                                 title="Confirm"
-                                                                onClick={() => handleAction(po, "confirm")}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleAction(po, "confirm");
+                                                                }}
                                                                 className="rounded-md p-2 hover:bg-green-50 hover:text-green-600"
                                                             >
                                                                 <Check size={16} />
@@ -303,7 +316,10 @@ export default function PurchasesPage() {
                                                         <button
                                                             title="Cancel"
                                                             disabled={processingId === po.id}
-                                                            onClick={() => handleAction(po, "cancel")}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAction(po, "cancel");
+                                                            }}
                                                             className="rounded-md p-2 hover:bg-red-50 hover:text-red-600"
                                                         >
                                                             {processingId === po.id
@@ -311,6 +327,24 @@ export default function PurchasesPage() {
                                                                 : <Ban size={16} />}
                                                         </button>
                                                     )}
+                                                    {(po.status === "CONFIRMED" ||
+                                                        po.status === "PARTIALLY_RECEIVED") && (
+                                                            <button
+                                                                type="button"
+                                                                title={
+                                                                    po.status === "PARTIALLY_RECEIVED"
+                                                                        ? "Receive Remaining"
+                                                                        : "Receive Goods"
+                                                                }
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setReceivingPO(po);
+                                                                }}
+                                                                className="rounded-md p-2 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600"
+                                                            >
+                                                                <PackageCheck size={16} />
+                                                            </button>
+                                                        )}
                                                 </div>
                                             </td>
                                         </tr>
@@ -340,6 +374,18 @@ export default function PurchasesPage() {
                     setIsModalOpen(false);
                     setEditingPO(null);
                 }}
+            />
+
+            <PurchaseReceiptModal
+                open={!!receivingPO}
+                purchaseOrder={receivingPO}
+                onSaved={loadPurchaseOrders}
+                onClose={() => setReceivingPO(null)}
+            />
+            <PurchaseDetailModal
+                purchaseOrder={selectedPO}
+                isOpen={!!selectedPO}
+                onClose={() => setSelectedPO(null)}
             />
         </div>
     );

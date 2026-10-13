@@ -30,33 +30,25 @@ export type UnitOfMeasureSerialized = {
 
 export type ItemSerialized = {
     id: number;
-
     name: string;
     reference: string;
-
     group_id: number;
-
     category: ItemCategory;
     item_type: ItemType;
-
     uom_id: number;
     purchase_uom_id: number | null;
-
     default_purchase_qty: number | null;
-
     cost: number;
-
     tracking: TrackingType;
-
     is_active: boolean;
+
+    current_stock: number;
 
     created_at: Date;
     updated_at: Date;
 
     group: ItemGroupSerialized;
-
     uom: UnitOfMeasureSerialized;
-
     purchase_uom: UnitOfMeasureSerialized | null;
 };
 
@@ -114,3 +106,5 @@ export type UpdateItemInput = {
     cost: number;
     tracking: TrackingType;
 };
+
+

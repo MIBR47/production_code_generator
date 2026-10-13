@@ -4,7 +4,29 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
 import { Prisma } from "@/src/generated/prisma/browser";
-import { PurchaseOrderSerialized, PurchaseOrderInput, PurchaseOrderActionResult } from "@/components/pruchases/types";
+import { PurchaseOrderSerialized, PurchaseOrderInput, PurchaseOrderActionResult, PurchaseOrderReceiptData, CreatePurchaseReceiptInput, PurchaseReceiptActionResult } from "@/components/purchases/types";
+
+
+
+const receiptPoInclude = {
+    supplier: true,
+    items: {
+        include: {
+            item: {
+                include: {
+                    uom: true,
+                    purchase_uom: true,
+                },
+            },
+            uom: true,
+            receipt_items: true,
+        },
+    },
+} satisfies Prisma.PurchaseOrderInclude;
+
+type ReceiptPurchaseOrder = Prisma.PurchaseOrderGetPayload<{
+    include: typeof receiptPoInclude;
+}>;
 
 function serializePurchaseOrder(
     po: PurchaseOrderWithRelations
@@ -344,6 +366,333 @@ export async function cancelPurchaseOrderAction(
         return {
             success: false,
             message: error?.message || "Gagal membatalkan Purchase Order.",
+        };
+    }
+}
+
+// ======================================================
+// GET PO FOR RECEIPT
+// ======================================================
+
+export async function getPurchaseOrderForReceipt(
+    id: number
+): Promise<PurchaseOrderReceiptData | null> {
+    const po: ReceiptPurchaseOrder | null = await prisma.purchaseOrder.findUnique({
+        where: { id },
+        include: receiptPoInclude,
+    });
+
+    if (!po) return null;
+
+    return {
+        id: po.id,
+        po_number: po.po_number,
+        supplier_name: po.supplier.name,
+        status: po.status,
+        items: po.items.map((poItem) => {
+            const alreadyReceived = poItem.receipt_items.reduce(
+                (total, receipt) => total + Number(receipt.received_purchase_qty),
+                0
+            );
+
+            return {
+                id: poItem.id,
+                item_id: poItem.item_id,
+                ordered_qty: Number(poItem.quantity),
+                already_received_qty: alreadyReceived,
+                remaining_qty: Math.max(0, Number(poItem.quantity) - alreadyReceived),
+                purchase_uom: {
+                    id: poItem.uom.id,
+                    name: poItem.uom.name,
+                    symbol: poItem.uom.symbol,
+                },
+                item: {
+                    id: poItem.item.id,
+                    name: poItem.item.name,
+                    reference: poItem.item.reference,
+                    item_type: poItem.item.item_type,
+                    tracking: poItem.item.tracking,
+                    default_purchase_qty:
+                        poItem.item.default_purchase_qty !== null
+                            ? Number(poItem.item.default_purchase_qty)
+                            : null,
+                    uom: {
+                        id: poItem.item.uom.id,
+                        name: poItem.item.uom.name,
+                        symbol: poItem.item.uom.symbol,
+                    },
+                },
+            };
+        }),
+    };
+}
+
+// ======================================================
+// CREATE PURCHASE RECEIPT
+// ======================================================
+
+export async function createPurchaseReceiptAction(
+    payload: CreatePurchaseReceiptInput
+): Promise<PurchaseReceiptActionResult> {
+    try {
+        if (!payload.purchase_order_id) {
+            return { success: false, message: "Purchase Order tidak valid." };
+        }
+
+        if (!payload.receipt_date) {
+            return { success: false, message: "Tanggal penerimaan wajib diisi." };
+        }
+
+        if (!payload.items.length) {
+            return { success: false, message: "Tidak ada barang yang diterima." };
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const po = await tx.purchaseOrder.findUnique({
+                where: { id: payload.purchase_order_id },
+                include: receiptPoInclude,
+            });
+
+            if (!po) throw new Error("Purchase Order tidak ditemukan.");
+
+            if (!["CONFIRMED", "PARTIALLY_RECEIVED"].includes(po.status)) {
+                throw new Error("Purchase Order belum dapat menerima barang.");
+            }
+
+            const poItemMap = new Map(po.items.map((poItem) => [poItem.id, poItem]));
+
+            // ------------------------------------------
+            // VALIDATION
+            // ------------------------------------------
+
+            const incomingByPoItem = new Map<number, number>();
+
+            for (const line of payload.items) {
+                const poItem = poItemMap.get(line.purchase_order_item_id);
+
+                if (!poItem) {
+                    throw new Error("Terdapat item yang tidak termasuk dalam PO.");
+                }
+
+                if (line.received_purchase_qty <= 0) {
+                    throw new Error("Quantity penerimaan harus lebih dari 0.");
+                }
+
+                if (line.actual_qty <= 0) {
+                    throw new Error(`Actual Qty ${poItem.item.name} harus lebih dari 0.`);
+                }
+
+                // if (poItem.item.tracking === "LOT" && !line.lot_number?.trim()) {
+                //     throw new Error(`Lot Number untuk ${poItem.item.name} wajib diisi.`);
+                // }
+                const manualLotNumbers = payload.items
+                    .filter((line) => line.lot_number?.trim())
+                    .map((line) => line.lot_number!.trim());
+
+                if (new Set(manualLotNumbers).size !== manualLotNumbers.length) {
+                    throw new Error("Terdapat Lot Number yang sama.");
+                }
+
+                if (manualLotNumbers.length) {
+                    const existingLots = await tx.itemLot.findMany({
+                        where: { lot_number: { in: manualLotNumbers } },
+                        select: { lot_number: true },
+                    });
+
+                    if (existingLots.length) {
+                        throw new Error(`Lot Number ${existingLots[0].lot_number} sudah digunakan.`);
+                    }
+                }
+                incomingByPoItem.set(
+                    poItem.id,
+                    (incomingByPoItem.get(poItem.id) ?? 0) + line.received_purchase_qty
+                );
+            }
+
+            // Jangan menerima lebih dari quantity PO.
+            for (const poItem of po.items) {
+                const alreadyReceived = poItem.receipt_items.reduce(
+                    (total, receipt) => total + Number(receipt.received_purchase_qty),
+                    0
+                );
+
+                const incoming = incomingByPoItem.get(poItem.id) ?? 0;
+                const remaining = Number(poItem.quantity) - alreadyReceived;
+
+                if (incoming > remaining + 0.0001) {
+                    throw new Error(
+                        `${poItem.item.name} melebihi sisa PO. Sisa: ${remaining} ${poItem.uom.symbol ?? poItem.uom.name}`
+                    );
+                }
+            }
+
+            // Cek duplicate lot dalam request.
+            const lotNumbers = payload.items
+                .filter((line) => line.lot_number)
+                .map((line) => line.lot_number!.trim());
+
+            if (new Set(lotNumbers).size !== lotNumbers.length) {
+                throw new Error("Terdapat Lot Number yang sama.");
+            }
+
+            if (lotNumbers.length) {
+                const existingLots = await tx.itemLot.findMany({
+                    where: { lot_number: { in: lotNumbers } },
+                    select: { lot_number: true },
+                });
+
+                if (existingLots.length) {
+                    throw new Error(`Lot Number ${existingLots[0].lot_number} sudah digunakan.`);
+                }
+            }
+
+            // ------------------------------------------
+            // CREATE RECEIPT HEADER
+            // ------------------------------------------
+
+            const receipt = await tx.purchaseReceipt.create({
+                data: {
+                    receipt_number: `TEMP-${crypto.randomUUID()}`,
+                    purchase_order_id: po.id,
+                    receipt_date: new Date(payload.receipt_date),
+                    remarks: payload.remarks?.trim() || null,
+                },
+            });
+
+            const date = new Date(payload.receipt_date);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+
+            const receiptNumber =
+                `GR/${year}/${month}/${String(receipt.id).padStart(5, "0")}`;
+
+            await tx.purchaseReceipt.update({
+                where: { id: receipt.id },
+                data: { receipt_number: receiptNumber },
+            });
+
+            // ------------------------------------------
+            // CREATE RECEIPT ITEMS + LOT + STOCK
+            // ------------------------------------------
+
+            for (const line of payload.items) {
+                const poItem = poItemMap.get(line.purchase_order_item_id)!;
+
+                const receiptItem = await tx.purchaseReceiptItem.create({
+                    data: {
+                        purchase_receipt_id: receipt.id,
+                        purchase_order_item_id: poItem.id,
+                        item_id: poItem.item_id,
+                        received_purchase_qty: line.received_purchase_qty,
+                        actual_qty: line.actual_qty,
+
+                        // actual_qty selalu pakai Inventory UOM.
+                        uom_id: poItem.item.uom_id,
+                    },
+                });
+
+
+
+                let lotId: number | null = null;
+
+
+                // --------------------------------------
+                // LOT
+                // --------------------------------------
+
+                if (poItem.item.tracking === "LOT") {
+                    const lotNumber =
+                        line.lot_number?.trim() ||
+                        `${poItem.item.reference}-LOT-${String(receiptItem.id).padStart(6, "0")}`;
+
+                    const lot = await tx.itemLot.create({
+                        data: {
+                            item_id: poItem.item_id,
+                            purchase_receipt_item_id: receiptItem.id,
+                            lot_number: lotNumber,
+                            initial_qty: line.actual_qty,
+                            remaining_qty: line.actual_qty,
+                        },
+                    });
+
+                    lotId = lot.id;
+                }
+
+                // --------------------------------------
+                // STOCK MOVEMENT
+                // Service tidak masuk inventory.
+                // --------------------------------------
+
+                if (poItem.item.item_type !== "SERVICE") {
+                    await tx.stockMovement.create({
+                        data: {
+                            item_id: poItem.item_id,
+                            lot_id: lotId,
+                            movement_type: "PURCHASE_IN",
+                            quantity: line.actual_qty,
+                            uom_id: poItem.item.uom_id,
+                            reference: receiptNumber,
+                            remarks: `Receipt ${po.po_number}`,
+                        },
+                    });
+                }
+            }
+
+            // ------------------------------------------
+            // UPDATE PO STATUS
+            // ------------------------------------------
+
+            const updatedItems = await tx.purchaseOrderItem.findMany({
+                where: {
+                    purchase_order_id: po.id,
+                },
+                include: {
+                    receipt_items: true,
+                },
+            });
+
+            const allReceived = updatedItems.every((poItem) => {
+                const received = poItem.receipt_items.reduce(
+                    (total, receipt) => total + Number(receipt.received_purchase_qty),
+                    0
+                );
+
+                return received >= Number(poItem.quantity);
+            });
+
+            const anyReceived = updatedItems.some((poItem) =>
+                poItem.receipt_items.some(
+                    (receipt) => Number(receipt.received_purchase_qty) > 0
+                )
+            );
+
+            await tx.purchaseOrder.update({
+                where: { id: po.id },
+                data: {
+                    status: allReceived
+                        ? "RECEIVED"
+                        : anyReceived
+                            ? "PARTIALLY_RECEIVED"
+                            : "CONFIRMED",
+                },
+            });
+
+            return receiptNumber;
+        });
+
+        revalidatePath("/purchases");
+
+        return {
+            success: true,
+            message: "Barang berhasil diterima.",
+            receipt_number: result,
+        };
+    } catch (error: any) {
+        console.error("Error receiving purchase:", error);
+
+        return {
+            success: false,
+            message: error?.message || "Gagal menerima barang.",
         };
     }
 }

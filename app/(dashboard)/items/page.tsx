@@ -383,6 +383,7 @@ export default function ItemsPage() {
                                         <th className="px-5 py-3">Purchase UOM</th>
                                         <th className="px-5 py-3">Default Qty</th>
                                         <th className="px-5 py-3">Tracking</th>
+                                        <th className="px-5 py-3 text-right">Stock</th>
                                         <th className="px-5 py-3 text-right">Cost</th>
                                         <th className="px-5 py-3 text-center">Action</th>
                                     </tr>
@@ -444,6 +445,18 @@ export default function ItemsPage() {
                                                     </span>
                                                 )}
                                             </td>
+                                            <td className="whitespace-nowrap px-5 py-4 text-right">
+                                                {item.item_type === "SERVICE" ? (
+                                                    <span className="text-sm text-slate-400">-</span>
+                                                ) : (
+                                                    <span className="text-sm font-semibold text-slate-700">
+                                                        {item.current_stock.toLocaleString("id-ID", {
+                                                            maximumFractionDigits: 3,
+                                                        })}{" "}
+                                                        {item.uom.symbol ?? item.uom.name}
+                                                    </span>
+                                                )}
+                                            </td>
 
                                             <td className="whitespace-nowrap px-5 py-4 text-right text-sm font-medium text-slate-700">
                                                 Rp {formatRupiah(item.cost)}
@@ -479,7 +492,7 @@ export default function ItemsPage() {
 
                                     {filteredItems.length === 0 && (
                                         <tr>
-                                            <td colSpan={11} className="px-5 py-16 text-center">
+                                            <td colSpan={12} className="px-5 py-16 text-center">
                                                 <Package size={32} className="mx-auto mb-3 text-slate-300" />
                                                 <p className="text-sm font-medium text-slate-600">
                                                     Item tidak ditemukan

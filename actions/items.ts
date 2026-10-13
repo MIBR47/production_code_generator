@@ -20,7 +20,7 @@ import {
 // ======================================================
 // Prisma Decimal jangan langsung dikirim ke Client Component.
 // Ubah menjadi number terlebih dahulu.
-function serializeItem(item: any): ItemSerialized {
+function serializeItem(item: any, currentStock = 0): ItemSerialized {
     return {
         id: item.id,
         name: item.name,
@@ -30,25 +30,30 @@ function serializeItem(item: any): ItemSerialized {
         item_type: item.item_type,
         uom_id: item.uom_id,
         purchase_uom_id: item.purchase_uom_id,
-        default_purchase_qty: item.default_purchase_qty !== null
-            ? Number(item.default_purchase_qty)
-            : null,
+        default_purchase_qty:
+            item.default_purchase_qty !== null
+                ? Number(item.default_purchase_qty)
+                : null,
         cost: Number(item.cost),
         tracking: item.tracking,
         is_active: item.is_active,
+        current_stock: currentStock,
         created_at: item.created_at,
         updated_at: item.updated_at,
+
         group: {
             id: item.group.id,
             name: item.group.name,
             code_prefix: item.group.code_prefix,
             last_number: item.group.last_number,
         },
+
         uom: {
             id: item.uom.id,
             name: item.uom.name,
             symbol: item.uom.symbol,
         },
+
         purchase_uom: item.purchase_uom
             ? {
                 id: item.purchase_uom.id,
@@ -63,19 +68,39 @@ function serializeItem(item: any): ItemSerialized {
 // GET ALL ITEMS
 // ======================================================
 export async function getItems(): Promise<ItemSerialized[]> {
-    const items = await prisma.item.findMany({
-        where: { is_active: true },
-        include: {
-            group: true,
-            uom: true,
-            purchase_uom: true,
-        },
-        orderBy: { reference: "asc" },
-    });
+    const [items, stockData] = await Promise.all([
+        prisma.item.findMany({
+            where: { is_active: true },
+            include: {
+                group: true,
+                uom: true,
+                purchase_uom: true,
+            },
+            orderBy: { reference: "asc" },
+        }),
 
-    return items.map(serializeItem);
+        prisma.stockMovement.groupBy({
+            by: ["item_id"],
+            _sum: {
+                quantity: true,
+            },
+        }),
+    ]);
+
+    const stockMap = new Map(
+        stockData.map((stock) => [
+            stock.item_id,
+            Number(stock._sum.quantity ?? 0),
+        ])
+    );
+
+    return items.map((item) =>
+        serializeItem(
+            item,
+            stockMap.get(item.id) ?? 0
+        )
+    );
 }
-
 // ======================================================
 // GET ITEM GROUPS
 // ======================================================

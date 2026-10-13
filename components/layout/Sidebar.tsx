@@ -30,6 +30,12 @@ const menus = [
         href: "/purchases",
         icon: Factory,
     },
+
+    {
+        title: "Inventory",
+        href: "/inventory",
+        icon: Factory,
+    },
     {
         title: "Production Codes",
         href: "/production-codes",
