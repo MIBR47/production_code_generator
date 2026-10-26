@@ -127,7 +127,10 @@ export type PurchaseOrderReceiptData = {
     po_number: string;
     supplier_name: string;
     status: PurchaseOrderStatus;
+
     items: PurchaseReceiptPOItem[];
+
+    receipts: PurchaseReceiptHistory[];
 };
 
 export type PurchaseReceiptLineInput = {
@@ -148,4 +151,43 @@ export type PurchaseReceiptActionResult = {
     success: boolean;
     message: string;
     receipt_number?: string;
+};
+
+export type PurchaseReceiptHistoryItem = {
+    id: number;
+    item_id: number;
+    received_purchase_qty: number;
+    actual_qty: number;
+
+    item: {
+        id: number;
+        name: string;
+        reference: string;
+    };
+
+    purchase_uom: {
+        id: number;
+        name: string;
+        symbol: string | null;
+    };
+
+    uom: {
+        id: number;
+        name: string;
+        symbol: string | null;
+    };
+
+    lots: {
+        id: number;
+        lot_number: string;
+        initial_qty: number;
+        remaining_qty: number;
+    }[];
+};
+export type PurchaseReceiptHistory = {
+    id: number;
+    receipt_number: string;
+    receipt_date: string;
+    remarks: string | null;
+    items: PurchaseReceiptHistoryItem[];
 };

@@ -10,6 +10,7 @@ import { PurchaseOrderSerialized, PurchaseOrderInput, PurchaseOrderActionResult,
 
 const receiptPoInclude = {
     supplier: true,
+
     items: {
         include: {
             item: {
@@ -18,9 +19,33 @@ const receiptPoInclude = {
                     purchase_uom: true,
                 },
             },
+
             uom: true,
             receipt_items: true,
         },
+    },
+
+    receipts: {
+        include: {
+            items: {
+                include: {
+                    item: true,
+                    uom: true,
+                    lots: true,
+
+                    purchase_order_item: {
+                        include: {
+                            uom: true,
+                        },
+                    },
+                },
+            },
+        },
+
+        orderBy: {
+            receipt_date: "desc",
+        },
+
     },
 } satisfies Prisma.PurchaseOrderInclude;
 
@@ -389,9 +414,11 @@ export async function getPurchaseOrderForReceipt(
         po_number: po.po_number,
         supplier_name: po.supplier.name,
         status: po.status,
+
         items: po.items.map((poItem) => {
             const alreadyReceived = poItem.receipt_items.reduce(
-                (total, receipt) => total + Number(receipt.received_purchase_qty),
+                (total, receipt) =>
+                    total + Number(receipt.received_purchase_qty),
                 0
             );
 
@@ -400,22 +427,29 @@ export async function getPurchaseOrderForReceipt(
                 item_id: poItem.item_id,
                 ordered_qty: Number(poItem.quantity),
                 already_received_qty: alreadyReceived,
-                remaining_qty: Math.max(0, Number(poItem.quantity) - alreadyReceived),
+                remaining_qty: Math.max(
+                    0,
+                    Number(poItem.quantity) - alreadyReceived
+                ),
+
                 purchase_uom: {
                     id: poItem.uom.id,
                     name: poItem.uom.name,
                     symbol: poItem.uom.symbol,
                 },
+
                 item: {
                     id: poItem.item.id,
                     name: poItem.item.name,
                     reference: poItem.item.reference,
                     item_type: poItem.item.item_type,
                     tracking: poItem.item.tracking,
+
                     default_purchase_qty:
                         poItem.item.default_purchase_qty !== null
                             ? Number(poItem.item.default_purchase_qty)
                             : null,
+
                     uom: {
                         id: poItem.item.uom.id,
                         name: poItem.item.uom.name,
@@ -424,8 +458,50 @@ export async function getPurchaseOrderForReceipt(
                 },
             };
         }),
+
+        receipts: po.receipts.map((receipt) => ({
+            id: receipt.id,
+            receipt_number: receipt.receipt_number,
+            receipt_date: receipt.receipt_date.toISOString(),
+            remarks: receipt.remarks,
+
+            items: receipt.items.map((receiptItem) => ({
+                id: receiptItem.id,
+                item_id: receiptItem.item_id,
+                received_purchase_qty: Number(
+                    receiptItem.received_purchase_qty
+                ),
+                actual_qty: Number(receiptItem.actual_qty),
+
+                item: {
+                    id: receiptItem.item.id,
+                    name: receiptItem.item.name,
+                    reference: receiptItem.item.reference,
+                },
+
+                purchase_uom: {
+                    id: receiptItem.purchase_order_item.uom.id,
+                    name: receiptItem.purchase_order_item.uom.name,
+                    symbol: receiptItem.purchase_order_item.uom.symbol,
+                },
+
+                uom: {
+                    id: receiptItem.uom.id,
+                    name: receiptItem.uom.name,
+                    symbol: receiptItem.uom.symbol,
+                },
+
+                lots: receiptItem.lots.map((lot) => ({
+                    id: lot.id,
+                    lot_number: lot.lot_number,
+                    initial_qty: Number(lot.initial_qty),
+                    remaining_qty: Number(lot.remaining_qty),
+                })),
+            })),
+        })),
     };
-}
+};
+
 
 // ======================================================
 // CREATE PURCHASE RECEIPT

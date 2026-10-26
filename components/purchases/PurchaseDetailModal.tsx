@@ -311,11 +311,11 @@ export default function PurchaseDetailModal({
                     {/* TABS */}
                     <Tabs defaultValue="items">
                         <TabsList>
-                            <TabsTrigger value="items">
+                            <TabsTrigger value="items" className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-active:hover:text-white hover:text-black">
                                 Item PO
                             </TabsTrigger>
 
-                            <TabsTrigger value="receiving">
+                            <TabsTrigger value="receiving" className="flex items-center justify-center gap-2 text-black text-xs sm:text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-active:hover:text-white hover:text-black">
                                 Receiving
                             </TabsTrigger>
                         </TabsList>
@@ -422,149 +422,295 @@ export default function PurchaseDetailModal({
                         </TabsContent>
 
                         {/* RECEIVING */}
-                        <TabsContent
-                            value="receiving"
-                            className="mt-4"
-                        >
-                            <div className="overflow-hidden rounded-xl border">
+                        <TabsContent value="receiving" className="mt-4 space-y-4">
+                            {/* RECEIVING SUMMARY */}
+                            <div className="overflow-hidden rounded-xl border border-slate-200">
                                 <div className="border-b bg-slate-50 px-4 py-3">
                                     <h3 className="text-sm font-semibold text-slate-800">
-                                        Status Penerimaan Barang
+                                        Receiving Summary
                                     </h3>
+                                    <p className="mt-0.5 text-xs text-slate-400">
+                                        Progress penerimaan berdasarkan quantity Purchase Order.
+                                    </p>
                                 </div>
 
                                 {loadingReceipt ? (
                                     <div className="p-8 text-center text-sm text-slate-400">
-                                        Memuat receiving...
+                                        Memuat data receiving...
                                     </div>
                                 ) : receiptData ? (
                                     <div className="overflow-x-auto">
                                         <table className="w-full min-w-[750px]">
-                                            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
+                                            <thead className="bg-slate-50/60 text-left text-xs uppercase text-slate-500">
                                                 <tr>
-                                                    <th className="px-4 py-3">
-                                                        Item
-                                                    </th>
-
-                                                    <th className="px-4 py-3 text-right">
-                                                        Ordered
-                                                    </th>
-
-                                                    <th className="px-4 py-3 text-right">
-                                                        Received
-                                                    </th>
-
-                                                    <th className="px-4 py-3 text-right">
-                                                        Remaining
-                                                    </th>
-
-                                                    <th className="px-4 py-3">
-                                                        Status
-                                                    </th>
+                                                    <th className="px-4 py-3">Item</th>
+                                                    <th className="px-4 py-3 text-right">Ordered</th>
+                                                    <th className="px-4 py-3 text-right">Received</th>
+                                                    <th className="px-4 py-3 text-right">Remaining</th>
+                                                    <th className="px-4 py-3">Status</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody className="divide-y">
-                                                {receiptData.items.map(
-                                                    (poItem) => {
-                                                        const fullyReceived =
-                                                            poItem.remaining_qty <=
-                                                            0;
+                                                {receiptData.items.map((poItem) => {
+                                                    const fullyReceived =
+                                                        poItem.remaining_qty <= 0;
 
-                                                        const partiallyReceived =
-                                                            poItem.already_received_qty >
-                                                            0 &&
-                                                            poItem.remaining_qty >
-                                                            0;
+                                                    const partiallyReceived =
+                                                        poItem.already_received_qty > 0 &&
+                                                        poItem.remaining_qty > 0;
 
-                                                        return (
-                                                            <tr
-                                                                key={
-                                                                    poItem.id
-                                                                }
-                                                            >
-                                                                <td className="px-4 py-4">
-                                                                    <p className="font-medium text-slate-800">
-                                                                        {
-                                                                            poItem
-                                                                                .item
-                                                                                .name
-                                                                        }
-                                                                    </p>
+                                                    const purchaseUom =
+                                                        poItem.purchase_uom.symbol ??
+                                                        poItem.purchase_uom.name;
 
-                                                                    <p className="text-xs text-slate-400">
-                                                                        {
-                                                                            poItem
-                                                                                .item
-                                                                                .reference
-                                                                        }
-                                                                    </p>
-                                                                </td>
+                                                    return (
+                                                        <tr
+                                                            key={poItem.id}
+                                                            className="hover:bg-slate-50/60"
+                                                        >
+                                                            <td className="px-4 py-4">
+                                                                <p className="text-sm font-semibold text-slate-800">
+                                                                    {poItem.item.name}
+                                                                </p>
 
-                                                                <td className="px-4 py-4 text-right">
-                                                                    {formatQty(
-                                                                        poItem.ordered_qty
-                                                                    )}{" "}
-                                                                    {poItem
-                                                                        .purchase_uom
-                                                                        .symbol ??
-                                                                        poItem
-                                                                            .purchase_uom
-                                                                            .name}
-                                                                </td>
+                                                                <p className="mt-0.5 font-mono text-xs text-slate-400">
+                                                                    {poItem.item.reference}
+                                                                </p>
+                                                            </td>
 
-                                                                <td className="px-4 py-4 text-right font-semibold text-emerald-600">
-                                                                    {formatQty(
-                                                                        poItem.already_received_qty
-                                                                    )}{" "}
-                                                                    {poItem
-                                                                        .purchase_uom
-                                                                        .symbol ??
-                                                                        poItem
-                                                                            .purchase_uom
-                                                                            .name}
-                                                                </td>
+                                                            <td className="whitespace-nowrap px-4 py-4 text-right text-sm">
+                                                                {formatQty(poItem.ordered_qty)}{" "}
+                                                                {purchaseUom}
+                                                            </td>
 
-                                                                <td className="px-4 py-4 text-right">
-                                                                    {formatQty(
-                                                                        poItem.remaining_qty
-                                                                    )}{" "}
-                                                                    {poItem
-                                                                        .purchase_uom
-                                                                        .symbol ??
-                                                                        poItem
-                                                                            .purchase_uom
-                                                                            .name}
-                                                                </td>
+                                                            <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-emerald-600">
+                                                                {formatQty(
+                                                                    poItem.already_received_qty
+                                                                )}{" "}
+                                                                {purchaseUom}
+                                                            </td>
 
-                                                                <td className="px-4 py-4">
-                                                                    {fullyReceived ? (
-                                                                        <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-                                                                            Received
-                                                                        </Badge>
-                                                                    ) : partiallyReceived ? (
-                                                                        <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
-                                                                            Partial
-                                                                        </Badge>
-                                                                    ) : (
-                                                                        <Badge
-                                                                            variant="outline"
-                                                                            className="bg-slate-50 text-slate-500"
-                                                                        >
-                                                                            Waiting
-                                                                        </Badge>
-                                                                    )}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    }
-                                                )}
+                                                            <td className="whitespace-nowrap px-4 py-4 text-right text-sm">
+                                                                {formatQty(
+                                                                    poItem.remaining_qty
+                                                                )}{" "}
+                                                                {purchaseUom}
+                                                            </td>
+
+                                                            <td className="px-4 py-4">
+                                                                {fullyReceived ? (
+                                                                    <Badge className="border border-emerald-200 bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                                                                        Received
+                                                                    </Badge>
+                                                                ) : partiallyReceived ? (
+                                                                    <Badge className="border border-amber-200 bg-amber-100 text-amber-700 hover:bg-amber-100">
+                                                                        Partial
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Badge
+                                                                        variant="outline"
+                                                                        className="bg-slate-50 text-slate-500"
+                                                                    >
+                                                                        Waiting
+                                                                    </Badge>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>
                                 ) : (
                                     <div className="p-8 text-center text-sm text-slate-400">
                                         Data receiving tidak ditemukan.
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* GOODS RECEIPT HISTORY */}
+                            <div className="overflow-hidden rounded-xl border border-slate-200">
+                                <div className="border-b bg-slate-50 px-4 py-3">
+                                    <h3 className="text-sm font-semibold text-slate-800">
+                                        Goods Receipt History
+                                    </h3>
+
+                                    <p className="mt-0.5 text-xs text-slate-400">
+                                        Riwayat penerimaan barang dari Purchase Order ini.
+                                    </p>
+                                </div>
+
+                                {loadingReceipt ? (
+                                    <div className="p-8 text-center text-sm text-slate-400">
+                                        Memuat riwayat penerimaan...
+                                    </div>
+                                ) : !receiptData?.receipts.length ? (
+                                    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+                                        <Package className="mb-3 h-8 w-8 text-slate-300" />
+
+                                        <p className="text-sm font-medium text-slate-600">
+                                            Belum ada penerimaan barang
+                                        </p>
+
+                                        <p className="mt-1 text-xs text-slate-400">
+                                            Goods Receipt akan muncul setelah barang diterima.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="divide-y">
+                                        {receiptData.receipts.map((receipt) => (
+                                            <div
+                                                key={receipt.id}
+                                                className="p-4 sm:p-5"
+                                            >
+                                                {/* GR HEADER */}
+                                                <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                                                    <div>
+                                                        <div className="flex flex-wrap items-center gap-2">
+                                                            <span className="font-mono text-sm font-bold text-slate-800">
+                                                                {receipt.receipt_number}
+                                                            </span>
+
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="border-emerald-200 bg-emerald-50 text-emerald-700"
+                                                            >
+                                                                <PackageCheck className="mr-1 h-3.5 w-3.5" />
+                                                                Received
+                                                            </Badge>
+                                                        </div>
+
+                                                        <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
+                                                            <Calendar className="h-3.5 w-3.5" />
+
+                                                            {format(
+                                                                new Date(receipt.receipt_date),
+                                                                "dd MMMM yyyy",
+                                                                { locale: id }
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* GR ITEMS */}
+                                                <div className="overflow-hidden rounded-lg border border-slate-200">
+                                                    <div className="overflow-x-auto">
+                                                        <table className="w-full min-w-[750px]">
+                                                            <thead className="bg-slate-50 text-left text-xs text-slate-500">
+                                                                <tr>
+                                                                    <th className="px-3 py-2.5">
+                                                                        Item
+                                                                    </th>
+
+                                                                    <th className="px-3 py-2.5 text-right">
+                                                                        Received
+                                                                    </th>
+
+                                                                    <th className="px-3 py-2.5 text-right">
+                                                                        Actual Qty
+                                                                    </th>
+
+                                                                    <th className="px-3 py-2.5">
+                                                                        Lot Number
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody className="divide-y">
+                                                                {receipt.items.map(
+                                                                    (receiptItem) => (
+                                                                        <tr
+                                                                            key={receiptItem.id}
+                                                                        >
+                                                                            <td className="px-3 py-3">
+                                                                                <p className="text-sm font-medium text-slate-800">
+                                                                                    {
+                                                                                        receiptItem
+                                                                                            .item.name
+                                                                                    }
+                                                                                </p>
+
+                                                                                <p className="font-mono text-xs text-slate-400">
+                                                                                    {
+                                                                                        receiptItem
+                                                                                            .item
+                                                                                            .reference
+                                                                                    }
+                                                                                </p>
+                                                                            </td>
+
+                                                                            <td className="whitespace-nowrap px-3 py-3 text-right text-sm">
+                                                                                {formatQty(
+                                                                                    receiptItem.received_purchase_qty
+                                                                                )}{" "}
+                                                                                {receiptItem
+                                                                                    .purchase_uom
+                                                                                    .symbol ??
+                                                                                    receiptItem
+                                                                                        .purchase_uom
+                                                                                        .name}
+                                                                            </td>
+
+                                                                            <td className="whitespace-nowrap px-3 py-3 text-right text-sm font-semibold text-emerald-600">
+                                                                                {formatQty(
+                                                                                    receiptItem.actual_qty
+                                                                                )}{" "}
+                                                                                {receiptItem.uom
+                                                                                    .symbol ??
+                                                                                    receiptItem.uom
+                                                                                        .name}
+                                                                            </td>
+
+                                                                            <td className="px-3 py-3">
+                                                                                {receiptItem.lots
+                                                                                    .length ? (
+                                                                                    <div className="flex flex-wrap gap-1.5">
+                                                                                        {receiptItem.lots.map(
+                                                                                            (
+                                                                                                lot
+                                                                                            ) => (
+                                                                                                <Badge
+                                                                                                    key={
+                                                                                                        lot.id
+                                                                                                    }
+                                                                                                    variant="outline"
+                                                                                                    className="font-mono text-xs"
+                                                                                                >
+                                                                                                    {
+                                                                                                        lot.lot_number
+                                                                                                    }
+                                                                                                </Badge>
+                                                                                            )
+                                                                                        )}
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <span className="text-sm text-slate-400">
+                                                                                        -
+                                                                                    </span>
+                                                                                )}
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                )}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                                {receipt.remarks && (
+                                                    <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                                                        <span className="block text-[11px] font-medium text-slate-400">
+                                                            Remarks
+                                                        </span>
+
+                                                        <p className="mt-0.5 text-xs text-slate-600">
+                                                            {receipt.remarks}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>
