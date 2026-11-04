@@ -376,34 +376,45 @@ enum PurchaseOrderStatus {
 // Header transaksi pembelian.
 // Satu Purchase Order dapat memiliki banyak item dan banyak receipt.
 model PurchaseOrder {
-  id Int @id @default(autoincrement())
+  id            Int                 @id @default(autoincrement())
+  po_number     String              @unique @db.VarChar(100)
+  supplier_id   Int
+  order_date    DateTime            @default(now()) @db.Timestamptz(6)
+  expected_date DateTime?           @db.Timestamptz(6)
+  status        PurchaseOrderStatus @default(DRAFT)
+  remarks       String?             @db.Text
+  created_at    DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime            @updatedAt @db.Timestamptz(6)
 
-  po_number   String @unique @db.VarChar(100)
-  supplier_id Int
-
-  order_date    DateTime  @default(now()) @db.Timestamptz(6)
-  expected_date DateTime? @db.Timestamptz(6)
-
-  status PurchaseOrderStatus @default(DRAFT)
-
-  remarks String? @db.Text
-
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  updated_at DateTime @updatedAt @db.Timestamptz(6)
-
-  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
-
-  items    PurchaseOrderItem[]
-  receipts PurchaseReceipt[]
-  payments PurchasePayment[]
+  supplier         Supplier                  @relation(fields: [supplier_id], references: [id], onDelete: Restrict)
+  items            PurchaseOrderItem[]
+  receipts         PurchaseReceipt[]
+  attachments      PurchaseOrderAttachment[]
+  purchasePayments PurchasePayment[]
 
   @@index([supplier_id])
   @@map("purchase_orders")
 }
 
+model PurchaseOrderAttachment {
+  id                Int      @id @default(autoincrement())
+  purchase_order_id Int
+  file_name         String   @db.VarChar(255)
+  file_path         String   @db.VarChar(500)
+  file_type         String   @db.VarChar(100)
+  remarks           String?  @db.Text
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+
+  purchase_order PurchaseOrder @relation(fields: [purchase_order_id], references: [id], onDelete: Cascade)
+
+  @@index([purchase_order_id])
+  @@map("purchase_order_attachments")
+}
+
 model PurchasePayment {
   id                Int      @id @default(autoincrement())
   purchase_order_id Int
+  payment_number    String   @unique @db.VarChar(100)
   payment_date      DateTime @db.Timestamptz(6)
   amount            Decimal  @db.Decimal(15, 2)
   payment_method    String?  @db.VarChar(100)

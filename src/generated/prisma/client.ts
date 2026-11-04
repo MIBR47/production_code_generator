@@ -132,6 +132,21 @@ export type Supplier = Prisma.SupplierModel
  */
 export type PurchaseOrder = Prisma.PurchaseOrderModel
 /**
+ * Model PurchaseOrderAttachment
+ * 
+ */
+export type PurchaseOrderAttachment = Prisma.PurchaseOrderAttachmentModel
+/**
+ * Model PurchasePayment
+ * 
+ */
+export type PurchasePayment = Prisma.PurchasePaymentModel
+/**
+ * Model PurchasePaymentAttachment
+ * 
+ */
+export type PurchasePaymentAttachment = Prisma.PurchasePaymentAttachmentModel
+/**
  * Model PurchaseOrderItem
  * 
  */

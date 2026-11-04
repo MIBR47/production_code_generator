@@ -88,6 +88,7 @@ export type PurchaseOrderSerialized = {
     supplier: SupplierSerialized;
     items: PurchaseOrderItemSerialized[];
     total_amount: number;
+    payment_summary: PurchasePaymentSummary;
 };
 
 export type PurchaseOrderActionResult = {
@@ -190,4 +191,80 @@ export type PurchaseReceiptHistory = {
     receipt_date: string;
     remarks: string | null;
     items: PurchaseReceiptHistoryItem[];
+};
+
+export type PurchaseOrderAttachmentSerialized = {
+    id: number;
+    purchase_order_id: number;
+    file_name: string;
+    file_path: string;
+    file_type: string;
+    remarks: string | null;
+    created_at: string;
+};
+
+export type PurchaseOrderAttachmentActionResult = {
+    success: boolean;
+    message: string;
+};
+
+// ======================================================
+// PURCHASE PAYMENT TYPES
+// ======================================================
+
+export type PurchasePaymentStatus = "UNPAID" | "PARTIALLY_PAID" | "PAID";
+
+export type PurchasePaymentAttachmentSerialized = {
+    id: number;
+    purchase_payment_id: number;
+    file_name: string;
+    file_path: string;
+    file_type: string;
+    remarks: string | null;
+    created_at: string;
+};
+
+export type PurchasePaymentSerialized = {
+    id: number;
+    purchase_order_id: number;
+    payment_number: string;
+    payment_date: string;
+    amount: number;
+    payment_method: string | null;
+    reference_number: string | null;
+    remarks: string | null;
+    created_at: string;
+    attachments: PurchasePaymentAttachmentSerialized[];
+};
+
+export type CreatePurchasePaymentInput = {
+    purchase_order_id: number;
+    payment_date: string;
+    amount: number;
+    payment_method: string | null;
+    reference_number: string | null;
+    remarks: string | null;
+};
+
+export type PurchasePaymentSummary = {
+    total_amount: number;
+    paid_amount: number;
+    remaining_amount: number;
+    status: PurchasePaymentStatus;
+};
+
+export type PurchasePaymentData = {
+    summary: PurchasePaymentSummary;
+    payments: PurchasePaymentSerialized[];
+};
+
+export type PurchasePaymentActionResult = {
+    success: boolean;
+    message: string;
+    payment_number?: string;
+};
+
+export type PurchasePaymentAttachmentActionResult = {
+    success: boolean;
+    message: string;
 };

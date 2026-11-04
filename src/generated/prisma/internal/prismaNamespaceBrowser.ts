@@ -69,6 +69,9 @@ export const ModelName = {
   UnitOfMeasure: 'UnitOfMeasure',
   Supplier: 'Supplier',
   PurchaseOrder: 'PurchaseOrder',
+  PurchaseOrderAttachment: 'PurchaseOrderAttachment',
+  PurchasePayment: 'PurchasePayment',
+  PurchasePaymentAttachment: 'PurchasePaymentAttachment',
   PurchaseOrderItem: 'PurchaseOrderItem',
   PurchaseReceipt: 'PurchaseReceipt',
   PurchaseReceiptItem: 'PurchaseReceiptItem',
@@ -337,6 +340,48 @@ export const PurchaseOrderScalarFieldEnum = {
 } as const
 
 export type PurchaseOrderScalarFieldEnum = (typeof PurchaseOrderScalarFieldEnum)[keyof typeof PurchaseOrderScalarFieldEnum]
+
+
+export const PurchaseOrderAttachmentScalarFieldEnum = {
+  id: 'id',
+  purchase_order_id: 'purchase_order_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type PurchaseOrderAttachmentScalarFieldEnum = (typeof PurchaseOrderAttachmentScalarFieldEnum)[keyof typeof PurchaseOrderAttachmentScalarFieldEnum]
+
+
+export const PurchasePaymentScalarFieldEnum = {
+  id: 'id',
+  purchase_order_id: 'purchase_order_id',
+  payment_number: 'payment_number',
+  payment_date: 'payment_date',
+  amount: 'amount',
+  payment_method: 'payment_method',
+  reference_number: 'reference_number',
+  remarks: 'remarks',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type PurchasePaymentScalarFieldEnum = (typeof PurchasePaymentScalarFieldEnum)[keyof typeof PurchasePaymentScalarFieldEnum]
+
+
+export const PurchasePaymentAttachmentScalarFieldEnum = {
+  id: 'id',
+  purchase_payment_id: 'purchase_payment_id',
+  file_name: 'file_name',
+  file_path: 'file_path',
+  file_type: 'file_type',
+  remarks: 'remarks',
+  created_at: 'created_at'
+} as const
+
+export type PurchasePaymentAttachmentScalarFieldEnum = (typeof PurchasePaymentAttachmentScalarFieldEnum)[keyof typeof PurchasePaymentAttachmentScalarFieldEnum]
 
 
 export const PurchaseOrderItemScalarFieldEnum = {

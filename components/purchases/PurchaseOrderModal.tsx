@@ -153,7 +153,7 @@ export default function PurchaseOrderModal({
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4">
             <div className="max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-2xl bg-white shadow-xl">
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-6 py-4">
                     <div>
@@ -165,7 +165,12 @@ export default function PurchaseOrderModal({
                         </p>
                     </div>
 
-                    <button type="button" onClick={onClose} disabled={isSubmitting}>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                        className="relative z-20 cursor-pointer rounded-lg p-2 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
                         <X size={20} className="text-slate-400" />
                     </button>
                 </div>
@@ -359,7 +364,7 @@ export default function PurchaseOrderModal({
                             type="button"
                             onClick={onClose}
                             disabled={isSubmitting}
-                            className="rounded-lg border px-4 py-2.5 text-sm"
+                            className="relative z-20 cursor-pointer rounded-lg border px-4 py-2.5 text-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             Batal
                         </button>
